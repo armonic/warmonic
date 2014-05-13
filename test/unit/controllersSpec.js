@@ -1,29 +1,20 @@
+'use strict';
+
 /* jasmine specs for controllers go here */
 
-describe('MyCtrl1', function(){
-  var myCtrl1;
-
-  beforeEach(function(){
-    myCtrl1 = new MyCtrl1();
-  });
+describe('controllers', function(){
+  beforeEach(module('myApp.controllers'));
 
 
-  it('should ....', function() {
+  it('should ....', inject(function($controller) {
     //spec body
-  });
-});
+    var myCtrl1 = $controller('MyCtrl1');
+    expect(myCtrl1).toBeDefined();
+  }));
 
-
-describe('MyCtrl2', function(){
-  var myCtrl2;
-
-
-  beforeEach(function(){
-    myCtrl2 = new MyCtrl2();
-  });
-
-
-  it('should ....', function() {
+  it('should ....', inject(function($controller) {
     //spec body
-  });
+    var myCtrl2 = $controller('MyCtrl2');
+    expect(myCtrl2).toBeDefined();
+  }));
 });
