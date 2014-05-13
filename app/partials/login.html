@@ -1,0 +1,26 @@
+<div class="col-md-4 col-md-offset-4" ng-controller="loginCtrl as login">
+  <h1>Login</h1>
+
+  <div class="well">
+    <form role="form" ng-submit="login.connect()">
+      <div class="form-group">
+        <label>JID</label>
+        <input type="email" class="form-control" id="jid" placeholder="uid@im.aeolus.org" ng-model="login.user.jid" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="password" ng-model="login.user.password"/>
+      </div>
+      <div class="form-group">
+        <label for="connection">Connection</label>
+        <input type="text" class="form-control" id="connection" placeholder="" ng-model="login.connection"/>
+      </div>
+      <button type="submit" class="btn btn-default">Connect</button>
+    </form>
+  </div>
+
+  <div class="alert alert-info">
+    {{ login.status.text }}
+  </div>
+
+</div>

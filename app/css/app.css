@@ -1,0 +1,43 @@
+.log {
+  border-top: 1px solid #CCCCCC;
+  bottom: 0px;
+  font-family: monospace;
+  font-size: 11px;
+  height: 40%;
+  margin-top: 20px;
+  overflow: auto;
+  padding: 10px;
+  position: fixed;
+  width: 100%;
+  background: rgba(0,0,0,0.015);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.065) 0%,rgba(0,0,0,0.015) 10px);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4d000000', endColorstr='#00000000',GradientType=0 );
+}
+
+.log > div {
+  transition: background 100ms ease;
+}
+
+.log > div:hover {
+  background: #f1f1f1;
+}
+
+.log > div.new {
+  background-color: #DBFFDB;
+}
+
+.console {
+  position: fixed;
+  bottom: 0px;
+  padding: 5px;
+  right: 0px;
+}
+
+.console textarea {
+  height: 100px;
+  width: 250px;
+}
+
+.console span {
+  vertical-align: bottom;
+}

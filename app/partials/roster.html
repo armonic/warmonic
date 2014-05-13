@@ -1,0 +1,14 @@
+<h2>Servers</h2>
+<div ng-controller="rosterCtrl as roster">
+  <div class="alert" ng-class="{'alert-danger': !item.online, 'alert-success': item.online}" ng-repeat="item in roster.items()" ng-show="item.show">
+    {{ item.jid }} <button class="pull-right" ng-click="roster.removeServer(item.jid)"><span class="glyphicon glyphicon-minus"></span></button>
+  </div>
+  <form role="form" ng-submit="roster.addServer()">
+      <div class="input-group">
+        <input class="form-control input-sm" ng-model="roster.serverJID" />
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-default btn-sm">Add</button>
+        </span>
+      </div>
+  </form>
+</div>
