@@ -12,6 +12,7 @@ angular.module('warmonic', [
 run(['$rootScope', '$state', '$stateParams', 'xmpp', function($rootScope, $state, $stateParams, xmpp) {
   $rootScope.$state = $state;
   $rootScope.$stateParams = $stateParams;
+  $state.go('login')
   xmpp.attach();
 }]).
 
