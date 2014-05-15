@@ -9,6 +9,7 @@ angular.module('warmonic', [
   'warmonic.lib.logger',
   'warmonic.provides',
   'warmonic.build',
+  'angularTreeview'
 ]).
 
 run(['$rootScope', '$state', '$stateParams', 'xmpp', function($rootScope, $state, $stateParams, xmpp) {

@@ -1,4 +1,23 @@
 <div class="md-col-12" ng-controller="buildCtrl as build">
   <h2>{{ build.provide }}</h2>
-
+    <div ng-controller="treeCtrl">
+      <div style="margin:10px 0 30px 0; padding:10px; background-color:#EEFFEE; border-radius:5px; font:12px Tahoma;">
+	tabval= "{{currentNode.tabval}}"
+	information="{{currentNode.information}}"
+	valselection= "{{currentNode.valselection}}"
+	affichecontrole="{{currentNode.affichecontrole}}"
+	label="{{currentNode.label}}"
+	id= "{{currentNode.id}}"
+	intitule="{{currentNode.intitule}}"
+	typecontrole="{{currentNode.typecontrole}}"
+	descriptif = "{{currentNode.descriptif}}"
+      </div>
+      <div class="containertree">
+	<div 
+	  data-angular-treeview="true"
+	  data-tree-id="abc"
+	  data-tree-model="build.treedata">
+	</div>
+      </div>
+    </div>
 </div>
