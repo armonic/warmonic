@@ -19,7 +19,7 @@
       <div class="provides-list row">
         <div class="provide col-md-4" ng-repeat="provide in provides.list">
           <div class="well">
-            <h3>{{ provide.xpath }}</h3>
+            <h3>{{ provide.label }}</h3>
             <p><span class="label label-info" ng-repeat="tag in provide.tags">{{ tag }}</span></p>
             <p>{{ provide.desc }}</p>
             <a class="btn btn-primary" ui-sref="build({provide: provide.xpath})">Build</a>

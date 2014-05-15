@@ -118,29 +118,16 @@ angular.module('warmonic.provides', [
     function(cmd) {
       var result = cmd.form.toJSON();
       result.items.forEach(function(item) {
+        var tags = [];
+        if (item.fields[1].values[0])
+          tags = item.fields[1].values[0].split(',');
+
         var provide = {
           'xpath': item.fields[0].values[0],
-          'tags': item.fields[1].values[0].split(','),
-          'label': item.fields[2].values[0],
+          'tags': tags,
+          'label': item.fields[2].values[0] || item.fields[0].values[0],
           'desc': item.fields[3].values[0]
         };
-        // TEMP
-        var generateTags = function() {
-          var mockTags = ["web", "database", "system", "expert", "foo", "bar"],
-              tags = [],
-              nbTags = Math.floor(Math.random() * 4) + 1;
-          for (var i=0; i<nbTags; i++) {
-            var tag = false;
-            while(tags.indexOf(tag) > -1 || tag === false) {
-              var rand = Math.round(Math.random() * (mockTags.length - 1));
-              tag = mockTags[rand];
-            }
-            tags.push(tag);
-          }
-          return tags;
-        };
-        provide.tags = generateTags();
-        // TEMP
         provide.tags.forEach(function(tagName) {
           var found = self.tags.some(function(tag) {
             if (tag.name == tagName) {
