@@ -17,7 +17,7 @@ angular.module('warmonic.provides', [
   this.searchFilter = "";
   this._searchFilter = "";
   this.searchId = false;
-  this.searching = false;
+  this.searching = true;
 
   // called when something is typed in the search filter
   this.filterList = function() {
@@ -53,7 +53,7 @@ angular.module('warmonic.provides', [
     var tags = this.getActiveTags();
 
     // no filtering, return fast
-    if (!this._searchFilter && tags.length == 0)
+    if (!this._searchFilter && tags.length === 0)
       return this._list;
 
     var self = this;
@@ -74,7 +74,7 @@ angular.module('warmonic.provides', [
       }
       // filter by keyword unless active tags don't match
       // the current provide
-      if (matches > 0 || tags.length == 0) {
+      if (matches > 0 || tags.length === 0) {
         var filterMatch = 0;
         regexps.forEach(function(regexp) {
           angular.forEach(provide, function(value, key) {
@@ -130,8 +130,12 @@ angular.module('warmonic.provides', [
               tags = [],
               nbTags = Math.floor(Math.random() * 4) + 1;
           for (var i=0; i<nbTags; i++) {
-            var rand = Math.round(Math.random() * (mockTags.length - 1));
-            tags.push(mockTags[rand])
+            var tag = false;
+            while(tags.indexOf(tag) > -1 || tag === false) {
+              var rand = Math.round(Math.random() * (mockTags.length - 1));
+              tag = mockTags[rand];
+            }
+            tags.push(tag);
           }
           return tags;
         };
@@ -156,10 +160,11 @@ angular.module('warmonic.provides', [
         self._list.push(provide);
       });
       self.list = self._list;
+      self.searching = false;
     },
     function(cmd) {
       logger.error("Failed to get provides list");
     }
   );
-
 }]);
+

@@ -1,5 +1,5 @@
 body {
-  padding-bottom: 50%;
+  padding-bottom: 250px;
 }
 
 .log {
@@ -7,15 +7,13 @@ body {
   bottom: 0px;
   font-family: monospace;
   font-size: 11px;
-  height: 40%;
+  height: 250px;
   margin-top: 20px;
   overflow: auto;
-  padding: 10px;
   position: fixed;
   width: 100%;
-  /*background: linear-gradient(to bottom, rgba(0,0,0,0.065) 0%, rgba(0,0,0,0.015) 10px);*/
+  background: linear-gradient(to bottom, rgba(0,0,0,0.065) 0%, rgba(0,0,0,0.015) 10px);
   background-color: white;
-  /*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4d000000', endColorstr='#00000000',GradientType=0 );*/
   z-index: 100;
 }
 
@@ -51,9 +49,20 @@ body {
   margin-bottom: 20px;
 }
 
+.provides-list .label {
+  margin-right: 2px;
+}
+
 .provide {
-  min-height: 200px;
   overflow: hidden;
+}
+
+.provide h3 {
+  min-height: 2em;
+  max-height: 2em;
+  font-size: 15px;
+  margin-top: 0px;
+  font-weight: 700;
 }
 
 .provides-tag button {

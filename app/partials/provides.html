@@ -1,31 +1,32 @@
 <div ng-controller="providesCtrl as provides">
   <div class="row provides-search">
     <div class="col-md-6">
-      <div class="col-md-12">
-        <form role="form" ng-submit="provides.filterList()">
-          <div class="input-group">
-            <input type="text" class="form-control" ng-model="provides.searchFilter" ng-keyup="provides.filterList()" />
-            <span class="input-group-btn">
-              <button type="submit" class="btn btn-default" ng-disabled="provides.searching">
-                <span class="glyphicon glyphicon-search"></span>
-                <span ng-show="provides.searching">Searching...</span>
-              </button>
-            </span>
-          </div>
-        </form>
-      </div>
+      <form role="form" ng-submit="provides.filterList()">
+        <div class="input-group">
+          <input type="text" class="form-control" ng-model="provides.searchFilter" ng-keyup="provides.filterList()" />
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-default" ng-disabled="provides.searching">
+              <span class="glyphicon glyphicon-search"></span>
+              <span ng-show="provides.searching">Searching...</span>
+            </button>
+          </span>
+        </div>
+      </form>
     </div>
   </div>
   <div class="row">
     <div class="col-md-9">
-      <div class="col-md-4" ng-repeat="provide in provides.list">
-        <div class="well provide">
-          <p><strong>{{ provide.xpath }}</strong></p>
-          <p>{{ provide.desc }}</p>
-          <p>Tags: {{ provide.tags | join }}</p>
-          <a class="btn btn-primary" ui-sref="build({provide: provide.xpath})">Select</a>
+      <div class="provides-list row">
+        <div class="provide col-md-4" ng-repeat="provide in provides.list">
+          <div class="well">
+            <h3>{{ provide.xpath }}</h3>
+            <p><span class="label label-info" ng-repeat="tag in provide.tags">{{ tag }}</span></p>
+            <p>{{ provide.desc }}</p>
+            <a class="btn btn-primary" ui-sref="build({provide: provide.xpath})">Build</a>
+          </div>
         </div>
       </div>
+      <p class="alert alert-warning" ng-show="provides.list.length == 0 && !provides.searching">No results found.</p>
     </div>
     <div class="col-md-3">
       <h2>Tag cloud</h2>
@@ -34,7 +35,7 @@
           ng-class="{'active': tag.active, 'btn-xs': tag.count < 3, 'btn-sm': tag.count < 6, 'btn-lg': tag.count > 9}"
           ng-click="tag.active = !tag.active">{{ tag.name }}
           <span class="glyphicon" ng-class="{'glyphicon-minus': tag.active, 'glyphicon-plus': !tag.active}" />
-        </button>&nbsp;
+        </button>
       </span>
       <roster />
     </div>
