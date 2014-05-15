@@ -8,8 +8,8 @@
 </head>
 <body>
   <nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="loginCtrl as login" ng-show="login.status.code == 5 || login.status.code == 8">
-    <div class="container">
-      <button type="button" class="btn btn-default navbar-btn" ng-click="login.disconnect()">Disconnect</button>
+    <div class="container pull-right">
+      <button type="button" class="btn btn-default navbar-btn pull-right" ng-click="login.disconnect()">Disconnect {{ login.user.jid }}</button>
     </div>
   </nav>
   <div class="container">
@@ -50,10 +50,11 @@
   <script src="../bower_components/angular-cookies/angular-cookies.js"></script>
   <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/utils.js"></script>
   <script src="js/logger.js"></script>
   <script src="js/xmpp.js"></script>
   <script src="js/roster.js"></script>
   <script src="js/commands.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/provides.js"></script>
 </body>
 </html>

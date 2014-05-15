@@ -75,12 +75,18 @@ angular.module('warmonic.lib.xmpp.roster', [
 
 }])
 
-.controller('rosterCtrl', ['roster', function(roster) {
-  this.items = roster.items;
-  this.serverJID = "";
-  this.addServer = function() {
-    roster.addServer(this.serverJID);
-    this.serverJID = "";
-  };
-  this.removeServer = roster.removeServer;
-}]);
+.directive('roster', function() {
+  return {
+    restrict: 'E',
+    templateUrl: 'partials/_roster.html',
+    controller: ['$scope', 'roster', function($scope, roster) {
+      $scope.items = roster.items;
+      $scope.serverJID = "";
+      $scope.addServer = function() {
+        roster.addServer($scope.serverJID);
+        $scope.serverJID = "";
+      };
+      $scope.removeServer = roster.removeServer;
+    }]
+  }
+});

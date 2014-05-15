@@ -2,11 +2,12 @@
 
 angular.module('warmonic', [
   'ui.router',
+  'warmonic.lib.utils',
   'warmonic.lib.xmpp',
   'warmonic.lib.xmpp.roster',
   'warmonic.lib.xmpp.commands',
   'warmonic.lib.logger',
-  'warmonic.main'
+  'warmonic.provides'
 ]).
 
 run(['$rootScope', '$state', '$stateParams', 'xmpp', function($rootScope, $state, $stateParams, xmpp) {
@@ -24,21 +25,14 @@ config(['$stateProvider', '$httpProvider', function($stateProvider, $httpProvide
      templateUrl: "partials/login.html"
   })
 
-  .state('main', {
-    abstract: true,
-    templateUrl: 'partials/home.html'
+  .state('provides', {
+    url: '/provides',
+    templateUrl: 'partials/provides.html'
   })
 
-  .state('main.main', {
-     url: '/main',
-     views: {
-       "roster": {
-         templateUrl: "partials/roster.html"
-       },
-       "main": {
-         templateUrl: "partials/main.html"
-       }
-     }
+  .state('build', {
+    url: '/build',
+    templateUrl: 'partials/build.html'
   })
 
 }]);

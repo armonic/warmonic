@@ -170,7 +170,7 @@ angular.module('warmonic.lib.xmpp', [
 
 .controller('loginCtrl', ['$scope', '$timeout', '$state', 'xmpp', 'roster', function($scope, $timeout, $state, xmpp, roster) {
   if (xmpp.connected) {
-    $state.go('main.main');
+    $state.go('provides');
   }
 
   this.user = {
@@ -185,7 +185,7 @@ angular.module('warmonic.lib.xmpp', [
     xmpp.connect(this.user.jid, this.user.password,
                  this.connection)
     .then(angular.bind(this, function() {
-      $state.go('main.main');
+      $state.go('provides');
     }));
   };
 

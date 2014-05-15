@@ -1,3 +1,7 @@
+body {
+  padding-bottom: 50%;
+}
+
 .log {
   border-top: 1px solid #CCCCCC;
   bottom: 0px;
@@ -9,9 +13,10 @@
   padding: 10px;
   position: fixed;
   width: 100%;
-  background: rgba(0,0,0,0.015);
-  background: linear-gradient(to bottom, rgba(0,0,0,0.065) 0%,rgba(0,0,0,0.015) 10px);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4d000000', endColorstr='#00000000',GradientType=0 );
+  /*background: linear-gradient(to bottom, rgba(0,0,0,0.065) 0%, rgba(0,0,0,0.015) 10px);*/
+  background-color: white;
+  /*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4d000000', endColorstr='#00000000',GradientType=0 );*/
+  z-index: 100;
 }
 
 .log > div {
@@ -40,4 +45,13 @@
 
 .console span {
   vertical-align: bottom;
+}
+
+.provide-search {
+  margin-bottom: 20px;
+}
+
+.provide {
+  min-height: 200px;
+  overflow: hidden;
 }
