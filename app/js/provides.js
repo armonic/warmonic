@@ -75,7 +75,7 @@ angular.module('warmonic.provides', [
     // return provides with at leat one match
     // and sorted by matches
     return list.filter(function(provide) {
-      return provide.matches;
+      return provide.matches > tags.length;
     }).sort(function(a, b) {
       return a.matches < b.matches;
     });
