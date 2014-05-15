@@ -5,51 +5,65 @@ angular.module('warmonic.provides', [
   'warmonic.lib.xmpp.commands'
 ])
 
-.controller('providesCtrl', ['$timeout', '$state', 'logger', 'xmpp', 'commands', function($timeout, $state, logger, xmpp, commands) {
+.controller('providesCtrl', ['$scope', '$timeout', '$state', 'logger', 'xmpp', 'commands', function($scope, $timeout, $state, logger, xmpp, commands) {
   if (!xmpp.connected)
     $state.go('login');
 
+  // original provides list
+  this._list = [];
+  // filtered provides list
   this.list = [];
   this.tags = [];
-  this._searchFilter = "";
   this.searchFilter = "";
+  this._searchFilter = "";
   this.searchId = false;
+  this.searching = false;
 
   // called when something is typed in the search filter
-  this.updateList = function() {
+  this.filterList = function() {
+    if (this.searchFilter.trim() == this._searchFilter)
+      return;
+
     if (this.searchId) {
       $timeout.cancel(this.searchId);
       this.searchId = false;
     }
     // don't apply the search filter right away,
     // wait a little
+    this.searching = true;
     this.searchId = $timeout(angular.bind(this, function() {
-      if (this._searchFilter != this.searchFilter) {
-        this._searchFilter = this.searchFilter;
-        logger.debug("Searching for " + this._searchFilter);
-      }
+      logger.debug("Searching for: " + this.searchFilter);
+      this._searchFilter = this.searchFilter;
+      this.list = this.updateList();
+      this.searching = false;
     }), 400);
-  }
+  };
+
+  // update list when tag selection changes
+  $scope.$watch(
+    'provides.tags',
+    angular.bind(this, function(newVal, oldVal) {
+      this.list = this.updateList();
+    }),
+    true
+  );
 
   // used to display the provides list
-  this.getList = function() {
+  this.updateList = function() {
     var tags = this.getActiveTags();
 
+    // no filtering, return fast
     if (!this._searchFilter && tags.length == 0)
-      return this.list;
+      return this._list;
 
-    var self = this,
-        regexps = [],
-        // copy to new list
-        list = this.list;
-
+    var self = this;
     // create regexps to search provides
-    this._searchFilter.split(' ').forEach(function(term) {
-      regexps.push(new RegExp(term, "i"));
+    var regexps = this._searchFilter.split(' ').map(function(term) {
+      return new RegExp(term, "i");
     });
 
     // count search matches for each provide
-    list.forEach(function(provide) {
+    this._list.forEach(function(provide) {
       var matches = 0;
 
       // filter by tag
@@ -61,21 +75,28 @@ angular.module('warmonic.provides', [
       // filter by keyword unless active tags don't match
       // the current provide
       if (matches > 0 || tags.length == 0) {
+        var filterMatch = 0;
         regexps.forEach(function(regexp) {
           angular.forEach(provide, function(value, key) {
             if (regexp.test(value)) {
-              matches += 1;
+              filterMatch += 1;
             }
           });
         });
+        // if no match set matches to 0
+        // even if the tags matches
+        if (filterMatch)
+          matches += filterMatch;
+        else
+          matches = 0;
       }
       provide.matches = matches;
     });
 
     // return provides with at leat one match
     // and sorted by matches
-    return list.filter(function(provide) {
-      return provide.matches > tags.length;
+    return this._list.filter(function(provide) {
+      return provide.matches;
     }).sort(function(a, b) {
       return a.matches < b.matches;
     });
@@ -116,8 +137,9 @@ angular.module('warmonic.provides', [
             });
           }
         });
-        self.list.push(provide);
+        self._list.push(provide);
       });
+      self.list = self._list;
     },
     function(cmd) {
       logger.error("Failed to get provides list");
