@@ -125,15 +125,31 @@ angular.module('warmonic.provides', [
           'desc': item.fields[3].values[0]
         };
         // TEMP
-        var rand = Math.round(Math.random());
-        provide.tags.splice(rand, 1);
+        var generateTags = function() {
+          var mockTags = ["web", "database", "system", "expert", "foo", "bar"],
+              tags = [],
+              nbTags = Math.floor(Math.random() * 4) + 1;
+          for (var i=0; i<nbTags; i++) {
+            var rand = Math.round(Math.random() * (mockTags.length - 1));
+            tags.push(mockTags[rand])
+          }
+          return tags;
+        };
+        provide.tags = generateTags();
         // TEMP
-        provide.tags.forEach(function(tag) {
-          // add tag if not exist
-          if (self.tags.filter(function(a) { return a.name == tag}).length == 0) {
+        provide.tags.forEach(function(tagName) {
+          var found = self.tags.some(function(tag) {
+            if (tag.name == tagName) {
+              tag.count += 1;
+              return true;
+            }
+            return false;
+          });
+          if (!found) {
             self.tags.push({
-              name: tag,
-              active: false
+              name: tagName,
+              active: false,
+              count: 1
             });
           }
         });

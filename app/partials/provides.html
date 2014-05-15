@@ -1,5 +1,5 @@
 <div ng-controller="providesCtrl as provides">
-  <div class="row provide-search">
+  <div class="row provides-search">
     <div class="col-md-6">
       <div class="col-md-12">
         <form role="form" ng-submit="provides.filterList()">
@@ -28,10 +28,10 @@
       </div>
     </div>
     <div class="col-md-3">
-      <h2>Tags</h2>
-      <span ng-repeat="tag in provides.tags">
+      <h2>Tag cloud</h2>
+      <span ng-repeat="tag in provides.tags" class="provides-tag">
         <button class="btn"
-          ng-class="{'active': tag.active}"
+          ng-class="{'active': tag.active, 'btn-xs': tag.count < 3, 'btn-sm': tag.count < 6, 'btn-lg': tag.count > 9}"
           ng-click="tag.active = !tag.active">{{ tag.name }}
           <span class="glyphicon" ng-class="{'glyphicon-minus': tag.active, 'glyphicon-plus': !tag.active}" />
         </button>&nbsp;

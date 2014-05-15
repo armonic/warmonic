@@ -47,11 +47,15 @@ body {
   vertical-align: bottom;
 }
 
-.provide-search {
+.provides-search {
   margin-bottom: 20px;
 }
 
 .provide {
   min-height: 200px;
   overflow: hidden;
+}
+
+.provides-tag button {
+  margin: 3px;
 }
