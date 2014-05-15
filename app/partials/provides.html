@@ -20,7 +20,7 @@
           <p><strong>{{ provide.xpath }}</strong></p>
           <p>{{ provide.desc }}</p>
           <p>Tags: {{ provide.tags | join }}</p>
-          <button class="btn btn-primary">Select</button>
+          <a class="btn btn-primary" ui-sref="build({provide: provide.xpath})">Select</a>
         </div>
       </div>
     </div>

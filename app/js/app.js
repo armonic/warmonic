@@ -7,7 +7,8 @@ angular.module('warmonic', [
   'warmonic.lib.xmpp.roster',
   'warmonic.lib.xmpp.commands',
   'warmonic.lib.logger',
-  'warmonic.provides'
+  'warmonic.provides',
+  'warmonic.build',
 ]).
 
 run(['$rootScope', '$state', '$stateParams', 'xmpp', function($rootScope, $state, $stateParams, xmpp) {
@@ -31,7 +32,7 @@ config(['$stateProvider', '$httpProvider', function($stateProvider, $httpProvide
   })
 
   .state('build', {
-    url: '/build',
+    url: '/build?provide',
     templateUrl: 'partials/build.html'
   })
 
