@@ -25,6 +25,7 @@ angular.module('warmonic.lib.xmpp.roster', [
       items.forEach(angular.bind(this, function(item) {
         item.online = this.isOnline(item);
         item.show = false;
+        item.name = Strophe.getNodeFromJid(item.jid);
         if (item.subscription == "to" || item.subscription == "both")
           item.show = true;
       }));
