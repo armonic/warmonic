@@ -112,7 +112,7 @@ angular.module('warmonic.provides', [
   };
 
   // Get initial provides list
-  var cmd = commands.create('mss-master@im.aeolus.org/master', 'provides'),
+  var cmd = commands.create('provides'),
       self = this;
 
   commands.execute(cmd).then(

@@ -10,16 +10,16 @@ angular.module('warmonic', [
   'warmonic.provides',
   'warmonic.build',
   'angularTreeview'
-]).
+])
 
-run(['$rootScope', '$state', '$stateParams', 'xmpp', function($rootScope, $state, $stateParams, xmpp) {
+.run(['$rootScope', '$state', '$stateParams', 'xmpp', function($rootScope, $state, $stateParams, xmpp) {
   $rootScope.$state = $state;
   $rootScope.$stateParams = $stateParams;
-  $state.go('login')
+  $state.go('login');
   xmpp.attach();
-}]).
+}])
 
-config(['$stateProvider', '$httpProvider', function($stateProvider, $httpProvider) {
+.config(['$stateProvider', function($stateProvider) {
   $stateProvider
 
   .state('login', {
@@ -35,6 +35,12 @@ config(['$stateProvider', '$httpProvider', function($stateProvider, $httpProvide
   .state('build', {
     url: '/build?provide',
     templateUrl: 'partials/build.html'
-  })
+  });
+
+}])
+
+.config(['commandsProvider', function(commandsProvider) {
+
+  commandsProvider.setProvider('mss-master@im.aeolus.org/master');
 
 }]);
