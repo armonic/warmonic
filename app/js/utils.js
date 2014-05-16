@@ -24,4 +24,11 @@ angular.module('warmonic.lib.utils', [])
 
 .filter('domainJid', function() {
   return Strophe.getDomainFromJid;
+})
+
+.directive('spinner', function() {
+  return {
+    restrict: 'A',
+    template: '<img src="img/loadinfo.png" alt="Loading..." />',
+  };
 });

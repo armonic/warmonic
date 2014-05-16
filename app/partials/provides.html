@@ -6,8 +6,8 @@
           <input type="text" class="form-control" ng-model="provides.searchFilter" ng-keyup="provides.filterList()" />
           <span class="input-group-btn">
             <button type="submit" class="btn btn-default" ng-disabled="provides.searching">
-              <span class="glyphicon glyphicon-search"></span>
-              <span ng-show="provides.searching">Searching...</span>
+              <span ng-hide="provides.searching" class="glyphicon glyphicon-search"></span>
+              <span ng-show="provides.searching" spinner></span>
             </button>
           </span>
         </div>
