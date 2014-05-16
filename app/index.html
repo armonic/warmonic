@@ -10,7 +10,7 @@
 <body>
   <nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="loginCtrl as login" ng-show="login.status.code == 5 || login.status.code == 8">
     <div class="container pull-right">
-      <button type="button" class="btn btn-default navbar-btn pull-right" ng-click="login.disconnect()">Disconnect {{ login.user.jid }}</button>
+      <button type="button" class="btn btn-default navbar-btn pull-right" ng-click="login.disconnect()">Disconnect {{ login.session.jid | bareJid }}</button>
     </div>
   </nav>
   <div class="container">

@@ -107,7 +107,7 @@ angular.module('warmonic.lib.xmpp', [
 
     send: function(arg) {
       this.getConnection().then(function(conn) {
-        conn.send(arg)
+        conn.send(arg);
       });
     },
 
@@ -168,7 +168,7 @@ angular.module('warmonic.lib.xmpp', [
   return xmpp;
 }])
 
-.controller('loginCtrl', ['$scope', '$timeout', '$state', 'xmpp', 'roster', function($scope, $timeout, $state, xmpp, roster) {
+.controller('loginCtrl', ['$scope', '$timeout', '$state', 'xmppSession', 'xmpp', 'roster', function($scope, $timeout, $state, xmppSession, xmpp, roster) {
   if (xmpp.connected) {
     $state.go('provides');
   }
@@ -179,6 +179,7 @@ angular.module('warmonic.lib.xmpp', [
   };
   this.connection = 'http://im.aeolus.org/http-bind';
 
+  this.session = xmppSession.data;
   this.status = xmpp.status;
 
   this.connect = function() {
@@ -194,7 +195,7 @@ angular.module('warmonic.lib.xmpp', [
     .then(function() {
       $state.go('login');
       // FIXME if possible...
-      $timeout(function() {location.reload(true)}, 500);
+      $timeout(function() {location.reload(true);}, 500);
     });
   };
 
