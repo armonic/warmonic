@@ -134,7 +134,6 @@ angular.module('warmonic.lib.xmpp', [
         xmppSession.data.jid = this._connection.jid;
         xmppSession.data.sid = this._connection._proto.sid;
         xmppSession.data.connectionUrl = this._connectionUrl;
-        xmppSession.save();
       }
       else if (this.status.code == Strophe.Status.CONNFAIL ||
                this.status.code == Strophe.Status.AUTHFAIL) {
@@ -149,7 +148,13 @@ angular.module('warmonic.lib.xmpp', [
     },
 
     getDisconnection: function() {
-      return deferredDisconnection.promise;
+      return deferredDisconnection.promise.then(function(promise) {
+        // recreate promises so that other services
+        // can wait for theses promises again
+        deferredConnection = $q.defer();
+        deferredDisconnection = $q.defer();
+        return promise;
+      });
     },
 
     getConnection: function() {
@@ -171,9 +176,10 @@ angular.module('warmonic.lib.xmpp', [
 
     onOutput: function(body) {
       logger.trace('[>>] ' + Strophe.serialize(body));
-      // !!FIXME!!
-      xmppSession.data.rid = this._connection._proto.rid;
-      xmppSession.save();
+      if (this._connection && this._connection._proto.rid) {
+        xmppSession.data.rid = this._connection._proto.rid;
+        xmppSession.save();
+      }
     }
   };
 
@@ -206,8 +212,6 @@ angular.module('warmonic.lib.xmpp', [
     xmpp.disconnect()
     .then(function() {
       $state.go('login');
-      // FIXME if possible...
-      $timeout(function() {location.reload(true);}, 500);
     });
   };
 

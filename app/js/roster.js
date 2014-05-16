@@ -8,9 +8,32 @@ angular.module('warmonic.lib.xmpp.roster', [
 .factory('roster', ['$q', '$timeout', 'xmpp', 'xmppSession', 'logger', function($q, $timeout, xmpp, xmppSession, logger) {
 
   var roster = {
+
+    _init: function() {
+      // roster init
+      xmpp.getConnection().then(angular.bind(this, function(conn) {
+        // callback for presence updates
+        conn.roster.registerCallback(angular.bind(this, this.updateItems));
+        logger.debug("registered roster callback");
+        if (xmppSession.data.rosterItems) {
+          logger.debug("loading previous roster");
+          conn.roster.items = xmppSession.data.rosterItems;
+        }
+        else {
+          conn.roster.get(angular.bind(this, this.onRoster));
+        }
+      }));
+
+      xmpp.getDisconnection().then(angular.bind(this, function() {
+        // listen to new promises
+        this._init();
+      }));
+    },
+
     items: function() {
-      if (xmpp.connected)
+      if (xmpp.connected) {
         return xmpp._connection.roster.items;
+      }
       return [];
     },
 
@@ -51,27 +74,7 @@ angular.module('warmonic.lib.xmpp.roster', [
     }
   };
 
-  // roster init
-  xmpp.getConnection().then(function(conn) {
-    // callback for presence updates
-    conn.roster.registerCallback(angular.bind(roster, roster.updateItems));
-    logger.debug("registered roster callback");
-    if (xmppSession.data.rosterItems) {
-      logger.debug("loading previous roster");
-      logger.debug(xmppSession.data.rosterItems);
-      conn.roster.items = xmppSession.data.rosterItems;
-    }
-    else {
-      // initial roster
-      conn.roster.get(angular.bind(roster, roster.onRoster));
-    }
-  });
-
-  xmpp.getDisconnection().then(function() {
-    logger.debug("saving roster");
-    xmppSession.data.rosterItems = roster.items;
-  });
-
+  roster._init();
   return roster;
 
 }])
@@ -89,5 +92,5 @@ angular.module('warmonic.lib.xmpp.roster', [
       };
       $scope.removeServer = roster.removeServer;
     }]
-  }
+  };
 });
