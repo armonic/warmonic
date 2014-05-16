@@ -16,8 +16,12 @@ angular.module('warmonic.lib.xmpp.commands', [
     var commandProvider = this.provider;
 
     return {
+      get provider() {
+        return commandProvider;
+      },
+
       create: function(cmd) {
-        return new Strophe.Commands.RemoteCommand(xmpp._connection, commandProvider, cmd);
+        return new Strophe.Commands.RemoteCommand(xmpp._connection, this.provider, cmd);
       },
 
       execute: function(cmd) {

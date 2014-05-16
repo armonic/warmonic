@@ -154,7 +154,7 @@ angular.module('warmonic.provides', [
     function(cmd) {
       logger.error("Failed to get provides list");
       self.searching = false;
-      self.error = "Failed to contact mss-master.";
+      self.error = "Failed to contact " + commands.provider;
     }
   );
 }]);
