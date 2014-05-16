@@ -68,9 +68,21 @@ angular.module('warmonic.lib.xmpp', [
     _init: function(connectionUrl) {
       logger.debug(connectionUrl);
       this._connectionUrl = connectionUrl;
-      this._connection = new Strophe.Connection(this._connectionUrl);
-      this._connection.xmlInput = angular.bind(this, this.onInput);
-      this._connection.xmlOutput = angular.bind(this, this.onOutput);
+      if (this._connection) {
+        logger.info("reset current connexion");
+        this._connection.reset();
+        // cleanup requests queue
+        this._connection._proto._requests.forEach(angular.bind(this, function(req) {
+          this._connection._proto._removeRequest(req);
+        }));
+        // update connection url
+        this._connection.service = this._connectionUrl;
+      }
+      else {
+        this._connection = new Strophe.Connection(this._connectionUrl);
+        this._connection.xmlInput = angular.bind(this, this.onInput);
+        this._connection.xmlOutput = angular.bind(this, this.onOutput);
+      }
     },
 
     status: {
