@@ -16,6 +16,7 @@
   </div>
   <div class="row">
     <div class="col-md-9">
+      <p class="alert alert-danger" ng-show="provides.error">{{ provides.error }}</p>
       <div class="provides-list row">
         <div class="provide col-md-4" ng-repeat="provide in provides.list">
           <div class="well">

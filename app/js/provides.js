@@ -18,6 +18,7 @@ angular.module('warmonic.provides', [
   this._searchFilter = "";
   this.searchId = false;
   this.searching = true;
+  this.error = false;
 
   // called when something is typed in the search filter
   this.filterList = function() {
@@ -148,9 +149,12 @@ angular.module('warmonic.provides', [
       });
       self.list = self._list;
       self.searching = false;
+      self.error = false;
     },
     function(cmd) {
       logger.error("Failed to get provides list");
+      self.searching = false;
+      self.error = "Failed to contact mss-master.";
     }
   );
 }]);
