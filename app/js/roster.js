@@ -9,7 +9,8 @@ angular.module('warmonic.lib.xmpp.roster', [
 
   var roster = xmppService.create();
   angular.extend(roster, {
-    init: function(conn) {
+
+    onConnection: function(conn) {
       conn.roster.registerCallback(angular.bind(this, this.updateItems));
       logger.debug("registered roster callback");
       if (xmppSession.data.rosterItems) {
@@ -17,6 +18,7 @@ angular.module('warmonic.lib.xmpp.roster', [
         conn.roster.items = xmppSession.data.rosterItems;
       }
       else {
+        logger.debug("get roster");
         conn.roster.get(angular.bind(this, this.onRoster));
       }
     },

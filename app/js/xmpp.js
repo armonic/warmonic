@@ -114,13 +114,11 @@ angular.module('warmonic.lib.xmpp', [
 
     disconnect: function() {
       this._connection.disconnect("disconnecting");
-      return deferredDisconnection.promise;
+      return this.getDisconnection();
     },
 
     send: function(arg) {
-      this.getConnection().then(function(conn) {
-        conn.send(arg);
-      });
+      this._connection.send(arg);
     },
 
     onConnect: function(status, error) {
@@ -148,17 +146,19 @@ angular.module('warmonic.lib.xmpp', [
     },
 
     getDisconnection: function() {
-      return deferredDisconnection.promise.then(function(promise) {
-        // recreate promises so that other services
-        // can wait for theses promises again
-        deferredConnection = $q.defer();
+      return deferredDisconnection.promise.finally(function(promise) {
+        console.log("recreate disconnect");
         deferredDisconnection = $q.defer();
         return promise;
       });
     },
 
     getConnection: function() {
-      return deferredConnection.promise;
+      return deferredConnection.promise.finally(function(promise) {
+        console.log("recreate connect");
+        deferredConnection = $q.defer();
+        return promise;
+      });
     },
 
     sendPresence: function() {
@@ -222,27 +222,45 @@ angular.module('warmonic.lib.xmpp', [
 
   var XMPPService = Object.create(Object.prototype);
   XMPPService.prototype = {
-    constructor: function() {
-      xmpp.getDisconnection().then(angular.bind(this, function() {
-        xmpp.getConnection().then(angular.bind(this, function(conn) {
-          this.init(conn);
-        }));
-      }));
-      xmpp.getConnection().then(angular.bind(this, function(conn) {
-        this.init(conn);
+    _conn_init: function() {
+      xmpp.getConnection()
+      .then(angular.bind(this, function(conn) {
+        this.onConnection(conn);
+      }))
+      .finally(angular.bind(this, function() {
+        this._conn_init();
       }));
     },
 
-    init: function() {
+    _conn_deinit: function() {
+      xmpp.getDisconnection()
+      .then(angular.bind(this, function() {
+        this.onDisconnection();
+      }))
+      .finally(angular.bind(this, function() {
+        this._conn_deinit();
+      }));
+    },
+
+    onConnection: function() {
       // can be overriden by service
+      // run when the xmpp connection is connected
+      return true;
+    },
+
+    onDisconnection: function() {
+      // can be overriden by service
+      // run when the xmpp connection is disconnected
       return true;
     }
+
   };
 
   return {
     create: function() {
       var service = Object.create(XMPPService.prototype);
-      service.constructor();
+      service._conn_init();
+      service._conn_deinit();
       return service;
     }
   };
