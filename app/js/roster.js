@@ -5,29 +5,20 @@ angular.module('warmonic.lib.xmpp.roster', [
   'warmonic.lib.logger'
 ])
 
-.factory('roster', ['$q', '$timeout', 'xmpp', 'xmppSession', 'logger', function($q, $timeout, xmpp, xmppSession, logger) {
+.factory('roster', ['$q', '$timeout', 'xmpp', 'xmppSession', 'xmppService', 'logger', function($q, $timeout, xmpp, xmppSession, xmppService, logger) {
 
-  var roster = {
-
-    _init: function() {
-      // roster init
-      xmpp.getConnection().then(angular.bind(this, function(conn) {
-        // callback for presence updates
-        conn.roster.registerCallback(angular.bind(this, this.updateItems));
-        logger.debug("registered roster callback");
-        if (xmppSession.data.rosterItems) {
-          logger.debug("loading previous roster");
-          conn.roster.items = xmppSession.data.rosterItems;
-        }
-        else {
-          conn.roster.get(angular.bind(this, this.onRoster));
-        }
-      }));
-
-      xmpp.getDisconnection().then(angular.bind(this, function() {
-        // listen to new promises
-        this._init();
-      }));
+  var roster = xmppService.create();
+  angular.extend(roster, {
+    init: function(conn) {
+      conn.roster.registerCallback(angular.bind(this, this.updateItems));
+      logger.debug("registered roster callback");
+      if (xmppSession.data.rosterItems) {
+        logger.debug("loading previous roster");
+        conn.roster.items = xmppSession.data.rosterItems;
+      }
+      else {
+        conn.roster.get(angular.bind(this, this.onRoster));
+      }
     },
 
     items: function() {
@@ -72,9 +63,8 @@ angular.module('warmonic.lib.xmpp.roster', [
       if (jid)
         xmpp.send($pres({to: jid, type: "unsubscribe"}));
     }
-  };
+  });
 
-  roster._init();
   return roster;
 
 }])

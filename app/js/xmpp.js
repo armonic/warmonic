@@ -215,4 +215,36 @@ angular.module('warmonic.lib.xmpp', [
     });
   };
 
-}]);
+}])
+
+// template to create xmpp services
+.factory('xmppService', function(xmpp) {
+
+  var XMPPService = Object.create(Object.prototype);
+  XMPPService.prototype = {
+    constructor: function() {
+      xmpp.getDisconnection().then(angular.bind(this, function() {
+        xmpp.getConnection().then(angular.bind(this, function(conn) {
+          this.init(conn);
+        }));
+      }));
+      xmpp.getConnection().then(angular.bind(this, function(conn) {
+        this.init(conn);
+      }));
+    },
+
+    init: function() {
+      // can be overriden by service
+      return true;
+    }
+  };
+
+  return {
+    create: function() {
+      var service = Object.create(XMPPService.prototype);
+      service.constructor();
+      return service;
+    }
+  };
+
+});
