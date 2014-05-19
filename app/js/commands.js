@@ -41,10 +41,10 @@ angular.module('warmonic.lib.xmpp.commands', [
         var deferResult = $q.defer();
         cmd.next({
           success: function(result, cmd) {
-            deferResult.resolve(result);
+            deferResult.resolve(cmd);
           },
           error: function(error, cmd) {
-            deferResult.reject(error);
+            deferResult.reject(cmd);
           },
           responseForm: form
         });
@@ -55,10 +55,10 @@ angular.module('warmonic.lib.xmpp.commands', [
         var deferResult = $q.defer();
         cmd.prev({
           success: function(result, cmd) {
-            deferResult.resolve(result);
+            deferResult.resolve(cmd);
           },
           error: function(error, cmd) {
-            deferResult.reject(error);
+            deferResult.reject(cmd);
           }
         });
         return deferResult.promise;
