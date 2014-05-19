@@ -15,8 +15,8 @@ angular.module('warmonic.build', [
 			xmpp._connection.rawOutput=this.rawOutput;
 		      }
 		      //----------------------------
-  this.treedata=[];
-   this.treedata.push(new angularTreeview.Node("Varnish","0","",[]));
+  this.children=[];
+   this.children.push(new angularTreeview.Node("Varnish","0","",[]));
      angularTreeview.Nodecurent
     .addchildren("WordPress","0-0","",[])
     .addchildren("OwnCloud","O-0-0","input",[]).prec()
@@ -166,7 +166,7 @@ angular.module("angularTreeview",[])
   return TREENAME;
 })
 .controller('treeCtrl',
-  function($scope,angularTreeview){
+  function($scope,angularTreeview,$http, $templateCache){
     $scope.selectednode=null;
     $scope.changevalue=function(type,id,val,select,node){
       if(!node) return;
@@ -174,7 +174,7 @@ angular.module("angularTreeview",[])
       node.valselection=select
       angularTreeview.Selectednode=$scope.currentNode
     }
-    
+ 
     $scope.blurvalue=function(type,id,val,select,node){
        if(!node) return;
       node.valselection=select
@@ -190,143 +190,41 @@ angular.module("angularTreeview",[])
     }
   }
 )
-.directive("treeModel",function($compile){
+
+.directive("treeModel",function($compile,$http, $templateCache){
   return{
     restrict:"A",
     link:function(scope,element,attrs){
-      var treeModel=attrs.treeModel,
-      label=attrs.nodeLabel||"label",
-      controle=attrs.nodecontrole||"controle",
-      id=attrs.nodeId||"id",
-      valselection=attrs.nodeselect||"select",
-      information=attrs.nodeinfos||"information",
-      tabval=attrs.nodetabval||"tabval",
-      intitule=attrs.nodeintitule||"intitule",
-      conteneur=attrs.nodeconteneur||"conteneur",
-      affichecontrole=attrs.nodeaffichecontrole||"affichecontrole",
-      affichesubmit=attrs.nodeaffichesubmit||"affichesubmit",
-      typecontrole=attrs.nodetypecontrole||"typecontrole",//input or select or checkbox or radioyesno
-      descriptif=attrs.nodedecriptif||"descriptif",
-      children=attrs.nodechildren||"children",
-      disabled     = ' ng-disabled="!node.selected" ',
-      selection    = ' ng-model="node.'+ valselection +'" ',
-      showtype=function(typectl){
-	return ' ng-show="node.' + typecontrole + '==\''+typectl+'\'" ';
-      },
-      
-      sumitbutton=function(){
-	return '<a ng-show="!!(node.'+affichesubmit+'&&node.selected)" ng-disabled="!node.selected" href="#" ng-click="process(node.' + typecontrole + ',node.' + id + ',node.' + tabval + ',node.' + valselection+',node)"><img src="img/process.png"></a>';
-      },
-      
-      change=' ng-change="changevalue(node.' +typecontrole+',node.'+id+',node.'+tabval+',node.'+valselection+',node)" ',
-      init=' ng-init="node.' + valselection + '=node.'+tabval+'[0]" ',
-      blur = ' ng-blur="blurvalue(node.'+typecontrole+',node.'+id+',node.'+ tabval+',node.'+valselection+')" ',
-      
-      template=
-	'<ul>'+
-	  '<li data-ng-repeat="node in '+treeModel+'">'+
-	    '<i class="collapsed" data-ng-show="node.'+children+'.length && node.collapsed"'+
-	      ' data-ng-click="selectNodeHead(node, $event)">'+
-	    '</i>'+
-	    '<i class="expanded" data-ng-show="node.'+children+'.length && !node.collapsed"'+
-	      ' data-ng-click="selectNodeHead(node, $event)">'+
-	    '</i>'+
-	    '<i class="normal" data-ng-hide="node.'+children+'.length"></i>'+
-	    
-	    '<span data-ng-class="node.selected" data-ng-click="selectNodeLabel(node, $event)">'+
-	      '{{node.'+label+'}}'+
-	    '</span>'+
-      
-	    '<span ng-show="!!node.'+affichecontrole+'">'+
-	      '<b>{{node.'+intitule+'}} </b> :'+
-	      
-	      '<span  class="centerradio" '+ showtype("input")+'>'+
-		'<input '+ disabled+ selection+blur+change+init+' id={{id}} type="text">'+
-		sumitbutton()+
-	      '</span>'+
-	      
-	      '<span  '+ showtype("email")+'>'+
-		'<input '+ disabled+selection+blur+change+init+' id={{id}} type="email">'+
-		sumitbutton()+
-	      '</span>'+
-	      
-	      '<span '+ showtype("password")+'>'+
-	      '<input '+disabled+selection+blur+change+init+' id={{id}} type="password" >'+
-		sumitbutton()+
-	      '</span>'+
-	      
-	      '<span '+showtype("number")+'>'+
-		'<input '+disabled+selection+blur+change+init+' id={{id}} type="number">'+
-		sumitbutton()+
-	      '</span>'+
-	      
-	      '<span '+showtype("range")+'>'+
-		'<input '+disabled+selection+blur+change+ 'min="{{node.'+tabval+'[0]}}" max="{{node.'+tabval+'[1]}}" id={{id}} type="range" >'+
-		sumitbutton()+
-	      '</span>'+
-	      
-	      '<span '+showtype("checkbox")+'>'+
-		'<input  '+disabled+selection+change+'id={{id}} type="checkbox" value="node.'+tabval+'"/>'+
-		sumitbutton()+
-	      '</span>'+
-	    
-	      '<span '+showtype("select")+'>'+
-		'<select  '+disabled+selection+change+'>'+
-		  '<option ng-repeat="val in node.'+ tabval +' ">{{val}}</option>'+
-		'</select>'+
-		sumitbutton()+
-	      '</span>'+
-		
-	      '<span class="centerradio" '+showtype("radioyesno")+'>'+ 
-		'<span >'+
-		  '<span  ng-repeat="val in node.'+tabval+'">'+
-		    '<input '+disabled+' type="radio" '+selection+'value="{{val}}"'+
-		    change+' name="{{id}}">{{val}}'+
-		  '</span>'+
-		'</span>'+
-		sumitbutton()+
-	      '</span>'+
-	      
-	    '</span>'+
-	    
-	    '<div data-ng-hide="node.collapsed" data-tree-model="node.'+children+'" data-node-id='+id+
-	      ' data-node-controle='+controle+
-	      ' data-node-select='+valselection+
-	      ' data-node-infos='+information+
-	      ' data-node-tabval='+tabval+
-	      ' data-node-intitule='+intitule+
-	      ' data-node-conteneur='+conteneur+
-	      ' data-node-affichecontrole='+affichecontrole +
-	      ' data-node-affichesubmit='+affichesubmit +
-	      ' data-node-type='+typecontrole +
-	      ' data-node-decriptif='+descriptif+
-	      ' data-node-label='+label+
-	      ' data-node-children='+children+'>'+
-	    '</div>'+
-	  '</li>'+
-	'</ul>';
-      treeModel&&treeModel.length&&(attrs.angularTreeview?(scope.$watch(treeModel,function(oldValue,newValue){// This surveille treeModel newValuescope, oldValuescpe
-	
-	  element.empty().html($compile(template)(scope))
-	},!1),
-	scope.selectNodeHead=scope.selectNodeHead||function(scope,event){
-	  event.stopPropagation&&event.stopPropagation();
-	  event.preventDefault&&event.preventDefault();
-	  event.cancelBubble=!0;
-	  event.returnValue=!1;
-	  scope.collapsed=!scope.collapsed;
-	},
-	scope.selectNodeLabel=scope.selectNodeLabel||function(attrs,event){
-	  event.stopPropagation&&event.stopPropagation();
-	  event.preventDefault&&event.preventDefault();
-	  event.cancelBubble=!0;
-	  event.returnValue=!1;
-	  scope.currentNode&&scope.currentNode.selected&&(scope.currentNode.selected=void 0);
-	  attrs.selected="selected";
-	  attrs.activate="activate";
-	  scope.currentNode=attrs
-	}
-      ):element.html($compile(template)(scope)))
+      var k=''
+      var treeModel=attrs.treeModel;
+      var loader = $http.get('partials/_tree.html', {cache: $templateCache});
+      var promise = loader.success(function(template) {
+      k=eval(template)
+	treeModel&&treeModel.length&&
+	( attrs.angularTreeview?(scope.	$watch(treeModel,function(oldValue,newValue){
+	      element.empty().html($compile(k)(scope))
+	    },!1),
+	    scope.selectNodeHead=scope.selectNodeHead||function(scope,event){
+	      event.stopPropagation&&event.stopPropagation();
+	      event.preventDefault&&event.preventDefault();
+	      event.cancelBubble=!0;
+	      event.returnValue=!1;
+	      scope.collapsed=!scope.collapsed;
+	    },
+	    scope.selectNodeLabel=scope.selectNodeLabel||function(attrs,event){
+	      event.stopPropagation&&event.stopPropagation();
+	      event.preventDefault&&event.preventDefault();
+	      event.cancelBubble=!0;
+	      event.returnValue=!1;
+	      scope.currentNode&&scope.currentNode.selected&&(scope.currentNode.selected=void 0);
+	      attrs.selected="selected";
+	      attrs.activate="activate";
+	      scope.currentNode=attrs
+	    }
+	  ):element.html($compile(k)(scope)))
+	}).then(function (response) {
+
+      });
     }//end link function
   }//endreturn
 })//end directive

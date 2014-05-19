@@ -1,0 +1,80 @@
+ '<ul>'+
+	  '<li data-ng-repeat="node in '+attrs.treeModel+'">'+
+	    '<i class="collapsed" data-ng-show="node.children.length && node.collapsed"'+
+	      ' data-ng-click="selectNodeHead(node, $event)">'+
+	    '</i>'+
+	    '<i class="expanded" data-ng-show="node.children.length && !node.collapsed"'+
+	      ' data-ng-click="selectNodeHead(node, $event)">'+
+	    '</i>'+
+	    '<i class="normal" data-ng-hide="node.children.length"></i>'+
+	    
+	    '<span data-ng-class="node.selected" data-ng-click="selectNodeLabel(node, $event)">'+
+	      '{{node.label}}'+
+	    '</span>'+
+
+	    '<span ng-show="!!node.affichecontrole">'+
+	      '<b>{{node.intitule}} </b> :'+
+	      	      '<span  class="centerradio"  ng-show="node.typecontrole ==\'input\'" >'+
+		'<input  ng-disabled="!node.selected" ng-model="node.select" ng-blur ="blurvalue(node.typecontrole,node.id,node.tabval,node.select)"  ng-change ="changevalue(node.typecontrole,node.id,node.tabval,node.select,node)"   ng-init ="node.select=node.tabval[0]" id="{{id}}" type="text">'+
+		'<a ng-show="!!(node.affichesubmit&&node.selected)" ng-disabled="!node.selected" href="#" ng-click="process(node.typecontrole,node.id,node.tabval,node.select,node)"><img src="img/process.png"></a>'+
+	      '</span>'+
+	      
+	      '<span   ng-show="node.typecontrole ==\'email\'" >'+
+		'<input ng-disabled="!node.selected" ng-model="node.select" ng-blur ="blurvalue(node.typecontrole,node.id,node.tabval,node.select)" ng-change ="changevalue(node.typecontrole,node.id,node.tabval,node.select,node)" ng-init ="node.select=node.tabval[0]"   id="{{id}}" type="email">'+
+		'<a ng-show="!!(node.affichesubmit&&node.selected)" ng-disabled="!node.selected" href="#" ng-click="process(node.typecontrole,node.id,node.tabval,node.select,node)"><img src="img/process.png"></a>'+
+	      '</span>'+
+	      
+	      '<span ng-show="node.typecontrole ==\'password\'" >'+
+	      '<input ng-disabled="!node.selected"ng-model="node.select" ng-blur ="blurvalue(node.typecontrole,node.id,node.tabval,node.select)"  ng-change ="changevalue(node.typecontrole,node.id,node.tabval,node.select,node)" ng-init ="node.select=node.tabval[0]"  id="{{id}}" type="password" >'+
+		'<a ng-show="!!(node.affichesubmit&&node.selected)" ng-disabled="!node.selected" href="#" ng-click="process(node.typecontrole,node.id,node.tabval,node.select,node)"><img src="img/process.png"></a>'+
+	      '</span>'+
+	      
+	      '<span ng-show="node.typecontrole ==\'number\'" >'+
+		'<input ng-disabled="!node.selected" ng-model="node.select"  ng-blur ="blurvalue(node.typecontrole,node.id,node.tabval,node.select)" ng-change ="changevalue(node.typecontrole,node.id,node.tabval,node.select,node)" ng-init ="node.select=node.tabval[0]" id="{{id}}" type="number">'+
+		'<a ng-show="!!(node.affichesubmit&&node.selected)" ng-disabled="!node.selected" href="#" ng-click="process(node.typecontrole,node.id,node.tabval,node.select,node)"><img src="img/process.png"></a>'+
+	      '</span>'+
+	      
+	      '<span ng-show="node.typecontrole ==\'range\'" >'+
+		'<input  ng-disabled="!node.selected"  ng-model="node.select"   ng-blur ="blurvalue(node.typecontrole,node.id,node.tabval,node.select)"   ng-change ="changevalue(node.typecontrole,node.id,node.tabval,node.select,node)"  min="{{node.tabval[0]}}" max="{{node.tabval[1]}}" id="{{id}}" type="range" >'+
+		'<a ng-show="!!(node.affichesubmit&&node.selected)" ng-disabled="!node.selected" href="#" ng-click="process(node.typecontrole,node.id,node.tabval,node.select,node)"><img src="img/process.png"></a>'+
+	      '</span>'+
+	      
+	      '<span ng-show="node.typecontrole ==\'checkbox\'" >'+
+		'<input ng-disabled="!node.selected" ng-model="node.select" ng-change ="changevalue(node.typecontrole,node.id,node.tabval,node.select,node)" id="{{id}}" type="checkbox" value="node.tabval"/>'+
+		'<a ng-show="!!(node.affichesubmit&&node.selected)" ng-disabled="!node.selected" href="#" ng-click="process(node.typecontrole,node.id,node.tabval,node.select,node)"><img src="img/process.png"></a>'+
+	      '</span>'+
+	    
+	      '<span  ng-show="node.typecontrole ==\'select\'" >'+
+		'<select  ng-disabled="!node.selected" ng-model="node.select" ng-change="changevalue(node.typecontrole,node.id,node.tabval,node.select,node)" >'+
+		  '<option ng-repeat="val in node.tabval ">{{val}}</option>'+
+		'</select>'+
+		'<a ng-show="!!(node.affichesubmit&&node.selected)" ng-disabled="!node.selected" href="#" ng-click="process(node.typecontrole,node.id,node.tabval,node.select,node)"><img src="img/process.png"></a>'+
+	      '</span>'+
+		
+	      '<span class="centerradio"  ng-show="node.typecontrole ==\'radioyesno\'" >'+ 
+		'<span >'+
+		  '<span  ng-repeat="val in node.tabval">'+
+		    '<input ng-disabled="!node.selected" type="radio"  ng-model="node.select" value="{{val}}"'+
+		     'ng-change="changevalue(node.typecontrole,node.id,node.tabval,node.select,node)"' +' name="{{id}}">{{val}}'+
+		  '</span>'+
+		'</span>'+
+		'<a ng-show="!!(node.affichesubmit&&node.selected)" ng-disabled="!node.selected" href="#" ng-click="process(node.typecontrole,node.id,node.tabval,node.select,node)"><img src="img/process.png"></a>'+
+	      '</span>'+
+	    '</span>'+
+	    
+	    '<div data-ng-hide="node.collapsed" data-tree-model="node.children" data-node-id=id '+
+	      ' data-node-controle= controle '+
+	      ' data-node-select= valselection '+
+	      ' data-node-infos= information '+
+	      ' data-node-tabval= tabval '+
+	      ' data-node-intitule=intitule '+
+	      ' data-node-conteneur=conteneur '+
+	      ' data-node-affichecontrole=affichecontrole ' +
+	      ' data-node-affichesubmit=affichesubmit ' +
+	      ' data-node-type=typecontrole '+
+	      ' data-node-decriptif=descriptif '+
+	      ' data-node-label=label '+
+	      ' data-node-children=children>'+
+	    '</div>'+
+	  '</li>'+
+	'</ul>';
