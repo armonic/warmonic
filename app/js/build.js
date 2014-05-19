@@ -22,7 +22,14 @@ angular.module('warmonic.build', [
     .addchildren("OwnCloud","O-0-0","input",[]).prec()
     .addchildren("Add-Db","3-1-1-2-4","select",["Manuel","Mysql","post"])
     .addchildren("Data","3-1-1-2-4","",[])
-    .addchildren("Dbname","3-1-1-2-6","input",["dbname"]).prec()
+    
+    .addchildren("Dbname","3-1-1-2-6","input",["dbname"])
+      .Set_attrs("affichecontrole",false)
+      .Set_attrs("affichesubmit",true);
+    console.log(angularTreeview.Nodecurent.Get_attrs("affichecontrole"));
+    console.log(angularTreeview.Nodecurent.Get_attrs("affichesubmit"));
+      
+    angularTreeview.Nodecurent.prec()
     .addchildren("Dbpwd","3-1-1-2-6","input",["pwd"]).prec()
     .addchildren("Dbuser","3-1-1-2-6","input",["user"]).prec().prec()
     .addchildren("Auth","3-1-1-2-4","",[])
@@ -34,19 +41,17 @@ angular.module('warmonic.build', [
   this.provide = $stateParams.provide;
        
 // build provide
-//var cmd = commands.create('mss-master@im.aeolus.org/master', this.provide),
+//   s.create('mss-master@im.aeolus.org/master', this.provide),
 //   self = this;
-  //commands.execute(cmd).then(
-//       function(cmd) {
-// 	var result = cmd.form.toJSON();
-// 	result.items.forEach(function(item) {
-// 	  var provide = {
-// 	    'xpath': item.fields[0].values[0],
-// 	    'tags': item.fields[1].values[0].split(','),
-// 	    'label': item.fields[2].values[0],
-// 	    'desc': item.fields[3].values[0]
-// 	  };
-}]);
+//   commands.execute(cmd).then(
+//     function(cmd) {
+//       var result = cmd.form.toJSON();
+//      // process_tree(result);
+// 
+//   
+//     });
+  
+  }]);
 //--------------------------------------------
 // code adapter from 
 // https://github.com/eu81273/angular.treeview
@@ -85,9 +90,9 @@ angular.module("angularTreeview",[])
 	this.parentnode = parentobj;
       else 
 	this.parentnode = TREENAME.Noderoot;
-      
+
       this.attrs=function(){
-	array_attribut=[]
+	var array_attribut=[];
         array_attribut.push({'label':this.label})
 	array_attribut.push({'typecontrole':this.typecontrole})
 	array_attribut.push({'tabval':this.tabval})
@@ -102,7 +107,39 @@ angular.module("angularTreeview",[])
 	array_attribut.push({'parentnode':this.parentnode})
 	return array_attribut;
       }
-	  
+      
+      this.Set_attrs=function(attribut,valeur){
+	var array_attribut=this.attrs();
+	angular.forEach(array_attribut, function(items){
+	  for(var p in items)
+	  {
+	    if(attribut==p) {
+	      TREENAME.Nodecurent[p]=valeur;
+	      return TREENAME.Nodecurent;
+	    }
+	  }
+	});
+	return this;
+      }
+      
+      this.Get_list_key_attrs=function(){
+	return ['label','typecontrole','tabval','id','affichesubmit','controle','valselection','affichecontrole','information','intitule','children','parentnode'];
+      }
+      
+      this.Get_attrs=function(attribut){
+	var array_attribut=this.attrs(),
+	p="",k='';
+	angular.forEach(array_attribut, function(items){
+	  for(p in items){
+	    if(attribut==p) {
+	      k=TREENAME.Nodecurent[p];
+	      return k;
+	    }
+	  }
+	});
+	return k
+      }
+      
       this.addchildrennode=function(node){
 	TREENAME.Nodecurent=node;
 	node.parentnode=this;
@@ -176,12 +213,14 @@ angular.module("angularTreeview",[])
     }
  
     $scope.blurvalue=function(type,id,val,select,node){
+      console.log("jjjjjjjjjjjjjjjjjjjjjjjjj")
        if(!node) return;
       node.valselection=select
        angularTreeview.Selectednode=$scope.currentNode
     }
     
     $scope.process=function(type,id,val,select,node){
+       console.log("ppppppppppppppppppppppppppppppppppppp")
       if(!node) return;
       node.valselection=select
       if(node.valselection!="")
