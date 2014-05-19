@@ -147,7 +147,6 @@ angular.module('warmonic.lib.xmpp', [
 
     getDisconnection: function() {
       return deferredDisconnection.promise.finally(function(promise) {
-        console.log("recreate disconnect");
         deferredDisconnection = $q.defer();
         return promise;
       });
@@ -155,7 +154,6 @@ angular.module('warmonic.lib.xmpp', [
 
     getConnection: function() {
       return deferredConnection.promise.finally(function(promise) {
-        console.log("recreate connect");
         deferredConnection = $q.defer();
         return promise;
       });
