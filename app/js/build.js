@@ -17,28 +17,35 @@ angular.module('warmonic.build', [
                   //----------------------------
   this.children=[];
   this.children.push(new angularTreeview.Node("Varnish","0","",[]));
+  
+  angularTreeview.Nodecurent.add_node_id("3-1-1-2-4");
+  
   angularTreeview.Nodecurent
   .addchildren("WordPress","0-0","",[])
-  .addchildren("OwnCloud","O-0-0","input",[]).prec()
-  .addchildren("Add-Db","3-1-1-2-4","select",["Manuel","Mysql","post"])
+  .addchildren("OwnCloud","3-1-1-2","input",[]).prec()
+  .addchildren("Add-Db","3-1-1-2-8","select",["Manuel","Mysql","post"])
   .addchildren("Data","3-1-1-2-4","",[])
   .addchildren("Dbname","3-1-1-2-6","input",["dbname"])
     .Set_attrs("affichecontrole",false)
-    .Set_attrs("affichesubmit",true);
+    .Set_attrs("affichesubmit",true)
+   
+    .add_children_id("3-1-1-2-4","dedede","3-1-1-2-7","input",["dededede"]);
+  
   console.log(angularTreeview.Nodecurent.Get_attrs("affichecontrole"));
   console.log(angularTreeview.Nodecurent.Get_attrs("affichesubmit"));
     
   angularTreeview.Nodecurent.prec()
-  .addchildren("Dbpwd","3-1-1-2-6","input",["pwd"]).prec()
-  .addchildren("Dbuser","3-1-1-2-6","input",["user"]).prec().prec()
+  .addchildren("Dbpwd","3-4","input",["pwd"]).prec()
+  .addchildren("Dbuser","3-4","input",["user"]).prec().prec()
   .addchildren("Auth","3-1-1-2-4","",[])
-  .addchildren("Pwd","3-1-1-2-6","input",["pwd"]).prec().prec()
+  .addchildren("Pwd","3-4","input",["pwd"]).prec().prec()
   .addchildren("Conf","3-1-1-2-4","",[])
-  .addchildren("Cport","3-1-1-2-6","input",["5300"]).prec().prec().prec()
+  .addchildren("Cport","3-4","input",["5300"]).prec().prec().prec()
   .addchildren("ADD-Serveur-Web","3-1-1-2-4","select",["Manuel","Apache"])
-  .addchildren("Root-directory","3-1-1-2-6","input",["/var/www"])
+  .addchildren("Root-directory","3-4","input",["/var/www"]).affiche_arbre()
   this.provide = $stateParams.provide;
-       
+ 
+  console.log(angularTreeview.Nodecurent.search_attribut('id',"3-1-1-2-6").id)
 // build provide
 //   s.create('mss-master@im.aeolus.org/master', this.provide),
 //   self = this;
@@ -57,8 +64,8 @@ angular.module('warmonic.build', [
 //--------------------------------------------
 
 
-angular.module("angularTreeview",[])
-.factory('angularTreeview', function() {
+angular.module("angularTreeview",['warmonic.lib.logger'])
+.factory('angularTreeview', ['logger',function(logger) {
   var TREENAME = {
     valtree:'',
     Noderoot:null,
@@ -66,7 +73,8 @@ angular.module("angularTreeview",[])
     Selectednode:null,
     // objet node
     Node:function(label,id,typecontrole,tabval,parentobj){
-      this.label=label;
+       this.children = [];
+       this.label=label;
       this.typecontrole=typecontrole;
       this.tabval=tabval;
       this.id = id;
@@ -76,7 +84,7 @@ angular.module("angularTreeview",[])
       this.affichecontrole=true;
       this.information ="";
       this.intitule="";
-      this.children = [];
+     
       this.parentnode=null;
       if(typecontrole=="" || typecontrole==null ) {
         this.typecontrole="";
@@ -158,7 +166,9 @@ angular.module("angularTreeview",[])
         this.parentnode.children.push(node);
         return node;
       }
-        
+        this.getrootnode=function(){
+          return TREENAME.Noderoot;
+        }
       this.addbrother=function(label,id,typecontrole,tabval){
         var a=new TREENAME.Node(label,id,typecontrole,tabval,this.parentnode);
         return this.addbrothernode(a);
@@ -167,41 +177,75 @@ angular.module("angularTreeview",[])
       this.prec=function(){
         return this.parentnode;
       }
-      
-      this.search=function(id,valeur){
-        this.a=null;
-        return TREENAME.search_id(TREENAME.Noderoot,id,valeur)
-      }
-    },// end node object
+   
+     this.affiche_arbre=function(){
+       this.niveau=0,self=this
+       this.affiche=function(obj,niveau){
+         var niveaua=niveau;
+         var str=''
+         for(var i=0;i<=niveaua;i++) str+=' ';
+         console.log(str+obj.label+":"+obj.typecontrole+":"+obj.id);
+         angular.forEach(obj.children, function(value){
+            self.affiche(value,niveaua+3);
+         })
+       }
+      this.affiche(TREENAME.Noderoot,0)
+    }
     
-    search_id:function(obj,namesearch,valeur){
-      this.a=null;
-      this.namesearch=namesearch;
-      this.valeur=valeur;
-      parentobj=this;
-      console.log(obj[this.namesearch])
+    this.search_attribut=function(nameattribut,valattribut){
+      self=this;
+      this.objtrouve=null;
       this._search=function(obj){
-        if(obj[this.namesearch] == this.valeur){
-          this.a = obj;
-          return this.a;
-        }else
-        {
-          angular.forEach(obj.children, function(value){
-            this.a=parentobj._search(value);
-            if(this.a != null) {
-              return this.a;
-            }
-          });
+        if(self.objtrouve==null) { 
+          if(obj[nameattribut] == valattribut) {
+            self.objtrouve = obj;
+          }else
+          {
+            angular.forEach(obj.children, function(value){
+              if(self.objtrouve==null)self._search(value);          
+            })
+          }
         }
-        return this.a;
-      };
-      this.a = this._search(obj);
-      if(this.a == null ) this.a = TREENAME.Nodecurent;
-      return this.a;
-    },
+      }
+      this._search(TREENAME.Noderoot);
+      return this.objtrouve;
+    }
+    
+    this.search_id=function(id){
+      return this.search_attribut("id",id)
+    }
+    
+    this.add_children_id=function(id_name,label,id,typecontrole,tabval){
+    // search node for include node
+      var children_ordre,node_niveau=id_name
+      var n = id_name.lastIndexOf(":"); 
+      n==-1?children_ordre=0:(children_ordre=parseInt(id_name.slice(n+1)),node_niveau=id_name.slice(0,n))
+      var n = id_name.lastIndexOf("-");
+      var findnoeud =  this.search_id(node_niveau);
+      console.log("findnoeud" + findnoeud)
+      if(findnoeud!=null)
+        return findnoeud.addchildren(label,id,typecontrole,tabval)
+        else
+          return TREENAME.Nodecurent;
+    }
+      
+    this.add_node_id=function(id_name,node){
+      var children_ordre,node_niveau=id_name
+      var n = id_name.lastIndexOf(":"); 
+      n==-1?children_ordre=0:(children_ordre=parseInt(id_name.slice(n+1)),node_niveau=id_name.slice(0,n))
+      var n = id_name.lastIndexOf("-");
+      var findnoeud =  this.search_id(node_niveau);
+      console.log("findnoeud" + findnoeud)
+      if(findnoeud != null)
+        return findnoeud.addchildrennode(node)
+        else
+          return TREENAME.Nodecurent;
+    }
+    },// end node object
   };//TREENAME
   return TREENAME;
-})
+}])
+
 .controller('treeCtrl',
   function($scope,angularTreeview,$http, $templateCache){
     $scope.selectednode=null;
