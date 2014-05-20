@@ -7,37 +7,36 @@ angular.module('warmonic.build', [
 ])
 
 .controller('buildCtrl', ['$timeout', '$state', '$stateParams', 'logger', 'xmpp', 'commands','angularTreeview', function($timeout, $state, $stateParams, logger, xmpp, commands, angularTreeview) {
-		      //-----a supprimer-----------
-		      this.rawInput=function(data) { console.log('RECV: ' + data);};
-		      this.rawOutput=function(data) { console.log('SENT: ' + data);};
-		      if (xmpp._connection){
-			xmpp._connection.rawInput=this.rawInput;
-			xmpp._connection.rawOutput=this.rawOutput;
-		      }
-		      //----------------------------
+                  //-----a supprimer-----------
+                  this.rawInput=function(data) { console.log('RECV: ' + data);};
+                  this.rawOutput=function(data) { console.log('SENT: ' + data);};
+                  if (xmpp._connection){
+                    xmpp._connection.rawInput=this.rawInput;
+                    xmpp._connection.rawOutput=this.rawOutput;
+                  }
+                  //----------------------------
   this.children=[];
-   this.children.push(new angularTreeview.Node("Varnish","0","",[]));
-     angularTreeview.Nodecurent
-    .addchildren("WordPress","0-0","",[])
-    .addchildren("OwnCloud","O-0-0","input",[]).prec()
-    .addchildren("Add-Db","3-1-1-2-4","select",["Manuel","Mysql","post"])
-    .addchildren("Data","3-1-1-2-4","",[])
+  this.children.push(new angularTreeview.Node("Varnish","0","",[]));
+  angularTreeview.Nodecurent
+  .addchildren("WordPress","0-0","",[])
+  .addchildren("OwnCloud","O-0-0","input",[]).prec()
+  .addchildren("Add-Db","3-1-1-2-4","select",["Manuel","Mysql","post"])
+  .addchildren("Data","3-1-1-2-4","",[])
+  .addchildren("Dbname","3-1-1-2-6","input",["dbname"])
+    .Set_attrs("affichecontrole",false)
+    .Set_attrs("affichesubmit",true);
+  console.log(angularTreeview.Nodecurent.Get_attrs("affichecontrole"));
+  console.log(angularTreeview.Nodecurent.Get_attrs("affichesubmit"));
     
-    .addchildren("Dbname","3-1-1-2-6","input",["dbname"])
-      .Set_attrs("affichecontrole",false)
-      .Set_attrs("affichesubmit",true);
-    console.log(angularTreeview.Nodecurent.Get_attrs("affichecontrole"));
-    console.log(angularTreeview.Nodecurent.Get_attrs("affichesubmit"));
-      
-    angularTreeview.Nodecurent.prec()
-    .addchildren("Dbpwd","3-1-1-2-6","input",["pwd"]).prec()
-    .addchildren("Dbuser","3-1-1-2-6","input",["user"]).prec().prec()
-    .addchildren("Auth","3-1-1-2-4","",[])
-    .addchildren("Pwd","3-1-1-2-6","input",["pwd"]).prec().prec()
-    .addchildren("Conf","3-1-1-2-4","",[])
-    .addchildren("Cport","3-1-1-2-6","input",["5300"]).prec().prec().prec()
-    .addchildren("ADD-Serveur-Web","3-1-1-2-4","select",["Manuel","Apache"])
-    .addchildren("Root-directory","3-1-1-2-6","input",["/var/www"])
+  angularTreeview.Nodecurent.prec()
+  .addchildren("Dbpwd","3-1-1-2-6","input",["pwd"]).prec()
+  .addchildren("Dbuser","3-1-1-2-6","input",["user"]).prec().prec()
+  .addchildren("Auth","3-1-1-2-4","",[])
+  .addchildren("Pwd","3-1-1-2-6","input",["pwd"]).prec().prec()
+  .addchildren("Conf","3-1-1-2-4","",[])
+  .addchildren("Cport","3-1-1-2-6","input",["5300"]).prec().prec().prec()
+  .addchildren("ADD-Serveur-Web","3-1-1-2-4","select",["Manuel","Apache"])
+  .addchildren("Root-directory","3-1-1-2-6","input",["/var/www"])
   this.provide = $stateParams.provide;
        
 // build provide
@@ -80,100 +79,101 @@ angular.module("angularTreeview",[])
       this.children = [];
       this.parentnode=null;
       if(typecontrole=="" || typecontrole==null ) {
-	this.typecontrole="";
-	this.affichesubmit=false;
-	this.affichecontrole=false;
+        this.typecontrole="";
+        this.affichesubmit=false;
+        this.affichecontrole=false;
       }
       if(TREENAME.Nodecurent== null) TREENAME.Nodecurent = this;
       if(TREENAME.Noderoot== null)   TREENAME.Noderoot   = this;
       if(parentobj != null)
-	this.parentnode = parentobj;
+        this.parentnode = parentobj;
       else 
-	this.parentnode = TREENAME.Noderoot;
+        this.parentnode = TREENAME.Noderoot;
 
       this.attrs=function(){
-	var array_attribut=[];
+        var array_attribut=[];
         array_attribut.push({'label':this.label})
-	array_attribut.push({'typecontrole':this.typecontrole})
-	array_attribut.push({'tabval':this.tabval})
-	array_attribut.push({'id':this.id})
-	array_attribut.push({'affichesubmit':this.affichesubmit})
-	array_attribut.push({'controle':this.controle})
-	array_attribut.push({'valselection':this.valselection})
-	array_attribut.push({'affichecontrole':this.affichecontrole})
-	array_attribut.push({'information':this.information})
-	array_attribut.push({'intitule':this.intitule})
-	array_attribut.push({'children':this.children})
-	array_attribut.push({'parentnode':this.parentnode})
-	return array_attribut;
+        array_attribut.push({'typecontrole':this.typecontrole})
+        array_attribut.push({'tabval':this.tabval})
+        array_attribut.push({'id':this.id})
+        array_attribut.push({'affichesubmit':this.affichesubmit})
+        array_attribut.push({'controle':this.controle})
+        array_attribut.push({'valselection':this.valselection})
+        array_attribut.push({'affichecontrole':this.affichecontrole})
+        array_attribut.push({'information':this.information})
+        array_attribut.push({'intitule':this.intitule})
+        array_attribut.push({'children':this.children})
+        array_attribut.push({'parentnode':this.parentnode})
+        return array_attribut;
       }
       
       this.Set_attrs=function(attribut,valeur){
-	var array_attribut=this.attrs();
-	angular.forEach(array_attribut, function(items){
-	  for(var p in items)
-	  {
-	    if(attribut==p) {
-	      TREENAME.Nodecurent[p]=valeur;
-	      return TREENAME.Nodecurent;
-	    }
-	  }
-	});
-	return this;
+        var array_attribut=this.attrs();
+        angular.forEach(array_attribut, function(items){
+          for(var p in items)
+          {
+            if(attribut==p) {
+              TREENAME.Nodecurent[p]=valeur;
+              return TREENAME.Nodecurent;
+            }
+          }
+        });
+        return this;
       }
       
       this.Get_list_key_attrs=function(){
-	return ['label','typecontrole','tabval','id','affichesubmit','controle','valselection','affichecontrole','information','intitule','children','parentnode'];
+        return ['label','typecontrole','tabval','id','affichesubmit','controle','valselection','affichecontrole','information','intitule','children','parentnode'];
       }
       
       this.Get_attrs=function(attribut){
-	var array_attribut=this.attrs(),
-	p="",k='';
-	angular.forEach(array_attribut, function(items){
-	  for(p in items){
-	    if(attribut==p) {
-	      k=TREENAME.Nodecurent[p];
-	      return k;
-	    }
-	  }
-	});
-	return k
+        var array_attribut=this.attrs(),
+        p="",k='';
+        angular.forEach(array_attribut, function(items){
+          for(p in items){
+            if(attribut==p) {
+              k=TREENAME.Nodecurent[p];
+              return k;
+            }
+          }
+        });
+        return k
       }
       
       this.addchildrennode=function(node){
-	TREENAME.Nodecurent=node;
-	node.parentnode=this;
-	this.children.push(node);
-	return node;
+        TREENAME.Nodecurent=node;
+        node.parentnode=this;
+        this.children.push(node);
+        return node;
       }
       
       this.addchildren=function(label,id,typecontrole,tabval){
-	var a = new TREENAME.Node(label,id,typecontrole,tabval,this);
-	return this.addchildrennode(a);
+        var a = new TREENAME.Node(label,id,typecontrole,tabval,this);
+        return this.addchildrennode(a);
       }
-	
+        
       this.addbrothernode=function(node){
-	if(this.parentnode==null) TREENAME.Nodecurent.addchildrennode(node);
-	TREENAME.Nodecurent=node;
-	node.parentnode=this.parentnode;
-	this.parentnode.children.push(node);
-	return node;
+        if(this.parentnode==null) TREENAME.Nodecurent.addchildrennode(node);
+        TREENAME.Nodecurent=node;
+        node.parentnode=this.parentnode;
+        this.parentnode.children.push(node);
+        return node;
       }
-	
+        
       this.addbrother=function(label,id,typecontrole,tabval){
-	var a=new TREENAME.Node(label,id,typecontrole,tabval,this.parentnode);
-	return this.addbrothernode(a);
+        var a=new TREENAME.Node(label,id,typecontrole,tabval,this.parentnode);
+        return this.addbrothernode(a);
       }
       
       this.prec=function(){
-	return this.parentnode;
+        return this.parentnode;
       }
       
       this.search=function(id,valeur){
-	this.a=null;
-	return TREENAME.search_id(TREENAME.Noderoot,id,valeur)
+        this.a=null;
+        return TREENAME.search_id(TREENAME.Noderoot,id,valeur)
       }
     },// end node object
+    
     search_id:function(obj,namesearch,valeur){
       this.a=null;
       this.namesearch=namesearch;
@@ -181,19 +181,19 @@ angular.module("angularTreeview",[])
       parentobj=this;
       console.log(obj[this.namesearch])
       this._search=function(obj){
-	if(obj[this.namesearch] == this.valeur){
-	  this.a = obj;
-	  return this.a;
-	}else
-	{
-	  angular.forEach(obj.children, function(value){
-	    this.a=parentobj._search(value);
-	    if(this.a != null) {
-	      return this.a;
-	    }
-	  });
-	}
-	return this.a;
+        if(obj[this.namesearch] == this.valeur){
+          this.a = obj;
+          return this.a;
+        }else
+        {
+          angular.forEach(obj.children, function(value){
+            this.a=parentobj._search(value);
+            if(this.a != null) {
+              return this.a;
+            }
+          });
+        }
+        return this.a;
       };
       this.a = this._search(obj);
       if(this.a == null ) this.a = TREENAME.Nodecurent;
@@ -213,14 +213,12 @@ angular.module("angularTreeview",[])
     }
  
     $scope.blurvalue=function(type,id,val,select,node){
-      console.log("jjjjjjjjjjjjjjjjjjjjjjjjj")
        if(!node) return;
       node.valselection=select
        angularTreeview.Selectednode=$scope.currentNode
     }
     
     $scope.process=function(type,id,val,select,node){
-       console.log("ppppppppppppppppppppppppppppppppppppp")
       if(!node) return;
       node.valselection=select
       if(node.valselection!="")
