@@ -222,7 +222,6 @@ angular.module("angularTreeview",['warmonic.lib.logger'])
       n==-1?children_ordre=0:(children_ordre=parseInt(id_name.slice(n+1)),node_niveau=id_name.slice(0,n))
       var n = id_name.lastIndexOf("-");
       var findnoeud =  this.search_id(node_niveau);
-      console.log("findnoeud" + findnoeud)
       if(findnoeud!=null)
         return findnoeud.addchildren(label,id,typecontrole,tabval)
         else
@@ -235,7 +234,6 @@ angular.module("angularTreeview",['warmonic.lib.logger'])
       n==-1?children_ordre=0:(children_ordre=parseInt(id_name.slice(n+1)),node_niveau=id_name.slice(0,n))
       var n = id_name.lastIndexOf("-");
       var findnoeud =  this.search_id(node_niveau);
-      console.log("findnoeud" + findnoeud)
       if(findnoeud != null)
         return findnoeud.addchildrennode(node)
         else
