@@ -51,6 +51,19 @@ angular.module('warmonic.lib.xmpp.commands', [
         return deferResult.promise;
       },
 
+      complete: function(complete) {
+        var deferResult = $q.defer();
+        complete.complete({
+          success: function(result, cmd) {
+            deferResult.resolve(cmd);
+          },
+          error: function(error, cmd) {
+            deferResult.reject(cmd);
+          }
+        });
+        return deferResult.promise;
+      },
+
       prev: function(cmd) {
         var deferResult = $q.defer();
         cmd.prev({

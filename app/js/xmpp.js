@@ -82,6 +82,8 @@ angular.module('warmonic.lib.xmpp', [
         this._connection = new Strophe.Connection(this._connectionUrl);
         this._connection.xmlInput = angular.bind(this, this.onInput);
         this._connection.xmlOutput = angular.bind(this, this.onOutput);
+        this._connection.rawInput = function(data) { console.log('RECV: ' + data); };
+        this._connection.rawOutput = function(data) { console.log('SENT: ' + data); };
       }
     },
 

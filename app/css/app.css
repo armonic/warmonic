@@ -68,3 +68,42 @@ body {
 .provides-tag button {
   margin: 3px;
 }
+
+.tree form {
+  display: inline;
+}
+
+.tree ul {
+  list-style-type: none;
+  margin-left: 20px;
+  padding: 0;
+}
+
+.tree > ul {
+  margin-left: 0px;
+}
+
+.tree li {
+  margin-top: -1px;
+  border-bottom: 1px solid #999999;
+  border-left: 1px solid #999999;
+  border-top: 1px solid #F5F5F5;
+  padding: 5px 10px;
+}
+
+.tree li:last-child {
+  border-bottom: 0px;
+}
+
+.tree input.form-control {
+  display: inline;
+  width: auto;
+}
+
+.tree label {
+  margin-right: 1em;
+}
+
+.container-fluid {
+  margin: auto 10px;
+}

@@ -13,33 +13,33 @@
       <button type="button" class="btn btn-default navbar-btn pull-right" ng-click="login.disconnect()">Disconnect {{ login.session.jid | bareJid }}</button>
     </div>
   </nav>
-  <div class="container">
+  <div class="container-fluid">
     <div class="row" ui-view>
     </div>
   </div>
-  <div class="log" ng-controller="loggerCtrl as logger">
-    <div ng-repeat="line in logger.output()" ng-class="line.class">
-      <span class="text-muted">{{ line.date | date:'short' }} : </span>
-      <span ng-switch="line.level">
-        <span ng-switch-when="0" class="text-muted">{{ line.text }}</span>
-        <span ng-switch-when="1" class="text-primary">{{ line.text }}</span>
-        <span ng-switch-when="2" class="text-info">{{ line.text }}</span>
-        <span ng-switch-when="3" class="text-warning">{{ line.text }}</span>
-        <span ng-switch-when="4" class="text-danger">{{ line.text }}</span>
-        <span ng-switch-when="5" class="text-danger">{{ line.text }}</span>
-      </span>
-    </div>
-  </div>
-  <div ng-controller="consoleCtrl as console" class="console">
-    <form ng-submit="console.send()">
-      <div class="input-group">
-        <textarea class="form-control input-sm" ng-model="console.input"></textarea>
-        <span class="input-group-btn">
-          <button type="submit" class="btn btn-default btn-sm">Send</button>
-        </span>
-      </div>
-    </form>
-  </div>
+  <!--<div class="log" ng-controller="loggerCtrl as logger">-->
+    <!--<div ng-repeat="line in logger.output()" ng-class="line.class">-->
+      <!--<span class="text-muted">{{ line.date | date:'short' }} : </span>-->
+      <!--<span ng-switch="line.level">-->
+        <!--<span ng-switch-when="0" class="text-muted">{{ line.text }}</span>-->
+        <!--<span ng-switch-when="1" class="text-primary">{{ line.text }}</span>-->
+        <!--<span ng-switch-when="2" class="text-info">{{ line.text }}</span>-->
+        <!--<span ng-switch-when="3" class="text-warning">{{ line.text }}</span>-->
+        <!--<span ng-switch-when="4" class="text-danger">{{ line.text }}</span>-->
+        <!--<span ng-switch-when="5" class="text-danger">{{ line.text }}</span>-->
+      <!--</span>-->
+    <!--</div>-->
+  <!--</div>-->
+  <!--<div ng-controller="consoleCtrl as console" class="console">-->
+    <!--<form ng-submit="console.send()">-->
+      <!--<div class="input-group">-->
+        <!--<textarea class="form-control input-sm" ng-model="console.input"></textarea>-->
+        <!--<span class="input-group-btn">-->
+          <!--<button type="submit" class="btn btn-default btn-sm">Send</button>-->
+        <!--</span>-->
+      <!--</div>-->
+    <!--</form>-->
+  <!--</div>-->
 
   <script src="../bower_components/jquery/dist/jquery.js"></script>
   <script src="../bower_components/strophejs/src/md5.js"></script>

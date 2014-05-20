@@ -1,23 +1,18 @@
 <div class="md-col-12" ng-controller="buildCtrl as build">
-  <h2>{{ build.provide }}</h2>
-    <div ng-controller="treeCtrl">
-      <div style="margin:10px 0 30px 0; padding:10px; background-color:#EEFFEE; border-radius:5px; font:12px Tahoma;">
-	tabval= "{{currentNode.tabval}}"
-	information="{{currentNode.information}}"
-	valselection= "{{currentNode.valselection}}"
-	affichecontrole="{{currentNode.affichecontrole}}"
-	label="{{currentNode.label}}"
-	id= "{{currentNode.id}}"
-	intitule="{{currentNode.intitule}}"
-	typecontrole="{{currentNode.typecontrole}}"
-	descriptif = "{{currentNode.descriptif}}"
-      </div>
-      <div class="containertree">
-	<div 
-	 data-angular-treeview="true"
-	  data-tree-id="abc"
-	  data-tree-model="build.children">
-	</div>
+  <div class="row">
+    <div class="col-md-4">
+      <h4>Deployment tree render</h4>
+      <div class="tree">
+        <tree node="build.tree()" />
       </div>
     </div>
+    <div class="col-md-4">
+      <h4>Deployment tree</h4>
+      <pre>{{ build.tree() | stringify }}</pre>
+    </div>
+    <div class="col-md-4">
+      <h4>Deployment variables</h4>
+      <pre>{{ build.variables() | stringify }}</pre>
+    </div>
+  </div>
 </div>

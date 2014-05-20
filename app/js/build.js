@@ -1,309 +1,374 @@
+/*jshint multistr: true*/
 'use strict';
 
-angular.module('warmonic.build', [
-  'warmonic.lib.logger',
-  'warmonic.lib.xmpp.commands',
-  'angularTreeview'
-])
+angular.module('warmonic.build', [])
 
-.controller('buildCtrl', ['$timeout', '$state', '$stateParams', 'logger', 'xmpp', 'commands','angularTreeview', function($timeout, $state, $stateParams, logger, xmpp, commands, angularTreeview) {
-                  //-----a supprimer-----------
-                  this.rawInput=function(data) { console.log('RECV: ' + data);};
-                  this.rawOutput=function(data) { console.log('SENT: ' + data);};
-                  if (xmpp._connection){
-                    xmpp._connection.rawInput=this.rawInput;
-                    xmpp._connection.rawOutput=this.rawOutput;
-                  }
-                  //----------------------------
-  this.children=[];
-  this.children.push(new angularTreeview.Node("Varnish","0","",[]));
-  
-  angularTreeview.Nodecurent.add_node_id("3-1-1-2-4");
-  
-  angularTreeview.Nodecurent
-  .addchildren("WordPress","0-0","",[])
-  .addchildren("OwnCloud","3-1-1-2","input",[]).prec()
-  .addchildren("Add-Db","3-1-1-2-8","select",["Manuel","Mysql","post"])
-  .addchildren("Data","3-1-1-2-4","",[])
-  .addchildren("Dbname","3-1-1-2-6","input",["dbname"])
-    .Set_attrs("affichecontrole",false)
-    .Set_attrs("affichesubmit",true)
-   
-    .add_children_id("3-1-1-2-4","dedede","3-1-1-2-7","input",["dededede"]);
-  
-  console.log(angularTreeview.Nodecurent.Get_attrs("affichecontrole"));
-  console.log(angularTreeview.Nodecurent.Get_attrs("affichesubmit"));
-    
-  angularTreeview.Nodecurent.prec()
-  .addchildren("Dbpwd","3-4","input",["pwd"]).prec()
-  .addchildren("Dbuser","3-4","input",["user"]).prec().prec()
-  .addchildren("Auth","3-1-1-2-4","",[])
-  .addchildren("Pwd","3-4","input",["pwd"]).prec().prec()
-  .addchildren("Conf","3-1-1-2-4","",[])
-  .addchildren("Cport","3-4","input",["5300"]).prec().prec().prec()
-  .addchildren("ADD-Serveur-Web","3-1-1-2-4","select",["Manuel","Apache"])
-  .addchildren("Root-directory","3-4","input",["/var/www"]).affiche_arbre()
+.controller('buildCtrl', ['$state', '$stateParams', 'build', function($state, $stateParams, build) {
   this.provide = $stateParams.provide;
- 
-  console.log(angularTreeview.Nodecurent.search_attribut('id',"3-1-1-2-6").id)
-// build provide
-//   s.create('mss-master@im.aeolus.org/master', this.provide),
-//   self = this;
-//   commands.execute(cmd).then(
-//     function(cmd) {
-//       var result = cmd.form.toJSON();
-//      // process_tree(result);
-// 
-//   
-//     });
-  
-  }]);
-//--------------------------------------------
-// code adapter from 
-// https://github.com/eu81273/angular.treeview
-//--------------------------------------------
-
-
-angular.module("angularTreeview",['warmonic.lib.logger'])
-.factory('angularTreeview', ['logger',function(logger) {
-  var TREENAME = {
-    valtree:'',
-    Noderoot:null,
-    Nodecurent:null,
-    Selectednode:null,
-    // objet node
-    Node:function(label,id,typecontrole,tabval,parentobj){
-       this.children = [];
-       this.label=label;
-      this.typecontrole=typecontrole;
-      this.tabval=tabval;
-      this.id = id;
-      this.affichesubmit=false;
-      this.controle="";
-      this.valselection=tabval[0];
-      this.affichecontrole=true;
-      this.information ="";
-      this.intitule="";
-     
-      this.parentnode=null;
-      if(typecontrole=="" || typecontrole==null ) {
-        this.typecontrole="";
-        this.affichesubmit=false;
-        this.affichecontrole=false;
-      }
-      if(TREENAME.Nodecurent== null) TREENAME.Nodecurent = this;
-      if(TREENAME.Noderoot== null)   TREENAME.Noderoot   = this;
-      if(parentobj != null)
-        this.parentnode = parentobj;
-      else 
-        this.parentnode = TREENAME.Noderoot;
-
-      this.attrs=function(){
-        var array_attribut=[];
-        array_attribut.push({'label':this.label})
-        array_attribut.push({'typecontrole':this.typecontrole})
-        array_attribut.push({'tabval':this.tabval})
-        array_attribut.push({'id':this.id})
-        array_attribut.push({'affichesubmit':this.affichesubmit})
-        array_attribut.push({'controle':this.controle})
-        array_attribut.push({'valselection':this.valselection})
-        array_attribut.push({'affichecontrole':this.affichecontrole})
-        array_attribut.push({'information':this.information})
-        array_attribut.push({'intitule':this.intitule})
-        array_attribut.push({'children':this.children})
-        array_attribut.push({'parentnode':this.parentnode})
-        return array_attribut;
-      }
-      
-      this.Set_attrs=function(attribut,valeur){
-        var array_attribut=this.attrs();
-        angular.forEach(array_attribut, function(items){
-          for(var p in items)
-          {
-            if(attribut==p) {
-              TREENAME.Nodecurent[p]=valeur;
-              return TREENAME.Nodecurent;
-            }
-          }
-        });
-        return this;
-      }
-      
-      this.Get_list_key_attrs=function(){
-        return ['label','typecontrole','tabval','id','affichesubmit','controle','valselection','affichecontrole','information','intitule','children','parentnode'];
-      }
-      
-      this.Get_attrs=function(attribut){
-        var array_attribut=this.attrs(),
-        p="",k='';
-        angular.forEach(array_attribut, function(items){
-          for(p in items){
-            if(attribut==p) {
-              k=TREENAME.Nodecurent[p];
-              return k;
-            }
-          }
-        });
-        return k
-      }
-      
-      this.addchildrennode=function(node){
-        TREENAME.Nodecurent=node;
-        node.parentnode=this;
-        this.children.push(node);
-        return node;
-      }
-      
-      this.addchildren=function(label,id,typecontrole,tabval){
-        var a = new TREENAME.Node(label,id,typecontrole,tabval,this);
-        return this.addchildrennode(a);
-      }
-        
-      this.addbrothernode=function(node){
-        if(this.parentnode==null) TREENAME.Nodecurent.addchildrennode(node);
-        TREENAME.Nodecurent=node;
-        node.parentnode=this.parentnode;
-        this.parentnode.children.push(node);
-        return node;
-      }
-        this.getrootnode=function(){
-          return TREENAME.Noderoot;
-        }
-      this.addbrother=function(label,id,typecontrole,tabval){
-        var a=new TREENAME.Node(label,id,typecontrole,tabval,this.parentnode);
-        return this.addbrothernode(a);
-      }
-      
-      this.prec=function(){
-        return this.parentnode;
-      }
-   
-     this.affiche_arbre=function(){
-       this.niveau=0,self=this
-       this.affiche=function(obj,niveau){
-         var niveaua=niveau;
-         var str=''
-         for(var i=0;i<=niveaua;i++) str+=' ';
-         console.log(str+obj.label+":"+obj.typecontrole+":"+obj.id);
-         angular.forEach(obj.children, function(value){
-            self.affiche(value,niveaua+3);
-         })
-       }
-      this.affiche(TREENAME.Noderoot,0)
-    }
-    
-    this.search_attribut=function(nameattribut,valattribut){
-      self=this;
-      this.objtrouve=null;
-      this._search=function(obj){
-        if(self.objtrouve==null) { 
-          if(obj[nameattribut] == valattribut) {
-            self.objtrouve = obj;
-          }else
-          {
-            angular.forEach(obj.children, function(value){
-              if(self.objtrouve==null)self._search(value);          
-            })
-          }
-        }
-      }
-      this._search(TREENAME.Noderoot);
-      return this.objtrouve;
-    }
-    
-    this.search_id=function(id){
-      return this.search_attribut("id",id)
-    }
-    
-    this.add_children_id=function(id_name,label,id,typecontrole,tabval){
-    // search node for include node
-      var children_ordre,node_niveau=id_name
-      var n = id_name.lastIndexOf(":"); 
-      n==-1?children_ordre=0:(children_ordre=parseInt(id_name.slice(n+1)),node_niveau=id_name.slice(0,n))
-      var n = id_name.lastIndexOf("-");
-      var findnoeud =  this.search_id(node_niveau);
-      if(findnoeud!=null)
-        return findnoeud.addchildren(label,id,typecontrole,tabval)
-        else
-          return TREENAME.Nodecurent;
-    }
-      
-    this.add_node_id=function(id_name,node){
-      var children_ordre,node_niveau=id_name
-      var n = id_name.lastIndexOf(":"); 
-      n==-1?children_ordre=0:(children_ordre=parseInt(id_name.slice(n+1)),node_niveau=id_name.slice(0,n))
-      var n = id_name.lastIndexOf("-");
-      var findnoeud =  this.search_id(node_niveau);
-      if(findnoeud != null)
-        return findnoeud.addchildrennode(node)
-        else
-          return TREENAME.Nodecurent;
-    }
-    },// end node object
-  };//TREENAME
-  return TREENAME;
+  this.tree = build.tree;
+  this.variables = build.variables;
+  build.run(this.provide);
 }])
 
-.controller('treeCtrl',
-  function($scope,angularTreeview,$http, $templateCache){
-    $scope.selectednode=null;
-    $scope.changevalue=function(type,id,val,select,node){
-      if(!node) return;
-      node.valselection=select
-      node.valselection=select
-      angularTreeview.Selectednode=$scope.currentNode
-    }
- 
-    $scope.blurvalue=function(type,id,val,select,node){
-       if(!node) return;
-      node.valselection=select
-       angularTreeview.Selectednode=$scope.currentNode
-    }
-    
-    $scope.process=function(type,id,val,select,node){
-      if(!node) return;
-      node.valselection=select
-      if(node.valselection!="")
-	node.affichesubmit=false;
-      angularTreeview.Selectednode=$scope.currentNode
-    }
-  }
-)
+.factory('build', ['$q', 'commands', function($q, commands) {
 
-.directive("treeModel",function($compile,$http, $templateCache){
-  return{
-    restrict:"A",
-    link:function(scope,element,attrs){
-      var k=''
-      var treeModel=attrs.treeModel;
-      var loader = $http.get('partials/_tree.html', {cache: $templateCache});
-      var promise = loader.success(function(template) {
-      k=eval(template)
-	treeModel&&treeModel.length&&
-	( attrs.angularTreeview?(scope.	$watch(treeModel,function(oldValue,newValue){
-	      element.empty().html($compile(k)(scope))
-	    },!1),
-	    scope.selectNodeHead=scope.selectNodeHead||function(scope,event){
-	      event.stopPropagation&&event.stopPropagation();
-	      event.preventDefault&&event.preventDefault();
-	      event.cancelBubble=!0;
-	      event.returnValue=!1;
-	      scope.collapsed=!scope.collapsed;
-	    },
-	    scope.selectNodeLabel=scope.selectNodeLabel||function(attrs,event){
-	      event.stopPropagation&&event.stopPropagation();
-	      event.preventDefault&&event.preventDefault();
-	      event.cancelBubble=!0;
-	      event.returnValue=!1;
-	      scope.currentNode&&scope.currentNode.selected&&(scope.currentNode.selected=void 0);
-	      attrs.selected="selected";
-	      attrs.activate="activate";
-	      scope.currentNode=attrs
-	    }
-	  ):element.html($compile(k)(scope)))
-	}).then(function (response) {
+  // clean command
+  var _cmd = commands.create('build'),
+      tree = null,
+      variablesFields = null;
 
+  return {
+
+    tree: function() {
+      return tree;
+    },
+
+    variables: function() {
+      return variablesFields;
+    },
+
+    _onRecv: function(cmd) {
+      if (cmd.form.instructions == "specialize")
+        this.specialize(cmd);
+      if (cmd.form.instructions == "manage")
+        this.manage(cmd);
+      if (cmd.form.instructions == "validation")
+        this.validation(cmd);
+      if (cmd.form.instructions == "done")
+        this.done(cmd);
+    },
+
+    _getFormField: function(cmd, fieldName) {
+      var value;
+      cmd.form.fields.forEach(function(field) {
+        if (field.var == fieldName)
+          value = field.values;
       });
-    }//end link function
-  }//endreturn
-})//end directive
+      if (value.length == 1)
+        return value[0];
+      return value;
+    },
+
+    _getTreeIndex: function(cmd) {
+      var strTreeIndex = this._getFormField(cmd, "tree_id");
+      var treeIndex = strTreeIndex.replace('[', '').replace(']', '').split(',').map(function(i) {
+        return parseInt(i.trim());
+      });
+      return treeIndex;
+    },
+
+    _fillNode: function(treeIndex, data, node) {
+      var _treeIndex = treeIndex.slice();
+      if (!node)
+        node = tree;
+
+      var id = _treeIndex.shift();
+
+      if (!node.children)
+        node.children = [];
+
+      if (!node.children[id])
+        node.children[id] = {children: [], data: null};
+
+      if (_treeIndex.length > 0) {
+        return this._fillNode(_treeIndex, data, node.children[id]);
+      }
+
+      node.children[id].data = data;
+    },
+
+    _addVariableField: function(field) {
+      if (!variablesFields[field.name]) {
+        variablesFields[field.name] = field;
+        return variablesFields[field.name];
+      }
+      return false;
+    },
+
+    run: function(xpath) {
+      // init the tree
+      tree = {children: [], data: null};
+      // init variablesFields list
+      variablesFields = {};
+
+      commands.execute(_cmd)
+
+      .then(angular.bind(this, function(cmd) {
+        // specify the first provide
+        var form = $form({
+          fields: [
+            $field({var: "xpath", value: xpath})
+          ]
+        });
+
+        return commands.next(cmd, form);
+      }))
+
+      .then(angular.bind(this, function(cmd) {
+        // On the first provide, choose automatically
+        // if there is only one provide
+        var xpaths = this.getSpecializeChoices(cmd);
+        if (xpaths.length == 2) {
+          // skip the None choice
+          this.specializeNode(cmd, xpaths[1]);
+        }
+        // else, let the user decide
+        else {
+          this._onRecv(cmd);
+        }
+      }));
+
+    },
+
+    getSpecializeChoices: function(cmd) {
+      var xpaths = [];
+      // get possible xpaths
+      cmd.form.fields.forEach(function(field) {
+        if (field.var == "specialize") {
+          field.options.forEach(function(option) {
+            xpaths.push(option.value);
+          });
+        }
+      });
+      return xpaths;
+    },
+
+    specialize: function(cmd) {
+      var xpaths = this.getSpecializeChoices(cmd),
+          treeIndex = this._getTreeIndex(cmd),
+          deferredSelection = $q.defer(),
+          label,
+          options = [];
+
+      if (xpaths.length == 2) {
+        label = "Call " + xpaths[1] + " ?";
+        options = [
+          {label: "Yes", value: xpaths[1]},
+          {label: "No", value: xpaths[0]}
+        ];
+      }
+      else {
+        label = "Choose the provide to call";
+        xpaths.forEach(function(xpath) {
+          if (xpath != "None")
+            options.push({label: xpath, value: xpath});
+        });
+      }
+
+      // field to display on the tree
+      var field = {
+        type: "select",
+        label: label,
+        options: options,
+        promise: deferredSelection,
+        disabled: false,
+        processing: false
+      };
+      console.log(treeIndex);
+      this._fillNode(treeIndex, field);
+
+      // when choice is done
+      deferredSelection.promise.then(angular.bind(this, function(xpath) {
+        this.specializeNode(cmd, xpath);
+      }));
+    },
+
+    specializeNode: function(cmd, xpath) {
+      var treeIndex = this._getTreeIndex(cmd);
+
+      var form = $form({
+        type: "submit",
+        fields: [
+          $field({
+            var: "xpath",
+            value: xpath,
+            type: "list-single"
+          })
+        ]
+      });
+
+      commands.next(cmd, form)
+      .then(angular.bind(this, function(cmd) {
+        console.log(treeIndex);
+        this._fillNode(treeIndex, {type: "text", value: xpath});
+        this._onRecv(cmd);
+      }));
+
+    },
+
+    manage: function(cmd) {
+      var xpath = cmd.form.fields[0].values[0];
+      // always manage for now
+      var form = $form({
+        type: "submit",
+        fields: [
+          $field({var: "xpath", value: xpath})
+        ]
+      });
+
+      commands.next(cmd, form)
+      .then(angular.bind(this, this._onRecv));
+    },
+
+    validation: function(cmd) {
+      var treeIndex = this._getTreeIndex(cmd),
+          provideName = this._getFormField(cmd, "provide");
+
+      // Configuration form to display
+      var form = {
+        type: "form",
+        legend: provideName + " configuration",
+        fields: []
+      };
+      cmd.form.fields.slice(2).forEach(angular.bind(this, function(field) {
+        var formField = {
+          type: "input",
+          value: field.values[0],
+          name: field.var,
+          label: field.label
+        };
+        // don't add the same field twice
+        var newField = this._addVariableField(formField);
+        if (newField)
+          form.fields.push(newField);
+      }));
+      console.log(treeIndex);
+      this._fillNode(treeIndex, form);
+
+      commands.next(cmd)
+      .then(angular.bind(this, this._onRecv));
+    },
+
+    done: function(cmd) {
+      console.log("end build");
+      if (cmd.status != "completed") {
+        commands.next(cmd)
+        .then(angular.bind(this, this._onRecv));
+      }
+      else {
+        console.log(tree);
+      }
+    }
+  };
+
+}])
+
+.directive('tree', ['RecursionHelper', function(RecursionHelper) {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+      node: '='
+    },
+
+    replace: true,
+
+    template: '<ul><li ng-show="node.data"><node data="node.data" /></li><tree ng-repeat="child in node.children" node="child" /></ul>',
+
+    compile: function(element) {
+        // Use the compile function from the RecursionHelper,
+        // And return the linking function(s) which it returns
+        return RecursionHelper.compile(element);
+    }
+
+  };
+
+}])
+
+.directive('node', [function() {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+      data: '='
+    },
+
+    replace: true,
+
+    template: '\
+      <span ng-switch="data.type"> \
+        \
+        <h4 ng-switch-when="text">{{ data.value }}</h4> \
+        \
+        <span ng-switch-when="input"> \
+          <nodeinput data="data" /> \
+        </span> \
+        \
+        <span ng-switch-when="select"> \
+          <nodeselect data="data" /> \
+        </span> \
+        \
+        <form ng-switch-when="form" role="form"> \
+          <legend>{{ data.legend }}</legend> \
+          <nodeinput data="field" ng-repeat="field in data.fields" /> \
+        </form> \
+        \
+      </span>',
+
+  };
+
+}])
+
+.directive('nodeselect', function() {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+      data: '='
+    },
+
+    replace: true,
+
+    template: '\
+      <form role="form" class="form-inline"> \
+        <label>{{ data.label }}</label> \
+        <select ng-model="data.value" ng-disabled="data.disabled" class="form-control" ng-options="option.value as option.label for option in data.options" ng-required></select> \
+        <span ng-show="data.processing" spinner /> \
+      </form>',
+
+    controller: function($scope) {
+
+      $scope.$watch('data.value', function(newVal, oldVal, scope) {
+        if (newVal !== oldVal) {
+          if (scope.data.promise) {
+            scope.data.processing = true;
+            scope.data.disabled = true;
+            scope.data.promise.resolve(newVal);
+          }
+        }
+      });
+
+    }
+  };
+})
+
+.directive('nodeinput', function() {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+      data: '='
+    },
+
+    replace: true,
+
+    template: '<div class="form-group"><label class="control-label">{{ data.name }}</label><input type="text" name="{{ data.name }}" ng-model="data.value" ng-disabled="data.disabled" class="form-control" /></div>'
+
+  };
+
+})
+
+.directive('spinner', function() {
+  return {
+    restrict: 'A',
+    template: '<img src="img/loadinfo.png" alt="Loading..." />',
+  };
+});
