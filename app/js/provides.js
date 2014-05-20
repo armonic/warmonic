@@ -123,6 +123,10 @@ angular.module('warmonic.provides', [
         if (item.fields[1].values[0])
           tags = item.fields[1].values[0].split(',');
 
+        // don't use internal provides
+        if (tags.indexOf('internal') > -1)
+          return;
+
         var provide = {
           'xpath': item.fields[0].values[0],
           'tags': tags,
