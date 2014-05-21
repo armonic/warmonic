@@ -9,7 +9,14 @@
 </head>
 <body>
   <nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="loginCtrl as login" ng-show="login.status.code == 5 || login.status.code == 8">
-    <div class="container pull-right">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" ui-sref="login">Warmonic</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li ui-sref-active="active"><a ui-sref="provides">Provides</a></li>
+        <li ui-sref-active="active"><a ui-sref="build">Build</a></li>
+      </ul>
       <button type="button" class="btn btn-default navbar-btn pull-right" ng-click="login.disconnect()">Disconnect {{ login.session.jid | bareJid }}</button>
     </div>
   </nav>
