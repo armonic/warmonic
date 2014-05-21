@@ -1,0 +1,71 @@
+/*select{
+    width: 300px;
+    background-color: #f9f6c5 ; 
+}*/
+.inputservice {
+    width:20px;
+}
+.divselect{
+    display: inline-block;
+    vertical-align:top;
+    padding-right:10px;
+    min-width:200px;
+    min-height:200px;
+}
+.cadrediv{
+    border:2px solid;
+    border-radius:25px;
+}
+
+.divselect2{
+    display: inline-block;
+    vertical-align:top;
+    padding-left:10px;
+    min-width:200px;
+    min-height:200px;
+}
+.divselect3{
+    display: inline-block;
+    vertical-align:top;
+    padding-left:10px;
+    min-width:200px;
+    min-height:200px;
+}
+.inputservicename {
+    min-width:170px;
+}
+.inputlogique{
+    width:30px;
+}
+
+.divselectobjet{
+    -moz-box-shadow: 4px 4px 10px #888;  
+    -webkit-box-shadow: 4px 4px 10px #888;
+    border-radius:15px;
+    box-shadow:4px 4px 6px #888;
+    background:#DEE4DF;
+    margin:6px;
+    float: left;
+    padding:8px;
+}
+
+.clear{
+    clear:both;
+    display:block;
+}
+p.spacelineup{margin:20px 0;}
+p.spacelinedown{margin:2px 0;}
+
+.global {
+    background:#AEE4EF;
+    margin: auto;
+    width: 500; /* largeur obligatoire pour être centré padding:1px;*/
+}
+.texte_number{
+    font-weight:bold;
+    font-size:medium;
+    border-width:1px;
+    border-style:double;
+    border-color:black;
+    margin:2px;
+}

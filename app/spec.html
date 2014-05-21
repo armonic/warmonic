@@ -1,0 +1,63 @@
+  <!doctype html>
+<html >
+  <head>
+      <meta charset="utf-8" />
+      <title>contrainte </title>
+      <link rel="stylesheet" href="css/spec.css">
+  </head>
+  <body ng-app="contrainte" ng-controller="controleur_contrainte" data-ng-init="init()" class="global">
+    
+  <div> <h1>Creation fichier de contraintes aeolus</h1>
+  <label for="id_type_VM">type de VM</label> 
+  <input  type="text" id="id_type_VM" ng-model="VM_type" ng-change="modifie_type()">
+  <form>
+    <h2>Edition Contrainte file</h2>
+    <div class="clear">
+    <textarea rows="8" cols="100" ng-model="regle"></textarea>
+    <br>
+    <input  type="button" class="inputservicename" value="Valide" ng-click="validite()">
+    </div>
+    <div ng:repeat="(servIndex, serv) in  objetgestion" class="divselectobjet">
+          <p> {{serv.name}}<input class="inputservice" size="2" ng-model="objetgestion[servIndex].nb_service">
+          </p>
+    <div class="cadrediv" >
+        <div class="divselect" ng-show="valide_choix(servIndex)">
+          <p>choix</p>
+            <div>
+                <p class="spacelinedown" ng:repeat="(valIndex, val) in serv.includ">
+                  <input type="button" class="inputservicename" value="{{valIndex}}" ng-click="supp(servIndex,valIndex,serv.name,val)">
+                </p>
+            </div>
+        </div><!--<end div class="divselect">-->
+        <div class="divselect2" ng-show="valide_exclud(servIndex)">
+          <p>regle service/nb</p>
+            <div>
+              <p class="spacelinedown" ng:repeat="(valIndex1, val1) in serv.exclut">
+                  <input type="button" class="inputservicename" value="{{valIndex1}}" ng-click="add(servIndex,valIndex1,serv.name,val1)">
+                  <input class="inputservice"  size="2" type="number" ng-model="objetgestion[servIndex].exclut[valIndex1]"></p>
+            </div>
+        </div><!--<end div class="divselect2"> -->
+        <div class="divselect3" ng-show="valide_logique(servIndex)">
+          <p>operateur logique</p>
+            <div>
+        
+            <p class="spacelinedown" ng:repeat="(valInd1, va1) in listeoperation(servIndex)">
+          
+            {{va1['in']}}
+             <input ng-show="objetgestion[servIndex][va1['clef']]===0" type="button" class="inputlogique" value="and" ng-click="operateur('and',servIndex,va1['in'],va1['out'],va1['clef'])">
+            <input ng-show="objetgestion[servIndex][va1['clef']]===1" type="button" class="inputlogique" value="or"  ng-click="operateur('or',servIndex,va1['in'],va1['out'],va1['clef'])"> {{va1['out']}} 
+            </p>
+            </div> 
+        </div><!--<end div class="divselect3">-->
+      </div> <!--<end div class="cadrediv">-->
+     <div>{{objetgestion[servIndex].regle}}</div>
+    </div><!--<end div class="divselectobjet">-->
+    </form>
+    <div ng-bind-html="regle" class="clear"></div>
+  </div>
+      <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+      <script src="http://code.angularjs.org/1.2.9/angular.min.js"></script>
+      <script src="http://code.angularjs.org/1.2.8/angular-sanitize.min.js"></script>
+      <script type="text/javascript" src="js/spec.js"> </script>
+  </body>
+</html>
