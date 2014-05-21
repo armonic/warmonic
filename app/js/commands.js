@@ -100,4 +100,26 @@ angular.module('warmonic.lib.xmpp.commands', [
       }
     };
   }]
+})
+
+.directive('masterStatus', function() {
+
+  return {
+
+    restrict: 'A',
+
+    template: '<span class="btn" ng-class="{\'btn-success\': online, \'btn-danger\': !online}">Master is {{ isOnline() }}</span>',
+
+    controller: ['$scope', 'commands', 'roster', function($scope, commands, roster) {
+
+      var provider = Strophe.getBareJidFromJid(commands.provider);
+      $scope.online = false;
+      $scope.isOnline = function() {
+        $scope.online = roster.isJidOnline(provider);
+        return $scope.online ? "online" : "offline";
+      };
+
+    }]
+  };
+
 });

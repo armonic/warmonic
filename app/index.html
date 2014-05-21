@@ -17,7 +17,10 @@
         <li ui-sref-active="active"><a ui-sref="provides">Provides</a></li>
         <li ui-sref-active="active"><a ui-sref="build">Build</a></li>
       </ul>
-      <button type="button" class="btn btn-default navbar-btn pull-right" ng-click="login.disconnect()">Disconnect {{ login.session.jid | bareJid }}</button>
+      <div class="pull-right">
+        <span master-status></span>
+        <button type="button" class="btn btn-default navbar-btn" ng-click="login.disconnect()">Disconnect {{ login.session.jid | bareJid }}</button>
+      </div>
     </div>
   </nav>
   <div class="container-fluid">

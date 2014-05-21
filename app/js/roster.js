@@ -56,6 +56,14 @@ angular.module('warmonic.lib.xmpp.roster', [
       return false;
     },
 
+    isJidOnline: function(jid) {
+      var roster = xmpp._connection.roster;
+      if (roster.items) {
+        return this.isOnline(roster.findItem(jid));
+      }
+      return false;
+    },
+
     addServer: function(jid) {
       if (jid)
         xmpp.send($pres({to: jid, type: "subscribe"}));
