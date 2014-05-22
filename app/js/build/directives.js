@@ -111,8 +111,9 @@ angular.module('warmonic.build.directives', [])
     replace: true,
 
     template: '<div class="form-group" ng-show="data.show"> \
-                <label class="control-label">{{ data.name }}</label> \
-                <input type="text" name="{{ data.name }}" ng-model="data.value" ng-disabled="data.disabled" class="form-control" /> \
+                <label class="control-label" for="{{ data.name }}">{{ data.label }}</label> \
+                <input type="text" name="{{ data.name }}" id="{{ data.name }}" ng-model="data.value" ng-disabled="data.disabled" class="form-control" /> \
+                <p class="help-block"><small>{{ data.name }}</small></p> \
                </div>',
 
   };

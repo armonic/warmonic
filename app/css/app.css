@@ -95,15 +95,6 @@ body {
   border-bottom: 0px;
 }
 
-.tree input.form-control {
-  display: inline;
-  width: auto;
-}
-
-.tree label {
-  margin-right: 1em;
-}
-
 .container-fluid {
   margin: auto 10px;
 }
