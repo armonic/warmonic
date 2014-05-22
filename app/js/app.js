@@ -8,7 +8,9 @@ angular.module('warmonic', [
   'warmonic.lib.xmpp.commands',
   'warmonic.lib.logger',
   'warmonic.provides',
-  'warmonic.build',
+  'warmonic.build.directives',
+  'warmonic.build.services',
+  'warmonic.build.controllers',
 ])
 
 .run(['$rootScope', '$state', '$stateParams', 'xmpp', function($rootScope, $state, $stateParams, xmpp) {
