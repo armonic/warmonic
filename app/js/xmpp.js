@@ -65,6 +65,10 @@ angular.module('warmonic.lib.xmpp', [
       return false;
     },
 
+    get connection() {
+      return this._connection;
+    },
+
     _init: function(connectionUrl) {
       logger.debug(connectionUrl);
       this._connectionUrl = connectionUrl;

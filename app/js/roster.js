@@ -7,6 +7,9 @@ angular.module('warmonic.lib.xmpp.roster', [
 
 .factory('roster', ['$q', '$timeout', 'xmpp', 'xmppSession', 'xmppService', 'logger', function($q, $timeout, xmpp, xmppSession, xmppService, logger) {
 
+  // don't show jid from this list
+  // in the roster
+  var exclusionList = [];
   var roster = xmppService.create();
   angular.extend(roster, {
 
@@ -25,7 +28,7 @@ angular.module('warmonic.lib.xmpp.roster', [
 
     items: function() {
       if (xmpp.connected) {
-        return xmpp._connection.roster.items;
+        return xmpp.connection.roster.items;
       }
       return [];
     },
@@ -44,6 +47,8 @@ angular.module('warmonic.lib.xmpp.roster', [
         item.name = Strophe.getNodeFromJid(item.jid);
         if (item.subscription == "to" || item.subscription == "both")
           item.show = true;
+        if (exclusionList.indexOf(item.jid) > -1)
+          item.show = false;
       }));
       logger.debug("roster items updated : " + JSON.stringify(items));
       xmppSession.data.rosterItems = items;
@@ -57,9 +62,14 @@ angular.module('warmonic.lib.xmpp.roster', [
     },
 
     isJidOnline: function(jid) {
-      var roster = xmpp._connection.roster;
-      if (roster.items) {
-        return this.isOnline(roster.findItem(jid));
+      if (xmpp.connected) {
+        var roster = xmpp.connection.roster;
+        try {
+          return this.isOnline(roster.findItem(jid));
+        }
+        catch (err) {
+          return false;
+        }
       }
       return false;
     },
@@ -72,6 +82,10 @@ angular.module('warmonic.lib.xmpp.roster', [
     removeServer: function(jid) {
       if (jid)
         xmpp.send($pres({to: jid, type: "unsubscribe"}));
+    },
+
+    excludeJid: function(jid) {
+      exclusionList.push(Strophe.getBareJidFromJid(jid));
     }
   });
 

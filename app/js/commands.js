@@ -12,8 +12,10 @@ angular.module('warmonic.lib.xmpp.commands', [
     this.provider = jid;
   },
 
-  $get: ['$q', 'xmpp', function($q, xmpp) {
+  $get: ['$q', 'xmpp', 'roster', function($q, xmpp, roster) {
+
     var commandProvider = this.provider;
+    roster.excludeJid(commandProvider);
 
     return {
       get provider() {
