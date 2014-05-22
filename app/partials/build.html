@@ -1,4 +1,16 @@
 <div class="md-col-12" ng-controller="buildCtrl as build">
+  <div class="row" ng-hide="build.urlProvide">
+    <div class="col-md-6">
+      <form role="form" ng-submit="build.run(build.provide)" class="form-inline">
+        <div class="input-group">
+          <input ng-model="build.provide" type="text" class="form-control" />
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-default">Build</button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-4">
       <h4>Deployment tree render</h4>

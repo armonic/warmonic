@@ -4,10 +4,16 @@
 angular.module('warmonic.build', [])
 
 .controller('buildCtrl', ['$state', '$stateParams', 'build', function($state, $stateParams, build) {
-  this.provide = $stateParams.provide;
+  this.urlProvide = $stateParams.provide ? true : false;
+  this.provide = $stateParams.provide || null;
   this.tree = build.tree;
   this.variables = build.variables;
-  build.run(this.provide);
+  this.run = angular.bind(build, build.run);
+
+  if (this.urlProvide)
+    build.run(this.provide);
+  else
+    build.init();
 }])
 
 .factory('build', ['$q', 'commands', function($q, commands) {
@@ -18,6 +24,13 @@ angular.module('warmonic.build', [])
       variablesFields = null;
 
   return {
+
+    init: function() {
+      // init the tree
+      tree = {children: [], data: null};
+      // init variablesFields list
+      variablesFields = {};
+    },
 
     tree: function() {
       return tree;
@@ -86,10 +99,8 @@ angular.module('warmonic.build', [])
     },
 
     run: function(xpath) {
-      // init the tree
-      tree = {children: [], data: null};
-      // init variablesFields list
-      variablesFields = {};
+
+      this.init();
 
       commands.execute(_cmd)
 
