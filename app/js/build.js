@@ -98,6 +98,10 @@ angular.module('warmonic.build', [])
       return false;
     },
 
+    _getVariableField: function(fieldName) {
+      return variablesFields[fieldName] || null;
+    },
+
     run: function(xpath) {
 
       this.init();
@@ -231,17 +235,34 @@ angular.module('warmonic.build', [])
         legend: provideName + " configuration",
         fields: []
       };
+      // add configuration fields to the form
       cmd.form.fields.slice(2).forEach(angular.bind(this, function(field) {
-        var formField = {
-          type: "input",
-          value: field.values[0],
-          name: field.var,
-          label: field.label
-        };
+        var fieldName = field.var;
+
         // don't add the same field twice
-        var newField = this._addVariableField(formField);
-        if (newField)
-          form.fields.push(newField);
+        if (! this._getVariableField(fieldName)) {
+          var formField = {
+            type: "input",
+            name: fieldName,
+            label: field.label,
+            required: field.required,
+            get canShow() {
+              if (this.resolved_by)
+                return false;
+              return true;
+            }
+          };
+          field.options.forEach(function(option) {
+            var value = option.value;
+            if (value == "True")
+              value = true;
+            else if (value == "False")
+              value = false;
+            formField[option.label] = value;
+          });
+          form.fields.push(this._addVariableField(formField));
+        }
+
       }));
       console.log(treeIndex);
       this._fillNode(treeIndex, form);
@@ -371,7 +392,10 @@ angular.module('warmonic.build', [])
 
     replace: true,
 
-    template: '<div class="form-group"><label class="control-label">{{ data.name }}</label><input type="text" name="{{ data.name }}" ng-model="data.value" ng-disabled="data.disabled" class="form-control" /></div>'
+    template: '<div class="form-group" ng-show="data.canShow"> \
+                <label class="control-label">{{ data.name }}</label> \
+                <input type="text" name="{{ data.name }}" ng-model="data.value" ng-disabled="data.disabled" class="form-control" /> \
+               </div>',
 
   };
 

@@ -201,7 +201,7 @@ angular.module('warmonic.lib.xmpp', [
   };
   this.connection = 'http://im.aeolus.org/http-bind';
 
-  this.session = xmppSession.data;
+  this.xmppSession = xmppSession.data;
   this.status = xmpp.status;
 
   this.connect = function() {
