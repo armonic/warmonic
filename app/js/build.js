@@ -246,8 +246,8 @@ angular.module('warmonic.build', [])
             name: fieldName,
             label: field.label,
             required: field.required,
-            get canShow() {
-              if (this.resolved_by)
+            get show() {
+              if (this.resolved_by || this.set_by)
                 return false;
               return true;
             }
@@ -392,7 +392,7 @@ angular.module('warmonic.build', [])
 
     replace: true,
 
-    template: '<div class="form-group" ng-show="data.canShow"> \
+    template: '<div class="form-group" ng-show="data.show"> \
                 <label class="control-label">{{ data.name }}</label> \
                 <input type="text" name="{{ data.name }}" ng-model="data.value" ng-disabled="data.disabled" class="form-control" /> \
                </div>',
