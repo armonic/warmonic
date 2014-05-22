@@ -4,10 +4,9 @@ angular.module('warmonic.build.services', [])
 
 .factory('build', ['$q', 'commands', 'global', function($q, commands, global) {
 
-  // clean command
-  var _cmd = commands.create('build'),
-      tree = null,
-      variablesFields = null;
+  var _cmd,
+      tree,
+      variablesFields;
 
   return {
 
@@ -16,6 +15,8 @@ angular.module('warmonic.build.services', [])
       tree = {children: [], data: null};
       // init variablesFields list
       variablesFields = {};
+      // init build command
+      _cmd = commands.create('build');
     },
 
     tree: function() {
@@ -91,7 +92,6 @@ angular.module('warmonic.build.services', [])
     run: function(xpath) {
 
       this.init();
-
       commands.execute(_cmd)
 
       .then(angular.bind(this, function(cmd) {
