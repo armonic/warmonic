@@ -2,7 +2,7 @@
 
 angular.module('warmonic.build.services', [])
 
-.factory('build', ['$q', 'commands', function($q, commands) {
+.factory('build', ['$q', 'commands', 'global', function($q, commands, global) {
 
   // clean command
   var _cmd = commands.create('build'),
@@ -142,10 +142,14 @@ angular.module('warmonic.build.services', [])
           options = [];
 
       if (xpaths.length == 2) {
+        // on normal mode call by default
+        if (! global.options.expertMode)
+          this.specializeNode(cmd, xpaths[1]);
+
         label = "Call " + xpaths[1] + " ?";
         options = [
           {label: "Yes", value: xpaths[1]},
-          {label: "No", value: xpaths[0]}
+          {label: "Manual", value: xpaths[0]}
         ];
       }
       else {
@@ -235,8 +239,10 @@ angular.module('warmonic.build.services', [])
             get show() {
               if (this.resolved_by || this.set_by)
                 return false;
+              if (this.expert && !global.options.expertMode)
+                return false;
               return true;
-            }
+            },
           };
           field.options.forEach(function(option) {
             var value = option.value;

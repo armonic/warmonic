@@ -110,7 +110,7 @@ angular.module('warmonic.build.directives', [])
 
     replace: true,
 
-    template: '<div class="form-group" ng-show="data.show"> \
+    template: '<div class="form-group" ng-show="data.show" ng-class="{\'has-warning\': data.expert}"> \
                 <label class="control-label" for="{{ data.name }}">{{ data.label }}</label> \
                 <input type="text" name="{{ data.name }}" id="{{ data.name }}" ng-model="data.value" ng-disabled="data.disabled" class="form-control" /> \
                 <p class="help-block"><small>{{ data.name }}</small></p> \

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/angular.treeview.css">
 </head>
 <body>
-  <nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="loginCtrl as login" ng-show="login.status.code == 5 || login.status.code == 8">
+  <nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="navCtrl as nav" ng-show="nav.xmppSession.data.jid">
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand" ui-sref="login">Warmonic</a>
@@ -17,9 +17,12 @@
         <li ui-sref-active="active"><a ui-sref="provides">Provides</a></li>
         <li ui-sref-active="active"><a ui-sref="build">Build</a></li>
       </ul>
-      <div class="pull-right">
+      <div class="pull-right" ng-controller="loginCtrl as login">
+        <button type="button" class="btn navbar-btn" ng-click="nav.toggleExpertMode()" ng-class="{'btn-info': ! nav.inExpertMode(), 'btn-warning': nav.inExpertMode()}">
+          {{ nav.inExpertMode() ? "Expert mode" : "Normal mode" }}
+        </button>
         <span master-status></span>
-        <button type="button" class="btn btn-default navbar-btn" ng-click="login.disconnect()">Disconnect {{ login.xmppSession.jid | bareJid }}</button>
+        <button type="button" class="btn btn-default navbar-btn" ng-click="login.disconnect()">Disconnect {{ nav.xmppSession.data.jid | bareJid }}</button>
       </div>
     </div>
   </nav>
@@ -68,6 +71,7 @@
   <script src="js/utils.js"></script>
   <script src="js/logger.js"></script>
   <script src="js/xmpp.js"></script>
+  <script src="js/nav.js"></script>
   <script src="js/roster.js"></script>
   <script src="js/commands.js"></script>
   <script src="js/provides.js"></script>

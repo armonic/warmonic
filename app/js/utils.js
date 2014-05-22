@@ -77,6 +77,35 @@ angular.module('warmonic.lib.utils', [])
   };
 }])
 
+.factory('global', ['$cookieStore', function($cookieStore) {
+
+  var global = {
+    options: {
+      expertMode: false
+    },
+
+    load: function() {
+      this.options = $cookieStore.get('global') || this.options;
+    },
+
+    save: function() {
+      $cookieStore.put('global', this.options);
+    },
+
+    toggleOption: function(optionName) {
+      if (this.options[optionName] === true || this.options[optionName] === false) {
+        this.options[optionName] = ! this.options[optionName];
+        this.save();
+      }
+    }
+  };
+
+  global.load();
+
+  return global;
+
+}])
+
 .directive('spinner', function() {
   return {
     restrict: 'A',
