@@ -42,7 +42,7 @@ angular.module('warmonic.lib.xmpp.roster', [
     updateItems: function(items) {
       // Add online key to each item
       items.forEach(angular.bind(this, function(item) {
-        item.online = this.isOnline(item);
+        item.online = this.isItemOnline(item);
         item.show = false;
         item.name = Strophe.getNodeFromJid(item.jid);
         if (item.subscription == "to" || item.subscription == "both")
@@ -54,7 +54,7 @@ angular.module('warmonic.lib.xmpp.roster', [
       xmppSession.data.rosterItems = items;
     },
 
-    isOnline: function(item) {
+    isItemOnline: function(item) {
       if (Object.getOwnPropertyNames(item.resources).length > 0) {
         return true;
       }
@@ -65,7 +65,7 @@ angular.module('warmonic.lib.xmpp.roster', [
       if (xmpp.connected) {
         var roster = xmpp.connection.roster;
         try {
-          return this.isOnline(roster.findItem(jid));
+          return this.isItemOnline(roster.findItem(jid));
         }
         catch (err) {
           return false;
