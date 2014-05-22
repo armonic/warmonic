@@ -81,7 +81,8 @@ angular.module('warmonic.lib.utils', [])
 
   var global = {
     options: {
-      expertMode: false
+      expertMode: false,
+      debugMode: false
     },
 
     load: function() {

@@ -14,4 +14,12 @@ angular.module('warmonic.nav', [])
     return global.options.expertMode;
   };
 
+  this.toggleDebugMode = function() {
+    global.toggleOption("debugMode");
+  };
+
+  this.inDebugMode = function() {
+    return global.options.debugMode;
+  };
+
 }]);

@@ -3,7 +3,7 @@
     <div class="col-md-6">
       <form role="form" ng-submit="build.run(build.provide)" class="form-inline">
         <div class="input-group">
-          <input ng-model="build.provide" type="text" class="form-control" />
+          <input ng-model="build.provide" type="text" class="form-control" placeholder="Provide xpath to build..." />
           <span class="input-group-btn">
             <button type="submit" class="btn btn-default">Build</button>
           </span>
@@ -13,16 +13,15 @@
   </div>
   <div class="row">
     <div class="col-md-4">
-      <h4>Deployment tree render</h4>
       <div class="tree">
         <tree node="build.tree()" />
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4" ng-if="global.options.debugMode">
       <h4>Deployment tree</h4>
       <pre>{{ build.tree() | stringify }}</pre>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4" ng-if="global.options.debugMode">
       <h4>Deployment variables</h4>
       <pre>{{ build.variables() | stringify }}</pre>
     </div>

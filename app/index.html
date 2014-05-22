@@ -21,6 +21,9 @@
         <button type="button" class="btn navbar-btn" ng-click="nav.toggleExpertMode()" ng-class="{'btn-info': ! nav.inExpertMode(), 'btn-warning': nav.inExpertMode()}">
           {{ nav.inExpertMode() ? "Expert mode" : "Normal mode" }}
         </button>
+        <button type="button" class="btn navbar-btn" ng-click="nav.toggleDebugMode()" ng-class="{'btn-danger': nav.inDebugMode()}">
+          {{ nav.inDebugMode() ? "Debug on" : "Debug off" }}
+        </button>
         <span master-status></span>
         <button type="button" class="btn btn-default navbar-btn" ng-click="login.disconnect()">Disconnect {{ nav.xmppSession.data.jid | bareJid }}</button>
       </div>
