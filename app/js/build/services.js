@@ -37,18 +37,30 @@ angular.module('warmonic.build.services', [])
     },
 
     _getFormField: function(cmd, fieldName) {
-      var value;
+      var f;
       cmd.form.fields.forEach(function(field) {
         if (field.var == fieldName)
-          value = field.values;
+          f = field;
       });
-      if (value.length == 1)
-        return value[0];
-      return value;
+      return f;
+    },
+
+    _getFormFieldValue: function(cmd, fieldName) {
+      console.log(fieldName);
+      console.log(cmd);
+      var field = this._getFormField(cmd, fieldName);
+      if (field && field.values.length == 1)
+        return field.values[0];
+      return field.values || null;
+    },
+
+    _getFormFieldAttr: function(cmd, fieldName, attrName) {
+      var field = this._getFormField(cmd, fieldName);
+      return field[attrName] || null;
     },
 
     _getTreeIndex: function(cmd) {
-      var strTreeIndex = this._getFormField(cmd, "tree_id");
+      var strTreeIndex = this._getFormFieldValue(cmd, "tree_id");
       var treeIndex = strTreeIndex.replace('[', '').replace(']', '').split(',').map(function(i) {
         return parseInt(i.trim());
       });
@@ -201,12 +213,13 @@ angular.module('warmonic.build.services', [])
 
     validation: function(cmd) {
       var treeIndex = this._getTreeIndex(cmd),
-          provideName = this._getFormField(cmd, "provide");
+          provideName = this._getFormFieldValue(cmd, "provide"),
+          provideLabel = this._getFormFieldAttr(cmd, "provide", "label");
 
       // Configuration form to display
       var form = {
         type: "form",
-        legend: provideName + " configuration",
+        legend: provideLabel,
         fields: []
       };
       // add configuration fields to the form
