@@ -30,8 +30,6 @@ angular.module('warmonic.build.services', [])
     _onRecv: function(cmd) {
       if (cmd.form.instructions == "specialize")
         this.specialize(cmd);
-      if (cmd.form.instructions == "manage")
-        this.manage(cmd);
       if (cmd.form.instructions == "validation")
         this.validation(cmd);
       if (cmd.form.instructions == "done")
@@ -199,20 +197,6 @@ angular.module('warmonic.build.services', [])
         this._onRecv(cmd);
       }));
 
-    },
-
-    manage: function(cmd) {
-      var xpath = cmd.form.fields[0].values[0];
-      // always manage for now
-      var form = $form({
-        type: "submit",
-        fields: [
-          $field({var: "xpath", value: xpath})
-        ]
-      });
-
-      commands.next(cmd, form)
-      .then(angular.bind(this, this._onRecv));
     },
 
     validation: function(cmd) {
