@@ -250,6 +250,8 @@ angular.module('warmonic.build.services', [])
               value = true;
             else if (value == "False")
               value = false;
+            else if (value == "None")
+              value = "";
             formField[option.label] = value;
           });
           form.fields.push(this._addVariableField(formField));
