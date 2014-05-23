@@ -20,7 +20,7 @@
       <div class="provides-list row">
         <div class="provide col-md-4" ng-repeat="provide in provides.list">
           <div class="well">
-            <h3>{{ provide.label }}</h3>
+            <h3>{{ provide.label }} <small ng-if="global.options.debugMode">({{ provide.xpath }})</small></h3>
             <p><span class="label label-info" ng-repeat="tag in provide.tags">{{ tag }}</span></p>
             <p>{{ provide.desc }}</p>
             <a class="btn btn-primary" ui-sref="build({provide: provide.xpath})" ui-sref-opts="{reload: true}">Build</a>

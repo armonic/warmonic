@@ -58,11 +58,13 @@ body {
 }
 
 .provide h3 {
-  min-height: 2em;
-  max-height: 2em;
   font-size: 15px;
   margin-top: 0px;
   font-weight: 700;
+}
+
+.provide h3 small {
+  font-size: 80%;
 }
 
 .provides-tag button {
