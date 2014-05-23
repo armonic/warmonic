@@ -69,6 +69,10 @@ body {
   margin: 3px;
 }
 
+.tree {
+  margin-top: 1px;
+}
+
 .tree form {
   display: inline;
 }
@@ -85,9 +89,9 @@ body {
 
 .tree li {
   margin-top: -1px;
-  border-bottom: 1px solid #999999;
-  border-left: 1px solid #999999;
-  border-top: 1px solid #F5F5F5;
+  border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-top: 1px solid white;
   padding: 5px 10px;
 }
 
@@ -97,4 +101,8 @@ body {
 
 .container-fluid {
   margin: auto 10px;
+}
+
+.tree .specialize button {
+  margin-right: .5em;
 }

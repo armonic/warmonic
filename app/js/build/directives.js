@@ -52,6 +52,10 @@ angular.module('warmonic.build.directives', [])
           <nodeselect data="data" /> \
         </span> \
         \
+        <span ng-switch-when="specialize"> \
+          <nodespecialize data="data" /> \
+        </span> \
+        \
         <form ng-switch-when="form" role="form"> \
           <legend>{{ data.legend }}</legend> \
           <nodeinput data="field" ng-repeat="field in data.fields" /> \
@@ -93,6 +97,35 @@ angular.module('warmonic.build.directives', [])
           }
         }
       });
+
+    }
+  };
+})
+
+.directive('nodespecialize', function() {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+      data: '='
+    },
+
+    replace: true,
+
+    template: '\
+      <div class="specialize"> \
+        <button class="btn btn-primary" ng-disabled="data.processing" ng-repeat="option in data.options" ng-click="select(option.value)">{{ option.label }}</button> \
+        <span ng-show="data.processing" spinner /> \
+      </div>',
+
+    controller: function($scope) {
+
+      $scope.select = function(value) {
+        $scope.data.processing = true;
+        $scope.data.promise.resolve(value);
+      };
 
     }
   };

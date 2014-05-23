@@ -159,14 +159,12 @@ angular.module('warmonic.build.services', [])
         if (! global.options.expertMode)
           this.specializeNode(cmd, choices[1].xpath);
 
-        label = choices[1].label + " ?";
         options = [
-          {label: "Yes", value: choices[1].xpath},
-          {label: "Manual", value: choices[0].xpath}
+          {label: choices[1].label, value: choices[1].xpath},
+          {label: choices[0].label, value: choices[0].xpath}
         ];
       }
       else {
-        label = "Choose";
         choices.forEach(function(choice) {
           if (choice.xpath != "None")
             options.push({label: choice.label, value: choice.xpath});
@@ -175,8 +173,7 @@ angular.module('warmonic.build.services', [])
 
       // field to display on the tree
       var field = {
-        type: "select",
-        label: label,
+        type: "specialize",
         options: options,
         promise: deferredSelection,
         disabled: false,
