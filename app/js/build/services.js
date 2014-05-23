@@ -118,10 +118,10 @@ angular.module('warmonic.build.services', [])
       .then(angular.bind(this, function(cmd) {
         // On the first provide, choose automatically
         // if there is only one provide
-        var xpaths = this.getSpecializeChoices(cmd);
-        if (xpaths.length == 2) {
+        var choices = this.getSpecializeChoices(cmd);
+        if (choices.length == 2) {
           // skip the None choice
-          this.specializeNode(cmd, xpaths[1]);
+          this.specializeNode(cmd, choices[1].xpath);
         }
         // else, let the user decide
         else {
@@ -132,41 +132,44 @@ angular.module('warmonic.build.services', [])
     },
 
     getSpecializeChoices: function(cmd) {
-      var xpaths = [];
+      var choices = [];
       // get possible xpaths
       cmd.form.fields.forEach(function(field) {
         if (field.var == "specialize") {
           field.options.forEach(function(option) {
-            xpaths.push(option.value);
+            choices.push({
+              label: option.label,
+              xpath: option.value
+            });
           });
         }
       });
-      return xpaths;
+      return choices;
     },
 
     specialize: function(cmd) {
-      var xpaths = this.getSpecializeChoices(cmd),
+      var choices = this.getSpecializeChoices(cmd),
           treeIndex = this._getTreeIndex(cmd),
           deferredSelection = $q.defer(),
           label,
           options = [];
 
-      if (xpaths.length == 2) {
+      if (choices.length == 2) {
         // on normal mode call by default
         if (! global.options.expertMode)
-          this.specializeNode(cmd, xpaths[1]);
+          this.specializeNode(cmd, choices[1].xpath);
 
-        label = "Call " + xpaths[1] + " ?";
+        label = choices[1].label + " ?";
         options = [
-          {label: "Yes", value: xpaths[1]},
-          {label: "Manual", value: xpaths[0]}
+          {label: "Yes", value: choices[1].xpath},
+          {label: "Manual", value: choices[0].xpath}
         ];
       }
       else {
-        label = "Choose the provide to call";
-        xpaths.forEach(function(xpath) {
-          if (xpath != "None")
-            options.push({label: xpath, value: xpath});
+        label = "Choose";
+        choices.forEach(function(choice) {
+          if (choice.xpath != "None")
+            options.push({label: choice.label, value: choice.xpath});
         });
       }
 
