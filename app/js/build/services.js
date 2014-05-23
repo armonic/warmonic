@@ -10,9 +10,13 @@ angular.module('warmonic.build.services', [])
 
   return {
 
-    init: function() {
+    _init: function() {
       // init the tree
-      tree = {children: [], data: null};
+      tree = {
+        children: [
+          {data: {type: "loading"}}
+        ],
+      };
       // init variablesFields list
       variablesFields = {};
       // init build command
@@ -46,8 +50,6 @@ angular.module('warmonic.build.services', [])
     },
 
     _getFormFieldValue: function(cmd, fieldName) {
-      console.log(fieldName);
-      console.log(cmd);
       var field = this._getFormField(cmd, fieldName);
       if (field && field.values.length == 1)
         return field.values[0];
@@ -101,7 +103,7 @@ angular.module('warmonic.build.services', [])
 
     run: function(xpath) {
 
-      this.init();
+      this._init();
       commands.execute(_cmd)
 
       .then(angular.bind(this, function(cmd) {
@@ -156,8 +158,10 @@ angular.module('warmonic.build.services', [])
 
       if (choices.length == 2) {
         // on normal mode call by default
-        if (! global.options.expertMode)
+        if (! global.options.expertMode) {
           this.specializeNode(cmd, choices[1].xpath);
+          return;
+        }
 
         options = [
           {label: choices[1].label, value: choices[1].xpath},
@@ -179,7 +183,6 @@ angular.module('warmonic.build.services', [])
         disabled: false,
         processing: false
       };
-      console.log(treeIndex);
       this._fillNode(treeIndex, field);
 
       // when choice is done
@@ -201,10 +204,10 @@ angular.module('warmonic.build.services', [])
           })
         ]
       });
+      this._fillNode(treeIndex, {type: "loading"});
 
       commands.next(cmd, form)
       .then(angular.bind(this, function(cmd) {
-        console.log(treeIndex);
         this._fillNode(treeIndex, {type: "text", value: xpath});
         this._onRecv(cmd);
       }));
@@ -255,7 +258,6 @@ angular.module('warmonic.build.services', [])
         }
 
       }));
-      console.log(treeIndex);
       this._fillNode(treeIndex, form);
 
       commands.next(cmd)
@@ -263,13 +265,9 @@ angular.module('warmonic.build.services', [])
     },
 
     done: function(cmd) {
-      console.log("end build");
       if (cmd.status != "completed") {
         commands.next(cmd)
         .then(angular.bind(this, this._onRecv));
-      }
-      else {
-        console.log(tree);
       }
     }
   };

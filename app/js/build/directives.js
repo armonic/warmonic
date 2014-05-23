@@ -44,6 +44,10 @@ angular.module('warmonic.build.directives', [])
         \
         <h4 ng-switch-when="text">{{ data.value }}</h4> \
         \
+        <span ng-switch-when="loading"> \
+          Loading <span spinner /> \
+        </span> \
+        \
         <span ng-switch-when="input"> \
           <nodeinput data="data" /> \
         </span> \
