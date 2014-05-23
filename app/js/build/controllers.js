@@ -11,4 +11,6 @@ angular.module('warmonic.build.controllers', [])
 
   if (this.urlProvide)
     build.run(this.provide);
+  else
+    build.init();
 }]);

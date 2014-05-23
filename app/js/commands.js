@@ -110,7 +110,7 @@ angular.module('warmonic.lib.xmpp.commands', [
 
     restrict: 'A',
 
-    template: '<span class="btn disabled" ng-class="{\'btn-success\': online, \'btn-danger\': !online}">Master is {{ isOnline() }}</span>',
+    template: '<span class="btn disabled" ng-class="{\'btn-success\': online, \'btn-danger\': !online}">Master {{ isOnline() }}</span>',
 
     controller: ['$scope', 'commands', 'roster', function($scope, commands, roster) {
 

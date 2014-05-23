@@ -10,13 +10,9 @@ angular.module('warmonic.build.services', [])
 
   return {
 
-    _init: function() {
+    init: function() {
       // init the tree
-      tree = {
-        children: [
-          {data: {type: "loading"}}
-        ],
-      };
+      tree = {children: []};
       // init variablesFields list
       variablesFields = {};
       // init build command
@@ -103,7 +99,10 @@ angular.module('warmonic.build.services', [])
 
     run: function(xpath) {
 
-      this._init();
+      this.init();
+
+      this._fillNode([0], {type: "loading"});
+
       commands.execute(_cmd)
 
       .then(angular.bind(this, function(cmd) {
