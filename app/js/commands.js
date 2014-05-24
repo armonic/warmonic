@@ -99,6 +99,11 @@ angular.module('warmonic.lib.xmpp.commands', [
         console.log("executeAction : "+ cmd.executeAction);
         console.log("status : "+ cmd.status);
         console.log("error : "+ cmd.error);
+      },
+
+      get providerOnline() {
+        var provider = Strophe.getBareJidFromJid(this.provider);
+        return roster.isJidOnline(provider);
       }
     };
   }]
@@ -110,15 +115,12 @@ angular.module('warmonic.lib.xmpp.commands', [
 
     restrict: 'A',
 
-    template: '<span class="btn disabled" ng-class="{\'btn-success\': online, \'btn-danger\': !online}">Master {{ isOnline() }}</span>',
+    template: '<span class="btn disabled" ng-class="{\'btn-success\': isOnline(), \'btn-danger\': !isOnline()}">Master {{ isOnline() ? "online" : "offline" }}</span>',
 
-    controller: ['$scope', 'commands', 'roster', function($scope, commands, roster) {
+    controller: ['$scope', 'commands', function($scope, commands) {
 
-      var provider = Strophe.getBareJidFromJid(commands.provider);
-      $scope.online = false;
       $scope.isOnline = function() {
-        $scope.online = roster.isJidOnline(provider);
-        return $scope.online ? "online" : "offline";
+        return commands.providerOnline;
       };
 
     }]

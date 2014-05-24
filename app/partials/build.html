@@ -3,15 +3,21 @@
     <div class="col-md-6">
       <form role="form" ng-submit="build.run(build.provide)" class="form-inline">
         <div class="input-group">
-          <input ng-model="build.provide" type="text" class="form-control" placeholder="Build provide..." />
+          <input ng-model="build.provide" ng-disabled="!build.providerOnline()" type="text" class="form-control" placeholder="Build provide..." />
           <span class="input-group-btn">
-            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-cog"/></button>
+            <button type="submit" class="btn btn-default" ng-disabled="!build.providerOnline()"><span class="glyphicon glyphicon-cog"/></button>
           </span>
         </div>
       </form>
     </div>
   </div>
-  <div class="row">
+  <div class="row" ng-if="!build.providerOnline()">
+    <div class="col-md-12">
+      <br/>
+      <p class="alert alert-danger">Master is offline, can't build any provide.</p>
+    </div>
+  </div>
+  <div class="row" ng-if="build.providerOnline()">
     <div class="col-md-4">
       <div class="tree">
         <tree node="build.tree()" />

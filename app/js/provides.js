@@ -9,6 +9,9 @@ angular.module('warmonic.provides', [
   if (!xmpp.connected)
     $state.go('login');
 
+  this.providerOnline = function() {
+    return commands.providerOnline;
+  };
   // original provides list
   this._list = [];
   // filtered provides list
@@ -17,8 +20,7 @@ angular.module('warmonic.provides', [
   this.searchFilter = "";
   this._searchFilter = "";
   this.searchId = false;
-  this.searching = true;
-  this.error = false;
+  this.searching = false;
 
   // called when something is typed in the search filter
   this.filterList = function() {
@@ -111,55 +113,66 @@ angular.module('warmonic.provides', [
     });
   };
 
-  // Get initial provides list
-  var cmd = commands.create('provides'),
-      self = this;
+  this.getList = function() {
 
-  commands.execute(cmd).then(
-    function(cmd) {
-      var result = cmd.form.toJSON();
-      result.items.forEach(function(item) {
-        var tags = [];
-        if (item.fields[1].values[0])
-          tags = item.fields[1].values[0].split(',');
+    var cmd = commands.create('provides'),
+        self = this;
 
-        // don't use internal provides
-        if (tags.indexOf('internal') > -1)
-          return;
+    self.searching = true;
+    commands.execute(cmd).then(
+      function(cmd) {
+        var result = cmd.form.toJSON();
+        result.items.forEach(function(item) {
+          var tags = [];
+          if (item.fields[1].values[0])
+            tags = item.fields[1].values[0].split(',');
 
-        var provide = {
-          'xpath': item.fields[0].values[0],
-          'tags': tags,
-          'label': item.fields[2].values[0] || item.fields[0].values[0],
-          'desc': item.fields[3].values[0]
-        };
-        provide.tags.forEach(function(tagName) {
-          var found = self.tags.some(function(tag) {
-            if (tag.name == tagName) {
-              tag.count += 1;
-              return true;
-            }
-            return false;
-          });
-          if (!found) {
-            self.tags.push({
-              name: tagName,
-              active: false,
-              count: 1
+          // don't use internal provides
+          if (tags.indexOf('internal') > -1)
+            return;
+
+          var provide = {
+            'xpath': item.fields[0].values[0],
+            'tags': tags,
+            'label': item.fields[2].values[0] || item.fields[0].values[0],
+            'desc': item.fields[3].values[0]
+          };
+          provide.tags.forEach(function(tagName) {
+            var found = self.tags.some(function(tag) {
+              if (tag.name == tagName) {
+                tag.count += 1;
+                return true;
+              }
+              return false;
             });
-          }
+            if (!found) {
+              self.tags.push({
+                name: tagName,
+                active: false,
+                count: 1
+              });
+            }
+          });
+          self._list.push(provide);
         });
-        self._list.push(provide);
-      });
-      self.list = self._list;
-      self.searching = false;
-      self.error = false;
-    },
-    function(cmd) {
-      logger.error("Failed to get provides list");
-      self.searching = false;
-      self.error = "Failed to contact " + commands.provider;
-    }
-  );
+        self.list = self._list;
+        self.searching = false;
+      },
+      function(cmd) {
+        logger.error("Failed to get provides list");
+        self.searching = false;
+      }
+    );
+
+  };
+
+  if (this.providerOnline())
+    this.getList();
+
+  $scope.$watch('provides.providerOnline()', angular.bind(this, function(newVal, oldVal) {
+    if (oldVal === false && newVal === true)
+      this.getList();
+  }));
+
 }]);
 

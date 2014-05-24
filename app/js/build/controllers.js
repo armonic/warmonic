@@ -2,10 +2,13 @@
 
 angular.module('warmonic.build.controllers', [])
 
-.controller('buildCtrl', ['$state', '$stateParams', 'xmpp', 'build', function($state, $stateParams, xmpp, build) {
+.controller('buildCtrl', ['$state', '$stateParams', 'xmpp', 'commands', 'build', function($state, $stateParams, xmpp, commands, build) {
   if (!xmpp.connected)
     $state.go('login');
 
+  this.providerOnline = function() {
+    return commands.providerOnline;
+  };
   this.urlProvide = $stateParams.provide ? true : false;
   this.provide = $stateParams.provide || null;
   this.tree = build.tree;
