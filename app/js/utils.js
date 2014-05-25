@@ -112,4 +112,13 @@ angular.module('warmonic.lib.utils', [])
     restrict: 'A',
     template: '<img src="img/loadinfo.png" alt="Loading..." />',
   };
+})
+
+.directive('focus', function() {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      element[0].focus();
+    }
+  };
 });

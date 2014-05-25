@@ -3,7 +3,7 @@
     <div class="col-md-6">
       <form role="form" ng-submit="provides.filterList()">
         <div class="input-group">
-          <input type="text" class="form-control" ng-model="provides.searchFilter" ng-keyup="provides.filterList()" ng-disabled="!provides.providerOnline()" placeholder="Search provide..." />
+          <input type="text" class="form-control" ng-model="provides.searchFilter" ng-keyup="provides.filterList()" ng-disabled="!provides.providerOnline()" placeholder="Search provide..." focus/>
           <span class="input-group-btn">
             <button type="submit" class="btn btn-default" ng-disabled="provides.searching || !provides.providerOnline()">
               <span ng-hide="provides.searching" class="glyphicon glyphicon-search"></span>
