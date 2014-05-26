@@ -169,7 +169,7 @@ angular.module('warmonic.provides', [
   if (this.providerOnline())
     this.getList();
 
-  $scope.$watch(commands.providerOnline, angular.bind(this, function(newVal, oldVal) {
+  $scope.$watch('provides.providerOnline()', angular.bind(this, function(newVal, oldVal) {
     if (oldVal === false && newVal === true)
       this.getList();
   }));
