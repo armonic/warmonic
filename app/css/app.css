@@ -109,3 +109,11 @@ body {
   margin-right: .5em;
   margin-bottom: .5em;
 }
+
+.tree h4 {
+  border-bottom: 1px solid #E5E5E5;
+  font-size: 21px;
+  margin: 0px;
+  margin-bottom: 10px;
+  line-height: inherit;
+}

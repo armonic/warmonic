@@ -122,7 +122,7 @@ angular.module('warmonic.build.services', [])
         var choices = this.getSpecializeChoices(cmd);
         if (choices.length == 2) {
           // skip the None choice
-          this.specializeNode(cmd, choices[1].xpath);
+          this.specializeNode(cmd, choices[1].xpath, choices[1].label);
         }
         // else, let the user decide
         else {
@@ -158,7 +158,7 @@ angular.module('warmonic.build.services', [])
       if (choices.length == 2) {
         // on normal mode call by default
         if (! global.options.expertMode) {
-          this.specializeNode(cmd, choices[1].xpath);
+          this.specializeNode(cmd, choices[1].xpath, choices[1].label);
           return;
         }
 
@@ -190,7 +190,7 @@ angular.module('warmonic.build.services', [])
       }));
     },
 
-    specializeNode: function(cmd, xpath) {
+    specializeNode: function(cmd, xpath, label) {
       var treeIndex = this._getTreeIndex(cmd);
 
       var form = $form({
@@ -207,7 +207,7 @@ angular.module('warmonic.build.services', [])
 
       commands.next(cmd, form)
       .then(angular.bind(this, function(cmd) {
-        this._fillNode(treeIndex, {type: "text", value: xpath});
+        this._fillNode(treeIndex, {type: "text", value: label || xpath});
         this._onRecv(cmd);
       }));
 
