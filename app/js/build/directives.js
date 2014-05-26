@@ -9,9 +9,7 @@ angular.module('warmonic.build.directives', [])
 
     restrict: 'E',
 
-    scope: {
-      node: '='
-    },
+    scope: true,
 
     replace: true,
 
@@ -20,7 +18,15 @@ angular.module('warmonic.build.directives', [])
     compile: function(element) {
         // Use the compile function from the RecursionHelper,
         // And return the linking function(s) which it returns
-        return RecursionHelper.compile(element);
+        return RecursionHelper.compile(element, this.link);
+    },
+
+    link: function(scope, element, attrs) {
+
+      scope.$watch(attrs.node, function(newVal, oldVal) {
+        scope.node = newVal;
+      });
+
     }
 
   };
@@ -33,9 +39,7 @@ angular.module('warmonic.build.directives', [])
 
     restrict: 'E',
 
-    scope: {
-      data: '='
-    },
+    scope: true,
 
     replace: true,
 
@@ -67,6 +71,14 @@ angular.module('warmonic.build.directives', [])
         \
       </span>',
 
+    link: function(scope, element, attrs) {
+
+      scope.$watch(attrs.data, function(newVal, oldVal) {
+        scope.data = newVal;
+      });
+
+    }
+
   };
 
 }])
@@ -77,9 +89,7 @@ angular.module('warmonic.build.directives', [])
 
     restrict: 'E',
 
-    scope: {
-      data: '='
-    },
+    scope: true,
 
     replace: true,
 
@@ -102,19 +112,26 @@ angular.module('warmonic.build.directives', [])
         }
       });
 
+    },
+
+    link: function(scope, element, attrs) {
+
+      scope.$watch(attrs.data, function(newVal, oldVal) {
+        scope.data = newVal;
+      });
+
     }
   };
 })
 
+/** In th specilize step use buttons instead of a select box */
 .directive('nodespecialize', function() {
 
   return {
 
     restrict: 'E',
 
-    scope: {
-      data: '='
-    },
+    scope: true,
 
     replace: true,
 
@@ -131,6 +148,14 @@ angular.module('warmonic.build.directives', [])
         $scope.data.promise.resolve(value);
       };
 
+    },
+
+    link: function(scope, element, attrs) {
+
+      scope.$watch(attrs.data, function(newVal, oldVal) {
+        scope.data = newVal;
+      });
+
     }
   };
 })
@@ -141,17 +166,23 @@ angular.module('warmonic.build.directives', [])
 
     restrict: 'E',
 
-    scope: {
-      data: '='
-    },
+    scope: true,
 
     replace: true,
 
     template: '<div class="form-group" ng-show="data.show" ng-class="{\'has-warning\': data.expert}"> \
                 <label class="control-label" for="{{ data.name }}">{{ data.label }}</label> \
                 <input type="text" name="{{ data.name }}" id="{{ data.name }}" ng-model="data.value" ng-disabled="data.disabled" class="form-control" /> \
-                <p class="help-block"><small>{{ data.name }}</small></p> \
+                <p class="help-block" ng-if="global.options.debugMode"><small>{{ data.name }}</small></p> \
                </div>',
+
+    link: function(scope, element, attrs) {
+
+      scope.$watch(attrs.data, function(newVal, oldVal) {
+        scope.data = newVal;
+      });
+
+    }
 
   };
 
