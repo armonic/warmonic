@@ -101,10 +101,6 @@ body {
   border-bottom: 0px;
 }
 
-.container-fluid {
-  margin: auto 10px;
-}
-
 .tree .specialize button {
   margin-right: .5em;
   margin-bottom: .5em;
@@ -116,4 +112,8 @@ body {
   margin: 0px;
   margin-bottom: 10px;
   line-height: inherit;
+}
+
+.container-fluid > .row {
+  margin: 0px;
 }
