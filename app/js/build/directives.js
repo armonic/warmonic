@@ -43,33 +43,7 @@ angular.module('warmonic.build.directives', [])
 
     replace: true,
 
-    template: '\
-      <span ng-switch="data.type"> \
-        \
-        <h4 ng-switch-when="text">{{ data.value }}</h4> \
-        \
-        <span ng-switch-when="loading"> \
-          Loading <span spinner /> \
-        </span> \
-        \
-        <span ng-switch-when="input"> \
-          <nodeinput data="data" /> \
-        </span> \
-        \
-        <span ng-switch-when="select"> \
-          <nodeselect data="data" /> \
-        </span> \
-        \
-        <span ng-switch-when="specialize"> \
-          <nodespecialize data="data" /> \
-        </span> \
-        \
-        <form ng-switch-when="form" role="form"> \
-          <legend>{{ data.legend }}</legend> \
-          <nodeinput data="field" ng-repeat="field in data.fields" /> \
-        </form> \
-        \
-      </span>',
+    templateUrl: 'partials/build/node.html',
 
     link: function(scope, element, attrs) {
 
@@ -93,12 +67,7 @@ angular.module('warmonic.build.directives', [])
 
     replace: true,
 
-    template: '\
-      <form role="form" class="form-inline"> \
-        <label>{{ data.label }}</label> \
-        <select ng-model="data.value" ng-disabled="data.disabled" class="form-control" ng-options="option.value as option.label for option in data.options" ng-required></select> \
-        <span ng-show="data.processing" spinner /> \
-      </form>',
+    templateUrl: 'partials/build/select.html',
 
     controller: function($scope) {
 
@@ -135,11 +104,7 @@ angular.module('warmonic.build.directives', [])
 
     replace: true,
 
-    template: '\
-      <div class="specialize"> \
-        <button class="btn btn-primary" ng-disabled="data.processing" ng-repeat="option in data.options" ng-click="select(option.value)">{{ option.label }}</button> \
-        <span ng-show="data.processing" spinner /> \
-      </div>',
+    templateUrl: 'partials/build/specialize.html',
 
     controller: function($scope) {
 
@@ -170,11 +135,7 @@ angular.module('warmonic.build.directives', [])
 
     replace: true,
 
-    template: '<div class="form-group" ng-show="data.show" ng-class="{\'has-warning\': data.expert}"> \
-                <label class="control-label" for="{{ data.name }}">{{ data.label }}</label> \
-                <input type="text" name="{{ data.name }}" id="{{ data.name }}" ng-model="data.value" ng-disabled="data.disabled" class="form-control" /> \
-                <p class="help-block" ng-if="global.options.debugMode"><small>{{ data.name }}</small></p> \
-               </div>',
+    templateUrl: 'partials/build/input.html',
 
     link: function(scope, element, attrs) {
 

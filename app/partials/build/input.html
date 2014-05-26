@@ -1,0 +1,13 @@
+<div class="form-group" ng-show="data.show" ng-class="{'has-warning': data.expert}">
+  <label class="control-label" for="{{ data.name }}">{{ data.label }}</label>
+  <input
+    type="text"
+    id="{{ data.name }}"
+    name="{{ data.name }}"
+    class="form-control"
+    ng-model="data.value"
+    ng-disabled="data.disabled || data.processing"
+    ng-required="data.required"
+  />
+  <p class="help-block" ng-if="global.options.debugMode"><small>{{ data.name }}</small></p>
+</div>

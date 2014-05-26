@@ -1,0 +1,26 @@
+<span ng-switch="data.type">
+
+  <h4 ng-switch-when="text">{{ data.value }}</h4>
+
+  <span ng-switch-when="loading">
+    Loading <span spinner />
+  </span>
+
+  <span ng-switch-when="input">
+    <nodeinput data="data" />
+  </span>
+
+  <span ng-switch-when="select">
+    <nodeselect data="data" />
+  </span>
+
+  <span ng-switch-when="specialize">
+    <nodespecialize data="data" />
+  </span>
+
+  <form ng-switch-when="form" role="form">
+    <legend>{{ data.legend }}</legend>
+    <nodeinput data="field" ng-repeat="field in data.fields" />
+  </form>
+
+</span>
