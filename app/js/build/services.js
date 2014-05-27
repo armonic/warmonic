@@ -2,29 +2,111 @@
 
 angular.module('warmonic.build.services', [])
 
-.factory('build', ['$q', 'commands', 'global', function($q, commands, global) {
+.factory('buildVariables', [function() {
 
-  var _cmd,
-      tree,
-      variablesFields;
+  var variables;
+
+  return {
+
+    init: function() {
+      // init variables list
+      variables = {};
+    },
+
+    variables: function() {
+      return variables;
+    },
+
+    addField: function(field) {
+      if (!variables[field.name]) {
+        variables[field.name] = field;
+        return variables[field.name];
+      }
+      return false;
+    },
+
+    getField: function(fieldName) {
+      return variables[fieldName] || null;
+    }
+
+  };
+
+}])
+
+.factory('buildTree', [function() {
+
+  var tree;
 
   return {
 
     init: function() {
       // init the tree
       tree = {children: []};
-      // init variablesFields list
-      variablesFields = {};
-      // init build command
-      _cmd = commands.create('build');
     },
 
     tree: function() {
       return tree;
     },
 
+    getTreeNode: function(treeIndex, node) {
+      var _treeIndex = treeIndex.slice();
+      if (!node)
+        node = tree;
+
+      var id = _treeIndex.shift();
+
+      if (!node.children)
+        node.children = [];
+
+      if (!node.children[id])
+        node.children[id] = {children: [], data: null};
+
+      if (_treeIndex.length > 0) {
+        return this.getTreeNode(_treeIndex, node.children[id]);
+      }
+
+      return node.children[id];
+    },
+
+    fillNodeData: function(treeIndex, data) {
+      var node = this.getTreeNode(treeIndex);
+      node.data = data;
+
+      return node;
+    },
+
+    fillNodeHost: function(treeIndex, host) {
+      var node = this.getTreeNode(treeIndex);
+      node.host = host;
+
+      return node;
+    }
+
+  };
+
+}])
+
+.factory('build', ['$q', 'commands', 'buildTree', 'buildVariables', 'global', function($q, commands, buildTree, buildVariables, global) {
+
+  var _cmd,
+      _tree,
+      _variables;
+
+  return {
+
+    init: function() {
+      // init build command
+      _cmd = commands.create('build');
+      buildTree.init();
+      buildVariables.init();
+    },
+
+    tree: function() {
+      return buildTree.tree();
+    },
+
     variables: function() {
-      return variablesFields;
+      return buildVariables.variables();
     },
 
     _onRecv: function(cmd) {
@@ -67,57 +149,12 @@ angular.module('warmonic.build.services', [])
       return treeIndex;
     },
 
-    _getTreeNode: function(treeIndex, node) {
-      var _treeIndex = treeIndex.slice();
-      if (!node)
-        node = tree;
-
-      var id = _treeIndex.shift();
-
-      if (!node.children)
-        node.children = [];
-
-      if (!node.children[id])
-        node.children[id] = {children: [], data: null};
-
-      if (_treeIndex.length > 0) {
-        return this._getTreeNode(_treeIndex, node.children[id]);
-      }
-
-      return node.children[id];
-    },
-
-    _fillNodeData: function(treeIndex, data) {
-      var node = this._getTreeNode(treeIndex);
-      node.data = data;
-
-      return node;
-    },
-
-    _fillNodeHost: function(treeIndex, host) {
-      var node = this._getTreeNode(treeIndex);
-      node.host = host;
-
-      return node;
-    },
-
-    _addVariableField: function(field) {
-      if (!variablesFields[field.name]) {
-        variablesFields[field.name] = field;
-        return variablesFields[field.name];
-      }
-      return false;
-    },
-
-    _getVariableField: function(fieldName) {
-      return variablesFields[fieldName] || null;
-    },
 
     run: function(xpath) {
 
       this.init();
 
-      this._fillNodeData([0], {type: "loading"});
+      buildTree.fillNodeData([0], {type: "loading"});
 
       commands.execute(_cmd)
 
@@ -198,7 +235,7 @@ angular.module('warmonic.build.services', [])
         disabled: false,
         processing: false
       };
-      this._fillNodeData(treeIndex, field);
+      buildTree.fillNodeData(treeIndex, field);
 
       // when choice is done
       deferredSelection.promise.then(angular.bind(this, function(xpath) {
@@ -219,11 +256,11 @@ angular.module('warmonic.build.services', [])
           })
         ]
       });
-      this._fillNodeData(treeIndex, {type: "loading"});
+      buildTree.fillNodeData(treeIndex, {type: "loading"});
 
       commands.next(cmd, form)
       .then(angular.bind(this, function(cmd) {
-        this._fillNodeData(treeIndex, {type: "text", value: label || xpath});
+        buildTree.fillNodeData(treeIndex, {type: "text", value: label || xpath});
         this._onRecv(cmd);
       }));
 
@@ -246,7 +283,7 @@ angular.module('warmonic.build.services', [])
         required: true,
         show: true
       };
-      var node = this._fillNodeData(treeIndex, field);
+      var node = buildTree.fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(host) {
         this.sendHostChoice(cmd, host, node);
@@ -266,7 +303,7 @@ angular.module('warmonic.build.services', [])
           })
         ]
       });
-      this._fillNodeHost(treeIndex, host);
+      buildTree.fillNodeHost(treeIndex, host);
 
       commands.next(cmd, form)
       .then(angular.bind(this, function(cmd) {
@@ -292,7 +329,7 @@ angular.module('warmonic.build.services', [])
         var fieldName = field.var;
 
         // don't add the same field twice
-        if (! this._getVariableField(fieldName)) {
+        if (! buildVariables.getField(fieldName)) {
           var formField = {
             type: "input",
             name: fieldName,
@@ -316,11 +353,11 @@ angular.module('warmonic.build.services', [])
               value = "";
             formField[option.label] = value;
           });
-          form.fields.push(this._addVariableField(formField));
+          form.fields.push(buildVariables.addField(formField));
         }
 
       }));
-      this._fillNodeData(treeIndex, form);
+      buildTree.fillNodeData(treeIndex, form);
 
       commands.next(cmd)
       .then(angular.bind(this, this._onRecv));
