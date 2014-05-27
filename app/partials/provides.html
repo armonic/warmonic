@@ -33,7 +33,7 @@
       <h2>Tag cloud</h2>
       <span ng-repeat="tag in provides.tags" class="provides-tag">
         <button class="btn"
-          ng-class="{'active': tag.active, 'btn-xs': tag.count < 3, 'btn-sm': tag.count < 6, 'btn-lg': tag.count > 9}"
+          ng-class="{'btn-info': tag.active, 'btn-xs': tag.count < 3, 'btn-sm': tag.count < 6, 'btn-lg': tag.count > 9}"
           ng-click="tag.active = !tag.active">{{ tag.name }}
           <span class="glyphicon" ng-class="{'glyphicon-minus': tag.active, 'glyphicon-plus': !tag.active}" />
         </button>
