@@ -9,10 +9,11 @@
       ng-model="data.value"
       ng-disabled="data.disabled || data.processing"
       ng-required="data.required"
+      wa-enter="submit()"
     />
     <span class="input-group-btn" ng-if="data.promise">
       <button type="submit" class="btn btn-default" ng-disabled="data.disabled || data.processing" ng-click="submit()">
-        <span ng-if="data.processing" spinner />
+        <span ng-if="data.processing" wa-spinner />
         <span ng-if="!data.processing">Ok</span>
       </button>
     </span>

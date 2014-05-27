@@ -107,18 +107,29 @@ angular.module('warmonic.lib.utils', [])
 
 }])
 
-.directive('spinner', function() {
+.directive('waSpinner', function() {
   return {
     restrict: 'A',
     template: '<img src="img/loadinfo.png" alt="Loading..." />',
   };
 })
 
-.directive('focus', function() {
-  return {
-    restrict: 'A',
-    link: function(scope, element, attrs) {
-      element[0].focus();
-    }
+.directive('waFocus', function() {
+  return function(scope, element, attrs) {
+    element[0].focus();
+  };
+})
+
+.directive('waEnter', function () {
+   return function (scope, element, attrs) {
+    element.bind("keydown keypress", function (event) {
+      if(event.which === 13) {
+        scope.$apply(function () {
+          scope.$eval(attrs.waEnter);
+        });
+
+        event.preventDefault();
+      }
+    });
   };
 });
