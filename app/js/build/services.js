@@ -67,7 +67,7 @@ angular.module('warmonic.build.services', [])
       return treeIndex;
     },
 
-    _fillNode: function(treeIndex, data, node) {
+    _getTreeNode: function(treeIndex, node) {
       var _treeIndex = treeIndex.slice();
       if (!node)
         node = tree;
@@ -81,10 +81,24 @@ angular.module('warmonic.build.services', [])
         node.children[id] = {children: [], data: null};
 
       if (_treeIndex.length > 0) {
-        return this._fillNode(_treeIndex, data, node.children[id]);
+        return this._getTreeNode(_treeIndex, node.children[id]);
       }
 
-      node.children[id].data = data;
+      return node.children[id];
+    },
+
+    _fillNodeData: function(treeIndex, data) {
+      var node = this._getTreeNode(treeIndex);
+      node.data = data;
+
+      return node;
+    },
+
+    _fillNodeHost: function(treeIndex, host) {
+      var node = this._getTreeNode(treeIndex);
+      node.host = host;
+
+      return node;
     },
 
     _addVariableField: function(field) {
@@ -103,7 +117,7 @@ angular.module('warmonic.build.services', [])
 
       this.init();
 
-      this._fillNode([0], {type: "loading"});
+      this._fillNodeData([0], {type: "loading"});
 
       commands.execute(_cmd)
 
@@ -184,7 +198,7 @@ angular.module('warmonic.build.services', [])
         disabled: false,
         processing: false
       };
-      this._fillNode(treeIndex, field);
+      this._fillNodeData(treeIndex, field);
 
       // when choice is done
       deferredSelection.promise.then(angular.bind(this, function(xpath) {
@@ -205,11 +219,11 @@ angular.module('warmonic.build.services', [])
           })
         ]
       });
-      this._fillNode(treeIndex, {type: "loading"});
+      this._fillNodeData(treeIndex, {type: "loading"});
 
       commands.next(cmd, form)
       .then(angular.bind(this, function(cmd) {
-        this._fillNode(treeIndex, {type: "text", value: label || xpath});
+        this._fillNodeData(treeIndex, {type: "text", value: label || xpath});
         this._onRecv(cmd);
       }));
 
@@ -232,14 +246,14 @@ angular.module('warmonic.build.services', [])
         required: true,
         show: true
       };
-      this._fillNode(treeIndex, field);
+      var node = this._fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(host) {
-        this.sendHostChoice(cmd, host, field);
+        this.sendHostChoice(cmd, host, node);
       }));
     },
 
-    sendHostChoice: function(cmd, host, field) {
+    sendHostChoice: function(cmd, host, node) {
       var treeIndex = this._getTreeIndex(cmd);
 
       var form = $form({
@@ -252,15 +266,15 @@ angular.module('warmonic.build.services', [])
           })
         ]
       });
+      this._fillNodeHost(treeIndex, host);
 
       commands.next(cmd, form)
       .then(angular.bind(this, function(cmd) {
-        field.processing = false;
+        node.data.processing = false;
         this._onRecv(cmd);
       }));
 
     },
-
 
     validation: function(cmd) {
       var treeIndex = this._getTreeIndex(cmd),
@@ -270,7 +284,7 @@ angular.module('warmonic.build.services', [])
       // Configuration form to display
       var form = {
         type: "form",
-        legend: provideLabel,
+        label: provideLabel,
         fields: []
       };
       // add configuration fields to the form
@@ -306,7 +320,7 @@ angular.module('warmonic.build.services', [])
         }
 
       }));
-      this._fillNode(treeIndex, form);
+      this._fillNodeData(treeIndex, form);
 
       commands.next(cmd)
       .then(angular.bind(this, this._onRecv));

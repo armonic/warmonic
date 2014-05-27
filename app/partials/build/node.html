@@ -19,7 +19,7 @@
   </span>
 
   <form ng-switch-when="form" role="form">
-    <legend>{{ data.legend }}</legend>
+    <legend>{{ data.label }} <span ng-if="host">on {{ host }}</span></legend>
     <nodeinput data="field" ng-repeat="field in data.fields" />
   </form>
 
