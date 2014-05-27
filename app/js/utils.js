@@ -107,6 +107,7 @@ angular.module('warmonic.lib.utils', [])
 
 }])
 
+/** Show loading information in an element */
 .directive('waSpinner', function() {
   return {
     restrict: 'A',
@@ -114,12 +115,14 @@ angular.module('warmonic.lib.utils', [])
   };
 })
 
+/** Focus the element */
 .directive('waFocus', function() {
   return function(scope, element, attrs) {
     element[0].focus();
   };
 })
 
+/** Execute a function then enter is pressed on the element */
 .directive('waEnter', function () {
    return function (scope, element, attrs) {
     element.bind("keydown keypress", function (event) {
