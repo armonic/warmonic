@@ -137,6 +137,18 @@ angular.module('warmonic.build.directives', [])
 
     templateUrl: 'partials/build/input.html',
 
+    controller: function($scope) {
+
+      $scope.submit = function() {
+        if ($scope.data.promise) {
+          $scope.data.processing = true;
+          $scope.data.disabled = true;
+          $scope.data.promise.resolve($scope.data.value);
+        }
+      };
+
+    },
+
     link: function(scope, element, attrs) {
 
       scope.$watch(attrs.data, function(newVal, oldVal) {

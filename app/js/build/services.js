@@ -30,6 +30,8 @@ angular.module('warmonic.build.services', [])
     _onRecv: function(cmd) {
       if (cmd.form.instructions == "specialize")
         this.specialize(cmd);
+      if (cmd.form.instructions == "post_specialize")
+        this.hostChoice(cmd);
       if (cmd.form.instructions == "validation")
         this.validation(cmd);
       if (cmd.form.instructions == "done")
@@ -122,7 +124,7 @@ angular.module('warmonic.build.services', [])
         var choices = this.getSpecializeChoices(cmd);
         if (choices.length == 2) {
           // skip the None choice
-          this.specializeNode(cmd, choices[1].xpath, choices[1].label);
+          this.sendSpecialize(cmd, choices[1].xpath, choices[1].label);
         }
         // else, let the user decide
         else {
@@ -158,7 +160,7 @@ angular.module('warmonic.build.services', [])
       if (choices.length == 2) {
         // on normal mode call by default
         if (! global.options.expertMode) {
-          this.specializeNode(cmd, choices[1].xpath, choices[1].label);
+          this.sendSpecialize(cmd, choices[1].xpath, choices[1].label);
           return;
         }
 
@@ -186,11 +188,11 @@ angular.module('warmonic.build.services', [])
 
       // when choice is done
       deferredSelection.promise.then(angular.bind(this, function(xpath) {
-        this.specializeNode(cmd, xpath);
+        this.sendSpecialize(cmd, xpath);
       }));
     },
 
-    specializeNode: function(cmd, xpath, label) {
+    sendSpecialize: function(cmd, xpath, label) {
       var treeIndex = this._getTreeIndex(cmd);
 
       var form = $form({
@@ -212,6 +214,53 @@ angular.module('warmonic.build.services', [])
       }));
 
     },
+
+    hostChoice: function(cmd) {
+      var treeIndex = this._getTreeIndex(cmd),
+          provideName = this._getFormFieldValue(cmd, 'provide'),
+          label = this._getFormFieldAttr(cmd, 'host', 'label'),
+          host = this._getFormFieldValue(cmd, 'host'),
+          deferredSelection = $q.defer();
+
+      var field = {
+        type: "input",
+        label: label,
+        value: host,
+        promise: deferredSelection,
+        disabled: false,
+        processing: false,
+        required: true,
+        show: true
+      };
+      this._fillNode(treeIndex, field);
+
+      deferredSelection.promise.then(angular.bind(this, function(host) {
+        this.sendHostChoice(cmd, host, field);
+      }));
+    },
+
+    sendHostChoice: function(cmd, host, field) {
+      var treeIndex = this._getTreeIndex(cmd);
+
+      var form = $form({
+        type: "submit",
+        fields: [
+          $field({
+            var: "host",
+            value: host,
+            type: "input-single"
+          })
+        ]
+      });
+
+      commands.next(cmd, form)
+      .then(angular.bind(this, function(cmd) {
+        field.processing = false;
+        this._onRecv(cmd);
+      }));
+
+    },
+
 
     validation: function(cmd) {
       var treeIndex = this._getTreeIndex(cmd),
