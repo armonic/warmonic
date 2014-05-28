@@ -77,10 +77,10 @@ angular.module('warmonic.build.directives', [])
 
       $scope.$watch('data.value', function(newVal, oldVal, scope) {
         if (newVal !== oldVal) {
-          if (scope.data.promise) {
+          if (scope.data.params.promise) {
             scope.data.processing = true;
             scope.data.disabled = true;
-            scope.data.promise.resolve(newVal);
+            scope.data.params.promise.resolve(newVal);
           }
         }
       });
@@ -114,7 +114,7 @@ angular.module('warmonic.build.directives', [])
 
       $scope.select = function(value) {
         $scope.data.processing = true;
-        $scope.data.promise.resolve(value);
+        $scope.data.params.promise.resolve(value);
       };
 
     },
@@ -144,10 +144,10 @@ angular.module('warmonic.build.directives', [])
     controller: function($scope) {
 
       $scope.submit = function() {
-        if ($scope.data.promise) {
+        if ($scope.data.params.promise) {
           $scope.data.processing = true;
           $scope.data.disabled = true;
-          $scope.data.promise.resolve($scope.data.value);
+          $scope.data.params.promise.resolve($scope.data.value);
         }
       };
 

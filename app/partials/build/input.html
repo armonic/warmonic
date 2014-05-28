@@ -1,4 +1,4 @@
-<div class="form-group" ng-show="data.show" ng-class="{'has-warning': data.expert}">
+<div class="form-group" ng-show="data.show" ng-class="{'has-warning': data.params.expert}">
   <label class="control-label" for="{{ data.name }}">{{ data.label }}</label>
   <div class="input-group">
     <input
@@ -10,9 +10,9 @@
       ng-disabled="data.disabled || data.processing"
       ng-required="data.required"
       wa-enter="submit()"
-      tooltip="{{ data.tooltip }}"
+      tooltip="{{ data.help }}"
     />
-    <span class="input-group-btn" ng-if="data.promise">
+    <span class="input-group-btn" ng-if="data.params.promise">
       <button type="submit" class="btn btn-default" ng-disabled="data.disabled || data.processing" ng-click="submit()">
         <span ng-if="data.processing" wa-spinner />
         <span ng-if="!data.processing">Ok</span>

@@ -2,11 +2,15 @@
 
 angular.module('warmonic.build.services', [])
 
-.factory('buildVariables', [function() {
+.factory('buildVariables', ['global', function(global) {
 
   var variables;
 
-  return {
+  /** BuildVariables service used to create
+   * variables fields and keep a reference
+   * to them if necessary.
+   */
+  var BuildVariables = {
 
     init: function() {
       // init variables list
@@ -17,19 +21,118 @@ angular.module('warmonic.build.services', [])
       return variables;
     },
 
-    addField: function(field) {
-      if (!variables[field.name]) {
-        variables[field.name] = field;
-        return variables[field.name];
-      }
-      return false;
+    /** Just create a new field */
+    createField: function(type, name, params) {
+      var field = new VariableField(type, name, params);
+
+      return field;
     },
 
+    /** Create a field and save a reference on it */
+    addField: function(type, name, params) {
+      // Don't add the same variable twice
+      if (!variables[name]) {
+        variables[name] = this.createField(type, name, params);
+        return variables[name];
+      }
+      return variables[name];
+    },
+
+    /** Get already created field */
     getField: function(fieldName) {
       return variables[fieldName] || null;
     }
 
   };
+
+  /** VariableField object used to instanciate
+   * new variables fields
+   */
+  var VariableField = function(type, name, params) {
+    this.type = type;
+    this.name = name;
+    this.params = {
+      value: "",
+      label: "",
+      help: "",
+      suggested_by: "",
+      resolved_by: "",
+      set_by: "",
+      promise: null,
+      expert: false,
+      fields: []
+    };
+    this.disabled = false;
+    this.processing = false;
+    this.required = false;
+
+    angular.extend(this.params, params);
+
+    this.sanitizeParamsValues();
+  };
+
+  VariableField.prototype = {
+
+    sanitizeParamsValues: function() {
+
+      angular.forEach(this.params, angular.bind(this, function(value, key) {
+        if (value == "True")
+          value = true;
+        else if (value == "False")
+          value = false;
+        else if (value == "None")
+          value = "";
+        this.params[key] = value;
+      }));
+
+    },
+
+    get fields() {
+      return this.params.fields;
+    },
+
+    get value() {
+      return this.params.value;
+    },
+
+    set value(data) {
+      this.params.value = data;
+    },
+
+    /** Get the label text to show */
+    get label() {
+      var labelText = this.params.label || this.name;
+      if (this.params.suggested_by) {
+        var suggested_by_field = BuildVariables.getField(this.params.suggested_by);
+        if (suggested_by_field && suggested_by_field.label)
+          labelText = suggested_by_field.label;
+      }
+      return labelText;
+    },
+
+    /** Get the tooltip text to show */
+    get help() {
+      var tooltipText = this.params.help || null;
+      if (this.params.suggested_by) {
+        var suggested_by_field = BuildVariables.getField(this.params.suggested_by);
+        if (suggested_by_field && suggested_by_field.help)
+          tooltipText = suggested_by_field.help;
+      }
+      return tooltipText;
+    },
+
+    /** Should the field be visible ? */
+    get show() {
+      if (this.params.resolved_by || this.params.set_by)
+        return false;
+      if (this.params.expert && !global.options.expertMode)
+        return false;
+      return true;
+    },
+
+  };
+
+  return BuildVariables;
 
 }])
 
@@ -37,12 +140,15 @@ angular.module('warmonic.build.services', [])
 
   var trees = {};
 
+  /** BuildTree object used to create
+   * the structure for the build service
+   */
   var BuildTree = function() {
       // init the tree
       this._tree = {};
   };
 
-  angular.extend(BuildTree.prototype, {
+  BuildTree.prototype = {
 
     getRootNode: function() {
       return this._tree;
@@ -96,8 +202,11 @@ angular.module('warmonic.build.services', [])
       return node;
     }
 
-  });
+  };
 
+  /** buildTree service manage a list
+   * of BuildTree instances
+   */
   return {
 
     get: function(id) {
@@ -133,7 +242,7 @@ angular.module('warmonic.build.services', [])
       // init build command
       _cmd = commands.create('build');
       tree = buildTree.create('build');
-
+      this.data.sessionId = null;
       buildVariables.init();
     },
 
@@ -268,13 +377,13 @@ angular.module('warmonic.build.services', [])
       }
 
       // field to display on the tree
-      var field = {
-        type: "specialize",
-        options: options,
+      var fieldParams = {
+        fields: options,
         promise: deferredSelection,
-        disabled: false,
-        processing: false
       };
+      var field = buildVariables.createField("specialize",
+                                             null,
+                                             fieldParams);
       tree.fillNodeData(treeIndex, field);
 
       // when choice is done
@@ -321,16 +430,14 @@ angular.module('warmonic.build.services', [])
           host = this._getFormFieldValue(cmd, 'host'),
           deferredSelection = $q.defer();
 
-      var field = {
-        type: "input",
+      var fieldParams = {
         label: label,
         value: host,
         promise: deferredSelection,
-        disabled: false,
-        processing: false,
-        required: true,
-        show: true
       };
+      var field = buildVariables.createField("input",
+                                             null,
+                                             fieldParams);
       var node = tree.fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(host) {
@@ -367,51 +474,24 @@ angular.module('warmonic.build.services', [])
           provideLabel = this._getFormFieldAttr(cmd, "provide", "label");
 
       // Configuration form to display
-      var form = {
-        type: "form",
-        label: provideLabel,
-        fields: []
-      };
+      var form = buildVariables.createField("form",
+                                            null,
+                                            {label: provideLabel});
       // add configuration fields to the form
       cmd.form.fields.slice(2).forEach(angular.bind(this, function(field) {
-        var fieldName = field.var;
+        var fieldName = field.var,
+            formField,
+            params = {};
 
-        // don't add the same field twice
-        if (! buildVariables.getField(fieldName)) {
-          var formField = {
-            type: "input",
-            name: fieldName,
-            label: field.label,
-            required: field.required,
-            get show() {
-              if (this.resolved_by || this.set_by)
-                return false;
-              if (this.expert && !global.options.expertMode)
-                return false;
-              return true;
-            },
-            get tooltip() {
-              var tooltipText = this.help || null;
-              if (this.suggested_by) {
-                var suggested_by_field = buildVariables.getField(this.suggested_by);
-                if (suggested_by_field && suggested_by_field.help)
-                  tooltipText = suggested_by_field.help;
-              }
-              return tooltipText;
-            }
-          };
-          field.options.forEach(function(option) {
-            var value = option.value;
-            if (value == "True")
-              value = true;
-            else if (value == "False")
-              value = false;
-            else if (value == "None")
-              value = "";
-            formField[option.label] = value;
-          });
-          form.fields.push(buildVariables.addField(formField));
-        }
+        field.options.forEach(function(option) {
+          params[option.label] = option.value;
+        });
+
+        formField = buildVariables.addField("input",
+                                            fieldName,
+                                            params);
+        if (formField)
+          form.fields.push(formField);
 
       }));
       tree.fillNodeData(treeIndex, form);
