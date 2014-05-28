@@ -39,7 +39,7 @@ angular.module('warmonic.build.services', [])
 
   var BuildTree = function() {
       // init the tree
-      this._tree = {children: []};
+      this._tree = {children: {}};
   };
 
   angular.extend(BuildTree.prototype, {
@@ -56,16 +56,23 @@ angular.module('warmonic.build.services', [])
       var id = _treeIndex.shift();
 
       if (!node.children)
-        node.children = [];
+        node.children = {};
 
       if (!node.children[id])
-        node.children[id] = {children: [], data: null};
+        node.children[id] = {children: {}, data: null};
 
       if (_treeIndex.length > 0) {
         return this.getTreeNode(_treeIndex, node.children[id]);
       }
 
       return node.children[id];
+    },
+
+    deleteNode: function(treeIndex) {
+      var nodeIndex = treeIndex.pop();
+      var node = this.getTreeNode(treeIndex);
+
+      delete node.children[nodeIndex];
     },
 
     emptyNode: function(treeIndex) {
@@ -297,7 +304,7 @@ angular.module('warmonic.build.services', [])
         // don't show anything if the
         // requirement is manually managed
         if (xpath == "None")
-          tree.emptyNode(treeIndex);
+          tree.deleteNode(treeIndex);
         else
           tree.fillNodeData(treeIndex, {type: "text", value: label || xpath});
 
