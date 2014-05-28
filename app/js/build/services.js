@@ -39,7 +39,7 @@ angular.module('warmonic.build.services', [])
 
   var BuildTree = function() {
       // init the tree
-      this._tree = {children: {}};
+      this._tree = {};
   };
 
   angular.extend(BuildTree.prototype, {
@@ -390,6 +390,15 @@ angular.module('warmonic.build.services', [])
                 return false;
               return true;
             },
+            get tooltip() {
+              var tooltipText = this.help || null;
+              if (this.suggested_by) {
+                var suggested_by_field = buildVariables.getField(this.suggested_by);
+                if (suggested_by_field && suggested_by_field.help)
+                  tooltipText = suggested_by_field.help;
+              }
+              return tooltipText;
+            }
           };
           field.options.forEach(function(option) {
             var value = option.value;

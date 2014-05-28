@@ -10,6 +10,7 @@
       ng-disabled="data.disabled || data.processing"
       ng-required="data.required"
       wa-enter="submit()"
+      tooltip="{{ data.tooltip }}"
     />
     <span class="input-group-btn" ng-if="data.promise">
       <button type="submit" class="btn btn-default" ng-disabled="data.disabled || data.processing" ng-click="submit()">
@@ -18,6 +19,5 @@
       </button>
     </span>
   </div>
-  <p class="help-block" ng-if="data.help"><small>{{ data.help }}</small></p>
   <p class="help-block" ng-if="global.options.debugMode"><small>{{ data.name }}</small></p>
 </div>
