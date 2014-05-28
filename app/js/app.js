@@ -2,6 +2,7 @@
 
 angular.module('warmonic', [
   'ui.router',
+  'ui.bootstrap.tooltip',
   'warmonic.lib.utils',
   'warmonic.lib.xmpp',
   'warmonic.lib.xmpp.roster',
@@ -45,5 +46,15 @@ angular.module('warmonic', [
 .config(['commandsProvider', function(commandsProvider) {
 
   commandsProvider.setProvider('mss-master@im.aeolus.org/master');
+
+}])
+
+.config(['$tooltipProvider', function($tooltipProvider) {
+
+  $tooltipProvider.options({
+    placement: 'right',
+    popupDelay: 0,
+    appendToBody: true
+  });
 
 }]);
