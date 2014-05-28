@@ -25,7 +25,8 @@
     </div>
     <div class="col-md-4" ng-if="global.options.debugMode">
       <h4>Deployment tree</h4>
-      <pre>{{ build.tree() | stringify }}</pre>
+      <pre>{{ build.data | stringify }}
+{{ build.tree() | stringify }}</pre>
     </div>
     <div class="col-md-4" ng-if="global.options.debugMode">
       <h4>Deployment variables</h4>

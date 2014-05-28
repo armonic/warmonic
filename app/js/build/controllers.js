@@ -13,10 +13,12 @@ angular.module('warmonic.build.controllers', [])
   this.provide = $stateParams.provide || null;
   this.tree = build.tree;
   this.variables = build.variables;
+  this.data = build.data;
   this.run = angular.bind(build, build.run);
 
   if (this.urlProvide)
     build.run(this.provide);
   else
     build.init();
+
 }]);
