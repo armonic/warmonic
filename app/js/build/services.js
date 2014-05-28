@@ -68,6 +68,13 @@ angular.module('warmonic.build.services', [])
       return node.children[id];
     },
 
+    emptyNode: function(treeIndex) {
+      var node = this.getTreeNode(treeIndex);
+      node.data = null;
+
+      return node;
+    },
+
     fillNodeData: function(treeIndex, data) {
       var node = this.getTreeNode(treeIndex);
       node.data = data;
@@ -286,8 +293,16 @@ angular.module('warmonic.build.services', [])
 
       commands.next(cmd, form)
       .then(angular.bind(this, function(cmd) {
-        tree.fillNodeData(treeIndex, {type: "text", value: label || xpath});
+
+        // don't show anything if the
+        // requirement is manually managed
+        if (xpath == "None")
+          tree.emptyNode(treeIndex);
+        else
+          tree.fillNodeData(treeIndex, {type: "text", value: label || xpath});
+
         this._onRecv(cmd);
+
       }));
 
     },
