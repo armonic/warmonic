@@ -259,6 +259,8 @@ angular.module('warmonic.build.services', [])
         this.specialize(cmd);
       if (cmd.form.instructions == "post_specialize")
         this.hostChoice(cmd);
+      if (cmd.form.instructions == "multiplicity")
+        this.multiplicity(cmd);
       if (cmd.form.instructions == "validation")
         this.validation(cmd);
       if (cmd.form.instructions == "done")
@@ -459,6 +461,48 @@ angular.module('warmonic.build.services', [])
         ]
       });
       tree.fillNodeHost(treeIndex, host);
+
+      commands.next(cmd, form)
+      .then(angular.bind(this, function(cmd) {
+        node.data.processing = false;
+        this._onRecv(cmd);
+      }));
+
+    },
+
+    multiplicity: function(cmd) {
+      var nbInstances = this._getFormFieldValue(cmd, 'multiplicity'),
+          treeIndex = this._getTreeIndex(cmd),
+          deferredSelection = $q.defer();
+
+      var fieldParams = {
+        label: "How many time do you want to call ",
+        value: nbInstances,
+        promise: deferredSelection,
+      };
+      var field = buildVariables.createField("input",
+                                             null,
+                                             fieldParams);
+      var node = tree.fillNodeData(treeIndex, field);
+
+      deferredSelection.promise.then(angular.bind(this, function(multiplicity) {
+        this.sendMultiplicity(cmd, multiplicity, node);
+      }));
+    },
+
+    sendMultiplicity: function(cmd, multiplicity, node) {
+      var treeIndex = this._getTreeIndex(cmd);
+
+      var form = $form({
+        type: "submit",
+        fields: [
+          $field({
+            var: "multiplicity",
+            value: multiplicity,
+            type: "input-single"
+          })
+        ]
+      });
 
       commands.next(cmd, form)
       .then(angular.bind(this, function(cmd) {
