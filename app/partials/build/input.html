@@ -1,23 +1,23 @@
-<div class="form-group" ng-show="data.show" ng-class="{'has-warning': data.params.expert}">
-  <label class="control-label" for="{{ data.name }}">{{ data.label }}</label>
+<div class="form-group" ng-show="inputData.show" ng-class="{'has-warning': inputData.params.expert}">
+  <label class="control-label" for="{{ inputData.name }}">{{ inputData.label }}</label>
   <div class="input-group">
     <input
       type="text"
-      id="{{ data.name }}"
-      name="{{ data.name }}"
+      id="{{ inputData.name }}"
+      name="{{ inputData.name }}"
       class="form-control"
-      ng-model="data.value"
-      ng-disabled="data.disabled || data.processing"
-      ng-required="data.required"
+      ng-model="inputData.value"
+      ng-disabled="inputData.disabled || inputData.processing"
+      ng-required="inputData.required"
       wa-enter="submit()"
-      tooltip="{{ data.help }}"
+      tooltip="{{ inputData.help }}"
     />
-    <span class="input-group-btn" ng-if="data.params.promise">
-      <button type="submit" class="btn btn-default" ng-disabled="data.disabled || data.processing" ng-click="submit()">
-        <span ng-if="data.processing" wa-spinner />
-        <span ng-if="!data.processing">Ok</span>
+    <span class="input-group-btn" ng-if="inputData.params.promise">
+      <button type="submit" class="btn btn-default" ng-disabled="inputData.disabled || inputData.processing" ng-click="submit()">
+        <span ng-if="inputData.processing" wa-spinner />
+        <span ng-if="!inputData.processing">Ok</span>
       </button>
     </span>
   </div>
-  <p class="help-block" ng-if="global.options.debugMode"><small>{{ data.name }}</small></p>
+  <p class="help-block" ng-if="global.options.debugMode"><small>{{ inputData.name }}</small></p>
 </div>

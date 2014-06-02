@@ -33,7 +33,7 @@ angular.module('warmonic.build.directives', [])
 
 }])
 
-.directive('node', [function() {
+.directive('node', ['RecursionHelper', function(RecursionHelper) {
 
   return {
 
@@ -44,6 +44,12 @@ angular.module('warmonic.build.directives', [])
     replace: true,
 
     templateUrl: 'partials/build/node.html',
+
+    compile: function(element) {
+      // Use the compile function from the RecursionHelper,
+      // And return the linking function(s) which it returns
+      return RecursionHelper.compile(element, this.link);
+    },
 
     link: function(scope, element, attrs) {
 
@@ -75,12 +81,12 @@ angular.module('warmonic.build.directives', [])
 
     controller: function($scope) {
 
-      $scope.$watch('data.value', function(newVal, oldVal, scope) {
+      $scope.$watch('selectData.value', function(newVal, oldVal, scope) {
         if (newVal !== oldVal) {
-          if (scope.data.params.promise) {
-            scope.data.processing = true;
-            scope.data.disabled = true;
-            scope.data.params.promise.resolve(newVal);
+          if (scope.selectData.params.promise) {
+            scope.selectData.processing = true;
+            scope.selectData.disabled = true;
+            scope.selectData.params.promise.resolve(newVal);
           }
         }
       });
@@ -89,8 +95,8 @@ angular.module('warmonic.build.directives', [])
 
     link: function(scope, element, attrs) {
 
-      scope.$watch(attrs.data, function(newVal, oldVal) {
-        scope.data = newVal;
+      scope.$watch(attrs.selectData, function(newVal, oldVal) {
+        scope.selectData = newVal;
       });
 
     }
@@ -113,16 +119,16 @@ angular.module('warmonic.build.directives', [])
     controller: function($scope) {
 
       $scope.select = function(value) {
-        $scope.data.processing = true;
-        $scope.data.params.promise.resolve(value);
+        $scope.specializeData.processing = true;
+        $scope.specializeData.params.promise.resolve(value);
       };
 
     },
 
     link: function(scope, element, attrs) {
 
-      scope.$watch(attrs.data, function(newVal, oldVal) {
-        scope.data = newVal;
+      scope.$watch(attrs.specializeData, function(newVal, oldVal) {
+        scope.specializeData = newVal;
       });
 
     }
@@ -144,10 +150,10 @@ angular.module('warmonic.build.directives', [])
     controller: function($scope) {
 
       $scope.submit = function() {
-        if ($scope.data.params.promise) {
-          $scope.data.processing = true;
-          $scope.data.disabled = true;
-          $scope.data.params.promise.resolve($scope.data.value);
+        if ($scope.inputData.params.promise) {
+          $scope.inputData.processing = true;
+          $scope.inputData.disabled = true;
+          $scope.inputData.params.promise.resolve($scope.inputData.value);
         }
       };
 
@@ -155,8 +161,8 @@ angular.module('warmonic.build.directives', [])
 
     link: function(scope, element, attrs) {
 
-      scope.$watch(attrs.data, function(newVal, oldVal) {
-        scope.data = newVal;
+      scope.$watch(attrs.inputData, function(newVal, oldVal) {
+        scope.inputData = newVal;
       });
 
     }
