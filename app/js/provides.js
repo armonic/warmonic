@@ -121,23 +121,28 @@ angular.module('warmonic.provides', [
     self.searching = true;
     commands.execute(cmd).then(
       function(cmd) {
-        var result = cmd.form.toJSON();
-        result.items.forEach(function(item) {
-          var tags = [];
-          if (item.fields[1].values[0])
-            tags = item.fields[1].values[0].split(',');
+
+        cmd.form.items.forEach(function(item) {
+
+          var tags = commands.getFormFieldValue(item, 'tag');
+          if (tags)
+            tags = tags.split(',');
+          else
+            tags = [];
 
           // don't use internal provides
           if (tags.indexOf('internal') > -1)
             return;
 
           var provide = {
-            'xpath': item.fields[0].values[0],
+            'xpath': commands.getFormFieldValue(item, 'xpath'),
             'tags': tags,
-            'label': item.fields[2].values[0] || item.fields[0].values[0],
-            'desc': item.fields[3].values[0]
+            'label': commands.getFormFieldValue(item, 'label'),
+            'help': commands.getFormFieldValue(item, 'help')
           };
-          provide.tags.forEach(function(tagName) {
+
+          // add tags to global tag list
+          tags.forEach(function(tagName) {
             var found = self.tags.some(function(tag) {
               if (tag.name == tagName) {
                 tag.count += 1;
@@ -155,6 +160,7 @@ angular.module('warmonic.provides', [
           });
           self._list.push(provide);
         });
+
         self.list = self._list;
         self.searching = false;
       },

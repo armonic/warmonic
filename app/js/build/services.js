@@ -267,35 +267,13 @@ angular.module('warmonic.build.services', [])
         this.done(cmd);
     },
 
-    _getFormField: function(cmd, fieldName) {
-      var f;
-      cmd.form.fields.forEach(function(field) {
-        if (field.var == fieldName)
-          f = field;
-      });
-      return f;
-    },
-
-    _getFormFieldValue: function(cmd, fieldName) {
-      var field = this._getFormField(cmd, fieldName);
-      if (field && field.values.length == 1)
-        return field.values[0];
-      return field.values || null;
-    },
-
-    _getFormFieldAttr: function(cmd, fieldName, attrName) {
-      var field = this._getFormField(cmd, fieldName);
-      return field[attrName] || null;
-    },
-
     _getTreeIndex: function(cmd) {
-      var strTreeIndex = this._getFormFieldValue(cmd, "tree_id");
+      var strTreeIndex = commands.getFormFieldValue(cmd, "tree_id");
       var treeIndex = strTreeIndex.replace('[', '').replace(']', '').split(',').map(function(i) {
         return parseInt(i.trim());
       });
       return treeIndex;
     },
-
 
     run: function(xpath) {
 
@@ -427,9 +405,9 @@ angular.module('warmonic.build.services', [])
 
     hostChoice: function(cmd) {
       var treeIndex = this._getTreeIndex(cmd),
-          provideName = this._getFormFieldValue(cmd, 'provide'),
-          label = this._getFormFieldAttr(cmd, 'host', 'label'),
-          host = this._getFormFieldValue(cmd, 'host'),
+          provideName = commands.getFormFieldValue(cmd, 'provide'),
+          label = commands.getFormFieldAttr(cmd, 'host', 'label'),
+          host = commands.getFormFieldValue(cmd, 'host'),
           deferredSelection = $q.defer();
 
       var fieldParams = {
@@ -471,7 +449,7 @@ angular.module('warmonic.build.services', [])
     },
 
     multiplicity: function(cmd) {
-      var nbInstances = this._getFormFieldValue(cmd, 'multiplicity'),
+      var nbInstances = commands.getFormFieldValue(cmd, 'multiplicity'),
           treeIndex = this._getTreeIndex(cmd),
           deferredSelection = $q.defer();
 
@@ -514,8 +492,8 @@ angular.module('warmonic.build.services', [])
 
     validation: function(cmd) {
       var treeIndex = this._getTreeIndex(cmd),
-          provideName = this._getFormFieldValue(cmd, "provide"),
-          provideLabel = this._getFormFieldAttr(cmd, "provide", "label");
+          provideName = commands.getFormFieldValue(cmd, "provide"),
+          provideLabel = commands.getFormFieldAttr(cmd, "provide", "label");
 
       // Configuration form to display
       var form = buildVariables.createField("form",

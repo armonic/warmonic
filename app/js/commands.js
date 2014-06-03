@@ -104,7 +104,31 @@ angular.module('warmonic.lib.xmpp.commands', [
       get providerOnline() {
         var provider = Strophe.getBareJidFromJid(this.provider);
         return roster.isJidOnline(provider);
-      }
+      },
+
+      _getFormField: function(cmd, fieldName) {
+        var f = null;
+        var fields = cmd.form && cmd.form.fields || cmd.fields;
+        fields.forEach(function(field) {
+          if (field.var == fieldName)
+            f = field;
+        });
+        return f;
+      },
+
+      getFormFieldValue: function(cmd, fieldName) {
+        var field = this._getFormField(cmd, fieldName);
+        if (field && field.values.length == 1)
+          return field.values[0];
+        if (!field)
+          return null;
+        return field.values || null;
+      },
+
+      getFormFieldAttr: function(cmd, fieldName, attrName) {
+        var field = this._getFormField(cmd, fieldName);
+        return field[attrName] || null;
+      },
     };
   }]
 })
