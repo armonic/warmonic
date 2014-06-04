@@ -121,6 +121,7 @@ angular.module('warmonic.provides', [
     self.searching = true;
     commands.execute(cmd).then(
       function(cmd) {
+        self._list = [];
 
         cmd.form.items.forEach(function(item) {
 
