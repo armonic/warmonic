@@ -22,25 +22,28 @@ angular.module('warmonic.build.services', [])
     },
 
     /** Just create a new field */
-    createField: function(type, name, params) {
-      var field = new VariableField(type, name, params);
+    createField: function(params, name, type) {
+      var field = new VariableField(params, name, type);
+      return field;
+    },
 
+    createForm: function(params, name) {
+      var field = new VariableField(params, name, "form");
       return field;
     },
 
     /** Create a field and save a reference on it */
-    addField: function(type, name, params) {
-      // Don't add the same variable twice
-      if (!variables[name]) {
-        variables[name] = this.createField(type, name, params);
-        return variables[name];
-      }
-      return variables[name];
+    addField: function(params, name, type) {
+      if (!variables[name])
+        variables[name] = [];
+      var field = this.createField(params, name, type);
+      variables[name].push(field);
+      return field;
     },
 
     /** Get already created field */
-    getField: function(fieldName) {
-      return variables[fieldName] || null;
+    getField: function(fieldName, index) {
+      return variables[fieldName][index || 0] || null;
     }
 
   };
@@ -48,9 +51,9 @@ angular.module('warmonic.build.services', [])
   /** VariableField object used to instanciate
    * new variables fields
    */
-  var VariableField = function(type, name, params) {
-    this.type = type;
-    this.name = name;
+  var VariableField = function(params, name, type) {
+    this.type = type || "input";
+    this.name = name || null;
     this.params = {
       value: "",
       label: "",
@@ -66,25 +69,43 @@ angular.module('warmonic.build.services', [])
     this.processing = false;
     this.required = false;
 
-    angular.extend(this.params, params);
-
-    this.sanitizeParamsValues();
+    angular.extend(this.params, this.sanitizeParamsValues(params));
   };
 
   VariableField.prototype = {
 
-    sanitizeParamsValues: function() {
+    sanitizeParamsValues: function(params) {
 
-      angular.forEach(this.params, angular.bind(this, function(value, key) {
+      angular.forEach(params, angular.bind(this, function(value, key) {
         if (value == "True")
           value = true;
         else if (value == "False")
           value = false;
         else if (value == "None")
           value = "";
-        this.params[key] = value;
+        params[key] = value;
       }));
 
+      if (["armonic_hosts", "list"].indexOf(params.type) > -1) {
+        this.type = "input-multi";
+        if (params.value) {
+          var values = eval(params.value);
+          if (values) {
+            params.fields = [];
+            values.forEach(angular.bind(this, function(value) {
+              params.fields.push({
+                value: value
+              });
+            }));
+            params.value = null;
+          }
+        }
+        else {
+          params.fields = [{value: ""}];
+        }
+      }
+
+      return params;
     },
 
     get fields() {
@@ -92,6 +113,13 @@ angular.module('warmonic.build.services', [])
     },
 
     get value() {
+      // returns a list
+      if (this.type == "input-multi") {
+        return this.params.fields.map(function(field) {
+          return field.value;
+        });
+      }
+
       return this.params.value;
     },
 
@@ -255,6 +283,12 @@ angular.module('warmonic.build.services', [])
     },
 
     _onRecv: function(cmd) {
+      var treeIndex = this._getTreeIndex(cmd),
+          host = commands.getFormFieldValue(cmd, 'host');
+
+      if (host)
+        tree.fillNodeHost(treeIndex, host);
+
       if (cmd.form.instructions == "specialize")
         this.specialize(cmd);
       if (cmd.form.instructions == "post_specialize")
@@ -361,9 +395,7 @@ angular.module('warmonic.build.services', [])
         fields: options,
         promise: deferredSelection,
       };
-      var field = buildVariables.createField("specialize",
-                                             null,
-                                             fieldParams);
+      var field = buildVariables.createField(fieldParams, null, "specialize");
       tree.fillNodeData(treeIndex, field);
 
       // when choice is done
@@ -415,9 +447,7 @@ angular.module('warmonic.build.services', [])
         value: host,
         promise: deferredSelection,
       };
-      var field = buildVariables.createField("input",
-                                             null,
-                                             fieldParams);
+      var field = buildVariables.createField(fieldParams);
       var node = tree.fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(host) {
@@ -450,21 +480,24 @@ angular.module('warmonic.build.services', [])
 
     multiplicity: function(cmd) {
       var nbInstances = commands.getFormFieldValue(cmd, 'multiplicity'),
+          multiplicityLabel = commands.getFormFieldAttr(cmd, 'multiplicity', 'label'),
           treeIndex = this._getTreeIndex(cmd),
           deferredSelection = $q.defer();
 
       var fieldParams = {
-        label: "How many time do you want to call ",
-        value: nbInstances,
+        label: multiplicityLabel,
+        fields: [
+          {value: '192.168.1.1'},
+          {value: '192.168.1.2'},
+          {value: '192.168.1.3'}
+        ],
         promise: deferredSelection,
       };
-      var field = buildVariables.createField("input",
-                                             null,
-                                             fieldParams);
+      var field = buildVariables.createField(fieldParams, null, "input-multi");
       var node = tree.fillNodeData(treeIndex, field);
 
-      deferredSelection.promise.then(angular.bind(this, function(multiplicity) {
-        this.sendMultiplicity(cmd, multiplicity, node);
+      deferredSelection.promise.then(angular.bind(this, function(hosts) {
+        this.sendMultiplicity(cmd, hosts, node);
       }));
     },
 
@@ -477,7 +510,7 @@ angular.module('warmonic.build.services', [])
           $field({
             var: "multiplicity",
             value: multiplicity,
-            type: "input-single"
+            type: "input-multi"
           })
         ]
       });
@@ -496,11 +529,9 @@ angular.module('warmonic.build.services', [])
           provideLabel = commands.getFormFieldAttr(cmd, "provide", "label");
 
       // Configuration form to display
-      var form = buildVariables.createField("form",
-                                            null,
-                                            {label: provideLabel});
+      var form = buildVariables.createForm({label: provideLabel});
       // add configuration fields to the form
-      cmd.form.fields.slice(2).forEach(angular.bind(this, function(field) {
+      cmd.form.fields.slice(3).forEach(angular.bind(this, function(field) {
         var fieldName = field.var,
             formField,
             params = {};
@@ -509,9 +540,7 @@ angular.module('warmonic.build.services', [])
           params[option.label] = option.value;
         });
 
-        formField = buildVariables.addField("input",
-                                            fieldName,
-                                            params);
+        formField = buildVariables.addField(params, fieldName);
         if (formField)
           form.fields.push(formField);
 

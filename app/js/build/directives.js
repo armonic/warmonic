@@ -95,7 +95,7 @@ angular.module('warmonic.build.directives', [])
 
     link: function(scope, element, attrs) {
 
-      scope.$watch(attrs.selectData, function(newVal, oldVal) {
+      scope.$watch(attrs.data, function(newVal, oldVal) {
         scope.selectData = newVal;
       });
 
@@ -127,7 +127,7 @@ angular.module('warmonic.build.directives', [])
 
     link: function(scope, element, attrs) {
 
-      scope.$watch(attrs.specializeData, function(newVal, oldVal) {
+      scope.$watch(attrs.data, function(newVal, oldVal) {
         scope.specializeData = newVal;
       });
 
@@ -161,8 +161,59 @@ angular.module('warmonic.build.directives', [])
 
     link: function(scope, element, attrs) {
 
-      scope.$watch(attrs.inputData, function(newVal, oldVal) {
+      scope.$watch(attrs.data, function(newVal, oldVal) {
         scope.inputData = newVal;
+      });
+
+    }
+
+  };
+
+})
+
+.directive('nodeinputmulti', function() {
+
+  return {
+
+    restrict: 'E',
+
+    scope: true,
+
+    replace: true,
+
+    templateUrl: 'partials/build/input_multi.html',
+
+    controller: function($scope) {
+
+      $scope.submit = function() {
+        $scope._data.value = [];
+        $scope._data.fields.forEach(function(field) {
+          if (field.value)
+            $scope._data.value.push(field.value);
+        });
+        if ($scope._data.params.promise) {
+          $scope._data.processing = true;
+          $scope._data.disabled = true;
+          $scope._data.params.promise.resolve($scope._data.value);
+        }
+      };
+
+      $scope.addField = function() {
+        $scope._data.fields.push({
+          value: ""
+        });
+      };
+
+      $scope.removeField = function(field) {
+        $scope._data.fields.splice($scope._data.fields.indexOf(field), 1);
+      };
+
+    },
+
+    link: function(scope, element, attrs) {
+
+      scope.$watch(attrs.data, function(newVal, oldVal) {
+        scope._data = newVal;
       });
 
     }

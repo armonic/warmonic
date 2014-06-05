@@ -6,7 +6,7 @@
     class="form-control"
     ng-model="selectData.value"
     ng-disabled="selectData.disabled || selectData.processing"
-    ng-options="option.value as option.label for option in selectData.options"
+    ng-options="field.value as field.label for option in selectData.fields"
     ng-required="selectData.required">
   </select>
   <p class="help-block" ng-if="global.options.debugMode"><small>{{ selectData.name }}</small></p>

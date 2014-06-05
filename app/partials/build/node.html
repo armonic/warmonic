@@ -7,15 +7,19 @@
   </span>
 
   <span ng-switch-when="input">
-    <nodeinput input-data="data" />
+    <nodeinput data="data" />
+  </span>
+
+  <span ng-switch-when="input-multi">
+    <nodeinputmulti data="data" />
   </span>
 
   <span ng-switch-when="select">
-    <nodeselect select-data="data" />
+    <nodeselect data="data" />
   </span>
 
   <span ng-switch-when="specialize">
-    <nodespecialize specialize-data="data" />
+    <nodespecialize data="data" />
   </span>
 
   <form ng-switch-when="form" role="form">
