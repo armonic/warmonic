@@ -83,11 +83,7 @@ angular.module('warmonic.build.directives', [])
 
       $scope.$watch('selectData.value', function(newVal, oldVal, scope) {
         if (newVal !== oldVal) {
-          if (scope.selectData.params.promise) {
-            scope.selectData.processing = true;
-            scope.selectData.disabled = true;
-            scope.selectData.params.promise.resolve(newVal);
-          }
+          scope.selectField.submit(newVal);
         }
       });
 
@@ -96,7 +92,7 @@ angular.module('warmonic.build.directives', [])
     link: function(scope, element, attrs) {
 
       scope.$watch(attrs.data, function(newVal, oldVal) {
-        scope.selectData = newVal;
+        scope.selectField = newVal;
       });
 
     }
@@ -116,19 +112,10 @@ angular.module('warmonic.build.directives', [])
 
     templateUrl: 'partials/build/specialize.html',
 
-    controller: function($scope) {
-
-      $scope.select = function(value) {
-        $scope.specializeData.processing = true;
-        $scope.specializeData.params.promise.resolve(value);
-      };
-
-    },
-
     link: function(scope, element, attrs) {
 
       scope.$watch(attrs.data, function(newVal, oldVal) {
-        scope.specializeData = newVal;
+        scope.specializeField = newVal;
       });
 
     }
@@ -147,22 +134,10 @@ angular.module('warmonic.build.directives', [])
 
     templateUrl: 'partials/build/input.html',
 
-    controller: function($scope) {
-
-      $scope.submit = function() {
-        if ($scope.inputData.params.promise) {
-          $scope.inputData.processing = true;
-          $scope.inputData.disabled = true;
-          $scope.inputData.params.promise.resolve($scope.inputData.value);
-        }
-      };
-
-    },
-
     link: function(scope, element, attrs) {
 
       scope.$watch(attrs.data, function(newVal, oldVal) {
-        scope.inputData = newVal;
+        scope.inputField = newVal;
       });
 
     }
@@ -183,37 +158,10 @@ angular.module('warmonic.build.directives', [])
 
     templateUrl: 'partials/build/input_multi.html',
 
-    controller: function($scope) {
-
-      $scope.submit = function() {
-        $scope._data.value = [];
-        $scope._data.fields.forEach(function(field) {
-          if (field.value)
-            $scope._data.value.push(field.value);
-        });
-        if ($scope._data.params.promise) {
-          $scope._data.processing = true;
-          $scope._data.disabled = true;
-          $scope._data.params.promise.resolve($scope._data.value);
-        }
-      };
-
-      $scope.addField = function() {
-        $scope._data.fields.push({
-          value: ""
-        });
-      };
-
-      $scope.removeField = function(field) {
-        $scope._data.fields.splice($scope._data.fields.indexOf(field), 1);
-      };
-
-    },
-
     link: function(scope, element, attrs) {
 
       scope.$watch(attrs.data, function(newVal, oldVal) {
-        scope._data = newVal;
+        scope.inputField = newVal;
       });
 
     }

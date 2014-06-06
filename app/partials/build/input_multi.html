@@ -1,30 +1,31 @@
-<div class="form-group" ng-show="_data.show" ng-class="{'has-warning': _data.params.expert}">
-  <label class="control-label" for="{{ _data.name }}">{{ _data.label }}</label>
-  <div class="form-group input-group" ng-repeat="field in _data.fields">
+<div class="form-group" ng-show="inputField.show" ng-class="{'has-warning': inputField.params.expert}">
+  <label class="control-label" for="{{ inputField.name }}">{{ inputField.label }}</label>
+  <div class="form-group input-group" ng-repeat="field in inputField.fields">
     <input
       type="text"
       class="form-control"
       ng-model="field.value"
-      ng-disabled="_data.disabled || _data.processing"
+      ng-disabled="inputField.disabled || inputField.processing"
+      wa-enter="inputField.submit()"
     />
     <span class="input-group-btn">
-      <button type="submit" class="btn btn-default" ng-disabled="_data.disabled || _data.processing" ng-click="removeField(field)">
+      <button type="submit" class="btn btn-default" ng-disabled="inputField.disabled || inputField.processing" ng-click="inputField.removeField(field)">
         <span class="glyphicon glyphicon-trash" />
       </button>
     </span>
   </div>
-  <button type="submit" class="btn btn-default pull-right" ng-disabled="_data.disabled || _data.processing" ng-click="addField()">
+  <button type="submit" class="btn btn-default pull-right" ng-disabled="inputField.disabled || inputField.processing" ng-click="inputField.addField()">
     Add
   </button>
   <button
     type="submit"
     class="btn btn-primary"
-    ng-disabled="_data.disabled || _data.processing"
-    ng-click="submit()"
-    ng-if="_data.params.promise">
-    <span ng-if="_data.processing" wa-spinner />
-    <span ng-if="!_data.processing">Ok</span>
+    ng-disabled="inputField.disabled || inputField.processing"
+    ng-click="inputField.submit()"
+    ng-if="inputField.canSubmit">
+    <span ng-if="inputField.processing" wa-spinner />
+    <span ng-if="!inputField.processing">Ok</span>
   </button>
-  <p class="help-block" ng-if="global.options.debugMode"><small>{{ _data.help }}</small></p>
-  <p class="help-block" ng-if="global.options.debugMode"><small>{{ _data.name }}</small></p>
+  <p class="help-block" ng-if="global.options.debugMode"><small>{{ inputField.help }}</small></p>
+  <p class="help-block" ng-if="global.options.debugMode"><small>{{ inputField.name }}</small></p>
 </div>

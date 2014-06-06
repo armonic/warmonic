@@ -114,6 +114,16 @@ angular.module('warmonic.build.services', [])
       return this.params.fields;
     },
 
+    addField: function(value) {
+      this.params.fields.push({
+          value: value || ""
+      });
+    },
+
+    removeField: function(field) {
+      this.params.fields.splice(this.params.fields.indexOf(field), 1);
+    },
+
     get value() {
       // returns a list
       if (this.type == "input-multi") {
@@ -159,6 +169,24 @@ angular.module('warmonic.build.services', [])
         return false;
       return true;
     },
+
+    get canSubmit() {
+      return this.params.promise ? true : false;
+    },
+
+    submit: function(value) {
+      if (this.canSubmit) {
+        this.processing = true;
+        this.disabled = true;
+        if (value)
+          this.value = value;
+        this.params.promise.resolve(this.value);
+      }
+    },
+
+    submitDone: function() {
+      this.processing = false;
+    }
 
   };
 

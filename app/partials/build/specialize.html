@@ -1,8 +1,8 @@
 <div class="specialize">
   <button
     class="btn btn-primary"
-    ng-disabled="specializeData.processing"
-    ng-repeat="option in specializeData.fields"
-    ng-click="select(option.value)">{{ option.label }}</button>
-  <span ng-show="specializeData.processing" wa-spinner />
+    ng-disabled="specializeField.processing"
+    ng-repeat="option in specializeField.fields"
+    ng-click="specializeField.submit(option.value)">{{ option.label }}</button>
+  <span ng-show="specializeField.processing" wa-spinner />
 </div>
