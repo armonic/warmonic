@@ -292,15 +292,15 @@ angular.module('warmonic.build.services', [])
         tree.fillNodeHost(treeIndex, host);
 
       if (cmd.form.instructions == "specialize")
-        this.specialize(cmd);
+        this.specialize(cmd, treeIndex);
       if (cmd.form.instructions == "post_specialize")
-        this.hostChoice(cmd);
+        this.hostChoice(cmd, treeIndex);
       if (cmd.form.instructions == "multiplicity")
-        this.multiplicity(cmd);
+        this.multiplicity(cmd, treeIndex);
       if (cmd.form.instructions == "validation")
-        this.validation(cmd);
+        this.validation(cmd, treeIndex);
       if (cmd.form.instructions == "done")
-        this.done(cmd);
+        this.done(cmd, treeIndex);
     },
 
     _getTreeIndex: function(cmd) {
@@ -326,17 +326,17 @@ angular.module('warmonic.build.services', [])
           ]
         });
 
-
         return commands.next(cmd, form);
       }))
 
       .then(angular.bind(this, function(cmd) {
         // On the first provide, choose automatically
         // if there is only one provide
-        var choices = this.getSpecializeChoices(cmd);
+        var choices = this.getSpecializeChoices(cmd),
+            treeIndex = this._getTreeIndex(cmd);
         if (choices.length == 2) {
           // skip the None choice
-          this.sendSpecialize(cmd, choices[1].xpath, choices[1].label);
+          this.sendSpecialize(cmd, treeIndex, choices[1].xpath, choices[1].label);
         }
         // else, let the user decide
         else {
@@ -362,9 +362,8 @@ angular.module('warmonic.build.services', [])
       return choices;
     },
 
-    specialize: function(cmd) {
+    specialize: function(cmd, treeIndex) {
       var choices = this.getSpecializeChoices(cmd),
-          treeIndex = this._getTreeIndex(cmd),
           deferredSelection = $q.defer(),
           label,
           options = [];
@@ -372,7 +371,7 @@ angular.module('warmonic.build.services', [])
       if (choices.length == 2) {
         // on normal mode call by default
         if (! global.options.expertMode) {
-          this.sendSpecialize(cmd, choices[1].xpath, choices[1].label);
+          this.sendSpecialize(cmd, treeIndex, choices[1].xpath, choices[1].label);
           return;
         }
 
@@ -398,13 +397,11 @@ angular.module('warmonic.build.services', [])
 
       // when choice is done
       deferredSelection.promise.then(angular.bind(this, function(xpath) {
-        this.sendSpecialize(cmd, xpath);
+        this.sendSpecialize(cmd, treeIndex, xpath);
       }));
     },
 
-    sendSpecialize: function(cmd, xpath, label) {
-      var treeIndex = this._getTreeIndex(cmd);
-
+    sendSpecialize: function(cmd, treeIndex, xpath, label) {
       var form = $form({
         type: "submit",
         fields: [
@@ -418,6 +415,7 @@ angular.module('warmonic.build.services', [])
       tree.fillNodeData(treeIndex, {type: "loading"});
 
       commands.next(cmd, form)
+
       .then(angular.bind(this, function(cmd) {
 
         // don't show anything if the
@@ -433,9 +431,8 @@ angular.module('warmonic.build.services', [])
 
     },
 
-    hostChoice: function(cmd) {
-      var treeIndex = this._getTreeIndex(cmd),
-          provideName = commands.getFormFieldValue(cmd, 'provide'),
+    hostChoice: function(cmd, treeIndex) {
+      var provideName = commands.getFormFieldValue(cmd, 'provide'),
           label = commands.getFormFieldAttr(cmd, 'host', 'label'),
           host = commands.getFormFieldValue(cmd, 'host'),
           deferredSelection = $q.defer();
@@ -449,13 +446,11 @@ angular.module('warmonic.build.services', [])
       var node = tree.fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(host) {
-        this.sendHostChoice(cmd, host, node);
+        this.sendHostChoice(cmd, treeIndex, host, node);
       }));
     },
 
-    sendHostChoice: function(cmd, host, node) {
-      var treeIndex = this._getTreeIndex(cmd);
-
+    sendHostChoice: function(cmd, treeIndex, host, node) {
       var form = $form({
         type: "submit",
         fields: [
@@ -469,6 +464,7 @@ angular.module('warmonic.build.services', [])
       tree.fillNodeHost(treeIndex, host);
 
       commands.next(cmd, form)
+
       .then(angular.bind(this, function(cmd) {
         node.data.processing = false;
         this._onRecv(cmd);
@@ -476,10 +472,9 @@ angular.module('warmonic.build.services', [])
 
     },
 
-    multiplicity: function(cmd) {
+    multiplicity: function(cmd, treeIndex) {
       var nbInstances = commands.getFormFieldValue(cmd, 'multiplicity'),
           multiplicityLabel = commands.getFormFieldAttr(cmd, 'multiplicity', 'label'),
-          treeIndex = this._getTreeIndex(cmd),
           deferredSelection = $q.defer();
 
       var fieldParams = {
@@ -495,13 +490,11 @@ angular.module('warmonic.build.services', [])
       var node = tree.fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(hosts) {
-        this.sendMultiplicity(cmd, hosts, node);
+        this.sendMultiplicity(cmd, treeIndex, hosts, node);
       }));
     },
 
-    sendMultiplicity: function(cmd, multiplicity, node) {
-      var treeIndex = this._getTreeIndex(cmd);
-
+    sendMultiplicity: function(cmd, treeIndex, multiplicity, node) {
       var form = $form({
         type: "submit",
         fields: [
@@ -514,6 +507,7 @@ angular.module('warmonic.build.services', [])
       });
 
       commands.next(cmd, form)
+
       .then(angular.bind(this, function(cmd) {
         node.data.processing = false;
         this._onRecv(cmd);
@@ -521,9 +515,8 @@ angular.module('warmonic.build.services', [])
 
     },
 
-    validation: function(cmd) {
-      var treeIndex = this._getTreeIndex(cmd),
-          provideName = commands.getFormFieldValue(cmd, "provide"),
+    validation: function(cmd, treeIndex) {
+      var provideName = commands.getFormFieldValue(cmd, "provide"),
           provideLabel = commands.getFormFieldAttr(cmd, "provide", "label");
 
       // Configuration form to display
@@ -546,6 +539,7 @@ angular.module('warmonic.build.services', [])
       tree.fillNodeData(treeIndex, form);
 
       commands.next(cmd)
+
       .then(angular.bind(this, this._onRecv));
     },
 
