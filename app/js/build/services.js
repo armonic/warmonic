@@ -494,7 +494,7 @@ angular.module('warmonic.build.services', [])
       commands.next(cmd, form)
 
       .then(angular.bind(this, function(cmd) {
-        field.processing = false;
+        field.submitDone();
         this._onRecv(cmd);
       }));
 
@@ -537,7 +537,7 @@ angular.module('warmonic.build.services', [])
       commands.next(cmd, form)
 
       .then(angular.bind(this, function(cmd) {
-        field.processing = false;
+        field.submitDone();
         this._onRecv(cmd);
       }));
 
