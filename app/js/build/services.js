@@ -446,27 +446,27 @@ angular.module('warmonic.build.services', [])
       var node = tree.fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(host) {
-        this.sendHostChoice(cmd, treeIndex, host, node);
+        this.sendHostChoice(cmd, treeIndex, field);
       }));
     },
 
-    sendHostChoice: function(cmd, treeIndex, host, node) {
+    sendHostChoice: function(cmd, treeIndex, field) {
       var form = $form({
         type: "submit",
         fields: [
           $field({
             var: "host",
-            value: host,
+            value: field.value,
             type: "input-single"
           })
         ]
       });
-      tree.fillNodeHost(treeIndex, host);
+      tree.fillNodeHost(treeIndex, field.value);
 
       commands.next(cmd, form)
 
       .then(angular.bind(this, function(cmd) {
-        node.data.processing = false;
+        field.processing = false;
         this._onRecv(cmd);
       }));
 
@@ -490,17 +490,17 @@ angular.module('warmonic.build.services', [])
       var node = tree.fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(hosts) {
-        this.sendMultiplicity(cmd, treeIndex, hosts, node);
+        this.sendMultiplicity(cmd, treeIndex, field);
       }));
     },
 
-    sendMultiplicity: function(cmd, treeIndex, multiplicity, node) {
+    sendMultiplicity: function(cmd, treeIndex, field) {
       var form = $form({
         type: "submit",
         fields: [
           $field({
             var: "multiplicity",
-            value: multiplicity,
+            value: field.value,
             type: "input-multi"
           })
         ]
@@ -509,7 +509,7 @@ angular.module('warmonic.build.services', [])
       commands.next(cmd, form)
 
       .then(angular.bind(this, function(cmd) {
-        node.data.processing = false;
+        field.processing = false;
         this._onRecv(cmd);
       }));
 
