@@ -43,7 +43,9 @@ angular.module('warmonic.build.services', [])
 
     /** Get already created field */
     getField: function(fieldName, index) {
-      return variables[fieldName][index || 0] || null;
+      if (!index)
+        index = 0;
+      return variables[fieldName] && variables[fieldName][index] || null;
     }
 
   };
