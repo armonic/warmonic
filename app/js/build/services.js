@@ -34,6 +34,8 @@ angular.module('warmonic.build.services', [])
 
     /** Create a field and save a reference on it */
     addField: function(params, name, type) {
+      if (params.bound_to && variables[params.bound_to])
+        return this.getField(params.bound_to);
       if (!variables[name])
         variables[name] = [];
       var field = this.createField(params, name, type);
@@ -63,6 +65,7 @@ angular.module('warmonic.build.services', [])
       suggested_by: "",
       resolved_by: "",
       set_by: "",
+      bound_to: "",
       promise: null,
       expert: false,
       fields: []
