@@ -83,22 +83,22 @@ angular.module('warmonic.build.services', [])
           value = false;
         else if (value == "None")
           value = "";
+        if (key == "value" && value) {
+          value = JSON.parse(value);
+        }
         params[key] = value;
       }));
 
       if (["armonic_hosts", "list"].indexOf(params.type) > -1) {
         this.type = "input-multi";
         if (params.value) {
-          var values = eval(params.value);
-          if (values) {
-            params.fields = [];
-            values.forEach(angular.bind(this, function(value) {
-              params.fields.push({
-                value: value
-              });
-            }));
-            params.value = null;
-          }
+          params.fields = [];
+          params.value.forEach(angular.bind(this, function(value) {
+            params.fields.push({
+              value: value
+            });
+          }));
+          params.value = "";
         }
         else {
           params.fields = [{value: ""}];
@@ -302,11 +302,7 @@ angular.module('warmonic.build.services', [])
     },
 
     _getTreeIndex: function(cmd) {
-      var strTreeIndex = commands.getFormFieldValue(cmd, "tree_id");
-      var treeIndex = strTreeIndex.replace('[', '').replace(']', '').split(',').map(function(i) {
-        return parseInt(i.trim());
-      });
-      return treeIndex;
+      return JSON.parse(commands.getFormFieldValue(cmd, "tree_id"));
     },
 
     run: function(xpath) {
