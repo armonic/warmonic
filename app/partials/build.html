@@ -30,7 +30,11 @@
     </div>
     <div class="col-md-4" ng-if="global.options.debugMode">
       <h4>Deployment variables</h4>
-      <pre>{{ build.variables() | stringify }}</pre>
+      <div ng-repeat="variables in build.variables()">
+        <pre ng-repeat="variable in variables">{{ variable.name }}
+
+  {{ variable.value | stringify }}</pre>
+      </div>
     </div>
   </div>
 </div>
