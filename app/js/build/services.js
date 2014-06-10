@@ -107,6 +107,11 @@ angular.module('warmonic.build.services', [])
         }
       }
 
+      // since armonic_hosts and armonic_host are auto-filled
+      if (["armonic_hosts", "armonic_host"].indexOf(params.type) > -1) {
+        params.expert = true;
+      }
+
       return params;
     },
 
