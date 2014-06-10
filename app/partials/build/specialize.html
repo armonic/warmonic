@@ -3,6 +3,6 @@
     class="btn btn-primary"
     ng-disabled="specializeField.processing"
     ng-repeat="option in specializeField.fields"
-    ng-click="specializeField.submit(option.value)">{{ option.label }}<span ng-if="host"> on {{ host }}</button>
+    ng-click="specializeField.submit(option.value)">{{ option.label }}<span ng-if="host"> on {{ host }}</span></button>
   <span ng-show="specializeField.processing" wa-spinner />
 </div>
