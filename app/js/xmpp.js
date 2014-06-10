@@ -37,14 +37,6 @@ angular.module('warmonic.lib.xmpp', [
       deferredDisconnection = $q.defer(),
       events = [];
 
-  // Log Strophe events
-  Strophe.log = angular.bind(logger, function(level, msg) {
-    if (!level)
-      level = 0;
-    if (msg)
-      this.log("[Strophe] " + msg, level);
-  });
-
   statuses[Strophe.Status.ERROR] = "an error occurred";
   statuses[Strophe.Status.CONNECTING] = "connecting";
   statuses[Strophe.Status.CONNFAIL] = "connection failed";
@@ -169,17 +161,15 @@ angular.module('warmonic.lib.xmpp', [
       this.send($pres());
     },
 
-    onMessage: function(message) {
-      logger.warning("[" + $(message).attr("from") + "] " + $(message).find('body').html());
-      return true;
-    },
+    //onMessage: function(message) {
+      //logger.warning("[" + $(message).attr("from") + "] " + $(message).find('body').text());
+      //return true;
+    //},
 
     onInput: function(body) {
-      logger.trace('[<<] ' + Strophe.serialize(body));
     },
 
     onOutput: function(body) {
-      logger.trace('[>>] ' + Strophe.serialize(body));
       if (this._connection && this._connection._proto.rid) {
         xmppSession.data.rid = this._connection._proto.rid;
         xmppSession.save();

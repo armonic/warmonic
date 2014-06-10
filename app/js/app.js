@@ -6,6 +6,7 @@ angular.module('warmonic', [
   'warmonic.lib.utils',
   'warmonic.lib.xmpp',
   'warmonic.lib.xmpp.roster',
+  'warmonic.lib.xmpp.muc',
   'warmonic.lib.xmpp.commands',
   'warmonic.lib.logger',
   'warmonic.nav',

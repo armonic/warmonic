@@ -3,18 +3,28 @@ body {
 }
 
 .log {
-  border-top: 1px solid #CCCCCC;
-  bottom: 0px;
+  border-left: 1px solid #CCCCCC;
+  top: 0px;
+  right: 0px;
   font-family: monospace;
   font-size: 11px;
-  height: 250px;
-  margin-top: 20px;
+  height: 100%;
   overflow: auto;
   position: fixed;
-  width: 100%;
+  width: 50%;
   background: linear-gradient(to bottom, rgba(0,0,0,0.065) 0%, rgba(0,0,0,0.015) 10px);
   background-color: white;
-  z-index: 100;
+  z-index: 2000;
+}
+
+.log-hidden {
+  display: none;
+}
+
+.log-control {
+  padding: 5px;
+  background: #f4f4f4;
+  border-bottom: 1px solid #CCCCCC;
 }
 
 .log > div {
@@ -90,15 +100,9 @@ body {
 }
 
 .tree li {
-  margin-top: -1px;
-  border-bottom: 1px solid #ccc;
-  border-left: 1px solid #ccc;
-  border-top: 1px solid white;
   padding: 5px 10px;
-}
-
-.tree li:last-child {
-  border-bottom: 0px;
+  background: #f8f8f8;
+  border-left: 3px solid #CCC;
 }
 
 .tree .specialize button {

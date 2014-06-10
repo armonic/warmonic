@@ -19,11 +19,8 @@ angular.module('warmonic.lib.logger', [])
     },
 
     log: function(text, level) {
-      var log = {'date': new Date(), 'level': level, 'text': text, 'class': 'new'};
+      var log = {'date': new Date(), 'level': level, 'text': text};
       output.splice(0, 0, log);
-      $timeout(function() {
-        log.class = "";
-      }, 2000);
     },
 
     trace: function(text) {

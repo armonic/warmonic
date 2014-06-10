@@ -82,11 +82,12 @@ angular.module('warmonic.lib.utils', [])
   var global = {
     options: {
       expertMode: false,
-      debugMode: false
+      debugMode: false,
+      logShow: false
     },
 
     load: function() {
-      this.options = $cookieStore.get('global') || this.options;
+      this.options = angular.extend(this.options, $cookieStore.get('global'));
     },
 
     save: function() {

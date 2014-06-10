@@ -284,7 +284,7 @@ angular.module('warmonic.build.services', [])
 
 }])
 
-.factory('build', ['$q', 'commands', 'buildTree', 'buildVariables', 'global', function($q, commands, buildTree, buildVariables, global) {
+.factory('build', ['$q', 'commands', 'muc', 'buildTree', 'buildVariables', 'global', function($q, commands, muc, buildTree, buildVariables, global) {
 
   var _cmd,
       tree,
@@ -294,6 +294,7 @@ angular.module('warmonic.build.services', [])
 
     data: {
       sessionId: false,
+      logs: null
     },
 
     init: function() {
@@ -346,6 +347,7 @@ angular.module('warmonic.build.services', [])
       .then(angular.bind(this, function(cmd) {
 
         this.data.sessionId = cmd.sessionid;
+        this.data.logs = muc.join(cmd.sessionid + '@logs.aeolus.org');
 
         // specify the first provide
         var form = $form({

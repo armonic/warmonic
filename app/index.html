@@ -23,6 +23,9 @@
         <button type="button" class="btn navbar-btn" ng-click="nav.toggleDebugMode()" ng-class="{'btn-danger': nav.inDebugMode()}">
           {{ nav.inDebugMode() ? "Debug on" : "Debug off" }}
         </button>
+        <button type="button" class="btn navbar-btn" ng-click="global.toggleOption('logShow')" ng-class="{'btn-danger': global.options.logShow}">
+          {{ global.options.logShow ? "Hide logs" : "Show logs" }}
+        </button>
         <span master-status></span>
         <button type="button" class="btn btn-default navbar-btn" ng-click="login.disconnect()">Disconnect {{ nav.xmppSession.data.jid | bareJid }}</button>
       </div>
@@ -31,19 +34,22 @@
   <div class="container-fluid">
     <div class="row" ui-view />
   </div>
-  <!--<div class="log" ng-controller="loggerCtrl as logger">-->
-    <!--<div ng-repeat="line in logger.output()" ng-class="line.class">-->
-      <!--<span class="text-muted">{{ line.date | date:'short' }} : </span>-->
-      <!--<span ng-switch="line.level">-->
-        <!--<span ng-switch-when="0" class="text-muted">{{ line.text }}</span>-->
-        <!--<span ng-switch-when="1" class="text-primary">{{ line.text }}</span>-->
-        <!--<span ng-switch-when="2" class="text-info">{{ line.text }}</span>-->
-        <!--<span ng-switch-when="3" class="text-warning">{{ line.text }}</span>-->
-        <!--<span ng-switch-when="4" class="text-danger">{{ line.text }}</span>-->
-        <!--<span ng-switch-when="5" class="text-danger">{{ line.text }}</span>-->
-      <!--</span>-->
-    <!--</div>-->
-  <!--</div>-->
+  <div class="log" ng-class="{'log-hidden': !global.options.logShow}" ng-controller="loggerCtrl as logger" ng-if="global.options.logShow">
+    <div class="log-control">
+      <button ng-click="global.toggleOption('logShow')" class="btn btn-primary">{{ global.options.logShow ? "Hide" : "Show" }}</button>
+    </div>
+    <div ng-repeat="line in logger.output()">
+      <span class="text-muted">{{ line.date | date:'short' }} : </span>
+      <span ng-switch="line.level">
+        <span ng-switch-when="0" class="text-muted">{{ line.text }}</span>
+        <span ng-switch-when="1" class="text-primary">{{ line.text }}</span>
+        <span ng-switch-when="2" class="text-info">{{ line.text }}</span>
+        <span ng-switch-when="3" class="text-warning">{{ line.text }}</span>
+        <span ng-switch-when="4" class="text-danger">{{ line.text }}</span>
+        <span ng-switch-when="5" class="text-danger">{{ line.text }}</span>
+      </span>
+    </div>
+  </div>
   <!--<div ng-controller="consoleCtrl as console" class="console">-->
     <!--<form ng-submit="console.send()">-->
       <!--<div class="input-group">-->
