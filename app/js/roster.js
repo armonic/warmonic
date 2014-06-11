@@ -5,7 +5,7 @@ angular.module('warmonic.lib.xmpp.roster', [
   'warmonic.lib.logger'
 ])
 
-.factory('roster', ['$q', '$timeout', 'xmpp', 'xmppSession', 'xmppService', 'logger', function($q, $timeout, xmpp, xmppSession, xmppService, logger) {
+.factory('roster', ['$q', '$rootScope', '$timeout', 'xmpp', 'xmppSession', 'xmppService', 'logger', function($q, $rootScope, $timeout, xmpp, xmppSession, xmppService, logger) {
 
   // don't show jid from this list
   // in the roster
@@ -52,6 +52,9 @@ angular.module('warmonic.lib.xmpp.roster', [
       }));
       logger.debug("roster items updated : " + JSON.stringify(items));
       xmppSession.data.rosterItems = items;
+
+      // force the run of a digest cycle
+      $rootScope.$apply();
     },
 
     isItemOnline: function(item) {
