@@ -1,11 +1,10 @@
 'use strict';
 
 angular.module('warmonic.lib.xmpp', [
-  'warmonic.lib.logger',
   'ngCookies'
 ])
 
-.factory('xmppSession', ['$cookieStore', 'logger', function($cookieStore, logger) {
+.factory('xmppSession', ['$cookieStore', function($cookieStore) {
 
   var session = {
     data: {},
@@ -30,7 +29,7 @@ angular.module('warmonic.lib.xmpp', [
 
 }])
 
-.factory('xmpp', ['$q', 'xmppSession', 'logger', function($q, xmppSession, logger) {
+.factory('xmpp', ['$q', 'xmppSession', function($q, xmppSession) {
 
   var statuses = {},
       deferredConnection = $q.defer(),
@@ -62,10 +61,10 @@ angular.module('warmonic.lib.xmpp', [
     },
 
     _init: function(connectionUrl) {
-      logger.debug(connectionUrl);
+      console.debug("using connection url : " + connectionUrl);
       this._connectionUrl = connectionUrl;
       if (this._connection) {
-        logger.info("reset current connexion");
+        console.info("reset current connexion");
         this._connection.reset();
         // cleanup requests queue
         this._connection._proto._requests.forEach(angular.bind(this, function(req) {
@@ -93,7 +92,7 @@ angular.module('warmonic.lib.xmpp', [
           !xmppSession.data.connectionUrl)
         return;
       this._init(xmppSession.data.connectionUrl);
-      logger.debug("attach session " + xmppSession.data.sid);
+      console.debug("attach session " + xmppSession.data.sid);
       this._connection.attach(xmppSession.data.jid,
                               xmppSession.data.sid,
                               xmppSession.data.rid,
@@ -103,7 +102,7 @@ angular.module('warmonic.lib.xmpp', [
 
     connect: function(jid, password, connectionUrl) {
       this._init(connectionUrl);
-      logger.debug("login with " + jid + "/" + password);
+      console.debug("login with " + jid + "/" + password);
       this._connection.connect(jid,
                                password,
                                angular.bind(this, this.onConnect));
@@ -120,13 +119,13 @@ angular.module('warmonic.lib.xmpp', [
     },
 
     onConnect: function(status, error) {
-      logger.debug('connection status is ' + statuses[status]);
+      console.debug('connection status is ' + statuses[status]);
       this.status.code = status;
       this.status.text = statuses[status];
       if (this.status.code == Strophe.Status.CONNECTED ||
           this.status.code == Strophe.Status.ATTACHED) {
         deferredConnection.resolve(this._connection);
-        this._connection.addHandler(angular.bind(this, this.onMessage), null, "message");
+        //this._connection.addHandler(angular.bind(this, this.onMessage), null, "message");
         xmppSession.data.jid = this._connection.jid;
         xmppSession.data.sid = this._connection._proto.sid;
         xmppSession.data.connectionUrl = this._connectionUrl;
@@ -162,7 +161,7 @@ angular.module('warmonic.lib.xmpp', [
     },
 
     //onMessage: function(message) {
-      //logger.warning("[" + $(message).attr("from") + "] " + $(message).find('body').text());
+      //console.log("[" + $(message).attr("from") + "] " + $(message).find('body').text());
       //return true;
     //},
 

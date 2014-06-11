@@ -1,11 +1,10 @@
 'use strict';
 
 angular.module('warmonic.provides', [
-  'warmonic.lib.logger',
   'warmonic.lib.xmpp.commands'
 ])
 
-.controller('providesCtrl', ['$scope', '$timeout', '$state', 'logger', 'xmpp', 'commands', function($scope, $timeout, $state, logger, xmpp, commands) {
+.controller('providesCtrl', ['$scope', '$timeout', '$state', 'xmpp', 'commands', function($scope, $timeout, $state, xmpp, commands) {
   if (!xmpp.connected)
     $state.go('login');
 
@@ -35,7 +34,7 @@ angular.module('warmonic.provides', [
     // wait a little
     this.searching = true;
     this.searchId = $timeout(angular.bind(this, function() {
-      logger.debug("Searching for: " + this.searchFilter);
+      console.debug("Searching for: " + this.searchFilter);
       this._searchFilter = this.searchFilter;
       this.list = this.updateList();
       this.searching = false;
@@ -166,7 +165,7 @@ angular.module('warmonic.provides', [
         self.searching = false;
       },
       function(cmd) {
-        logger.error("Failed to get provides list");
+        console.error("Failed to get provides list");
         self.searching = false;
       }
     );

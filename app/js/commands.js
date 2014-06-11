@@ -1,7 +1,6 @@
 'use strict';
 
 angular.module('warmonic.lib.xmpp.commands', [
-  'warmonic.lib.logger',
   'warmonic.lib.xmpp'
 ])
 

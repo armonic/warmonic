@@ -1,11 +1,10 @@
 'use strict';
 
 angular.module('warmonic.lib.xmpp.roster', [
-  'warmonic.lib.xmpp',
-  'warmonic.lib.logger'
+  'warmonic.lib.xmpp'
 ])
 
-.factory('roster', ['$q', '$rootScope', '$timeout', 'xmpp', 'xmppSession', 'xmppService', 'logger', function($q, $rootScope, $timeout, xmpp, xmppSession, xmppService, logger) {
+.factory('roster', ['$q', '$rootScope', '$timeout', 'xmpp', 'xmppSession', 'xmppService', function($q, $rootScope, $timeout, xmpp, xmppSession, xmppService) {
 
   // don't show jid from this list
   // in the roster
@@ -15,13 +14,13 @@ angular.module('warmonic.lib.xmpp.roster', [
 
     onConnection: function(conn) {
       conn.roster.registerCallback(angular.bind(this, this.updateItems));
-      logger.debug("registered roster callback");
+      console.debug("registered roster callback");
       if (xmppSession.data.rosterItems) {
-        logger.debug("loading previous roster");
+        console.debug("loading previous roster");
         conn.roster.items = xmppSession.data.rosterItems;
       }
       else {
-        logger.debug("get roster");
+        console.debug("get roster");
         conn.roster.get(angular.bind(this, this.onRoster));
       }
     },
@@ -34,7 +33,7 @@ angular.module('warmonic.lib.xmpp.roster', [
     },
 
     onRoster: function() {
-      logger.debug("roster received");
+      console.debug("roster received");
       // send presence after getting our roster
       xmpp.sendPresence();
     },
@@ -50,7 +49,7 @@ angular.module('warmonic.lib.xmpp.roster', [
         if (exclusionList.indexOf(item.jid) > -1)
           item.show = false;
       }));
-      logger.debug("roster items updated : " + JSON.stringify(items));
+      console.debug("roster items updated : " + JSON.stringify(items));
       xmppSession.data.rosterItems = items;
 
       // force the run of a digest cycle
