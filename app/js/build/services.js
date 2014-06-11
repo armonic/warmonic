@@ -352,7 +352,7 @@ angular.module('warmonic.build.services', [])
       .then(angular.bind(this, function(cmd) {
 
         this.data.sessionId = cmd.sessionid;
-        this.data.logs = muc.join(cmd.sessionid + '@logs.aeolus.org');
+        this.data.logs = muc.join(cmd.sessionid + '@logs.im.aeolus.org');
 
         // specify the first provide
         var form = $form({
