@@ -22,6 +22,13 @@ angular.module('warmonic', [
   $rootScope.global = global;
   $state.go('login');
   xmpp.attach();
+  var listenDisconnect = function() {
+    xmpp.getDisconnection().then(function () {
+      $state.go('login');
+      listenDisconnect();
+    });
+  };
+  listenDisconnect();
 }])
 
 .config(['$stateProvider', function($stateProvider) {
