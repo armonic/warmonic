@@ -83,7 +83,8 @@ angular.module('warmonic.lib.utils', [])
     options: {
       expertMode: false,
       debugMode: false,
-      logShow: false
+      logShow: false,
+      logBottom: false
     },
 
     load: function() {

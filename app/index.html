@@ -34,9 +34,16 @@
   <div class="container-fluid">
     <div class="row" ui-view />
   </div>
-  <div class="log" ng-controller="loggerCtrl as logger" ng-class="{'log-hidden': !global.options.logShow}">
-    <div class="log-control">
-      <button ng-click="global.toggleOption('logShow')" class="btn btn-primary">{{ global.options.logShow ? "Hide" : "Show" }}</button>
+  <div class="log" ng-controller="loggerCtrl as logger"
+    ng-class="{'log-hidden': !global.options.logShow, 'log-bottom': global.options.logBottom, 'log-right': !global.options.logBottom}">
+    <div class="log-control pull-right">
+      <button ng-click="global.toggleOption('logBottom')" class="btn btn-default btn-xs">
+        <span class="glyphicon"
+          ng-class="{'glyphicon-chevron-right': global.options.logBottom, 'glyphicon-chevron-down': !global.options.logBottom}"></span>
+      </button>
+      <button ng-click="global.toggleOption('logShow')" ng-if="global.options.logShow" class="btn btn-danger btn-xs">
+        <span class="glyphicon glyphicon-remove"></span>
+      </button>
     </div>
     <div ng-repeat="line in logger.output()">
       <span class="text-muted">{{ line.date | date:'short' }} : </span>

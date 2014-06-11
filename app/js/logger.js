@@ -56,7 +56,7 @@ angular.module('warmonic.lib.logger', [])
 .controller('consoleCtrl', ['xmpp', 'logger', function(xmpp, logger) {
   this.send = function() {
     var parser = new DOMParser();
-    doc = parser.parseFromString(this.input, 'text/xml');
+    var doc = parser.parseFromString(this.input, 'text/xml');
     var elem = doc.documentElement;
     if (xmpp._connection && elem) {
       xmpp._connection.send(elem);
@@ -64,5 +64,5 @@ angular.module('warmonic.lib.logger', [])
     }
     else
       logger.error("no connection available");
-  }
+  };
 }]);
