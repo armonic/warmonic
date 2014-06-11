@@ -352,6 +352,9 @@ angular.module('warmonic.build.services', [])
       .then(angular.bind(this, function(cmd) {
 
         this.data.sessionId = cmd.sessionid;
+        // leave previous room
+        if (this.data.logs)
+          this.data.logs.leave();
         this.data.logs = muc.join(cmd.sessionid + '@logs.im.aeolus.org');
 
         // specify the first provide

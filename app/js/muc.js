@@ -7,9 +7,14 @@ angular.module('warmonic.lib.xmpp.muc', [
 
 .factory('muc', ['$q', '$timeout', 'xmpp', 'xmppSession', 'xmppService', 'logger', function($q, $timeout, xmpp, xmppSession, xmppService, logger) {
 
-  var Room = function(name) {
+  var Room = function(name, nick) {
     this.name = name;
+    this.nick = nick;
     this.messages = [];
+    console.debug("joining room " + this.name);
+    xmpp.connection.muc.join(this.name,
+                             this.nick,
+                             angular.bind(this, this.onMessage));
   };
 
   Room.prototype = {
@@ -22,6 +27,11 @@ angular.module('warmonic.lib.xmpp.muc', [
         this.messages.push(message);
       }
       return true;
+    },
+
+    leave: function() {
+      console.debug("leaving room " + this.name);
+      xmpp.connection.muc.leave(this.name, this.nick);
     }
 
   };
@@ -33,11 +43,7 @@ angular.module('warmonic.lib.xmpp.muc', [
       if (!xmpp.connected)
         return;
 
-      var room = new Room(roomName);
-      xmpp.connection.muc.join(roomName,
-                               Strophe.getNodeFromJid(xmpp.connection.jid),
-                               angular.bind(room, room.onMessage));
-
+      var room = new Room(roomName, Strophe.getNodeFromJid(xmpp.connection.jid));
       return room;
     }
 
