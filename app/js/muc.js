@@ -16,8 +16,11 @@ angular.module('warmonic.lib.xmpp.muc', [
 
     onMessage: function(msg, xmppRoom) {
       msg = $(msg);
-      if (msg.children('body').length > 0)
-        logger.warning(msg.children('body').text());
+      if (msg.children('body').length > 0) {
+        var message = msg.children('body').text();
+        logger.info(message);
+        this.messages.push(message);
+      }
       return true;
     }
 
