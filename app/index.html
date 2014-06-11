@@ -34,7 +34,7 @@
   <div class="container-fluid">
     <div class="row" ui-view />
   </div>
-  <div class="log" ng-class="{'log-hidden': !global.options.logShow}" ng-controller="loggerCtrl as logger" ng-if="global.options.logShow">
+  <div class="log" ng-controller="loggerCtrl as logger" ng-class="{'log-hidden': !global.options.logShow}">
     <div class="log-control">
       <button ng-click="global.toggleOption('logShow')" class="btn btn-primary">{{ global.options.logShow ? "Hide" : "Show" }}</button>
     </div>

@@ -8,17 +8,23 @@ body {
   right: 0px;
   font-family: monospace;
   font-size: 11px;
+  width: 50%;
   height: 100%;
   overflow: auto;
   position: fixed;
-  width: 50%;
   background: linear-gradient(to bottom, rgba(0,0,0,0.065) 0%, rgba(0,0,0,0.015) 10px);
   background-color: white;
   z-index: 2000;
+
+  -webkit-transition: width ease 0.2s;
+  -moz-transition: width ease 0.2s;
+  transition: width ease 0.2s;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-.log-hidden {
-  display: none;
+.log.log-hidden {
+  width: 0;
 }
 
 .log-control {
