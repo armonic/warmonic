@@ -37,7 +37,7 @@
   <div class="log" ng-controller="loggerCtrl as logger"
     ng-class="{'log-hidden': !global.options.logShow, 'log-bottom': global.options.logBottom, 'log-right': !global.options.logBottom}">
     <div class="log-control pull-right">
-      <button ng-click="logger.clear()" class="btn btn-default btn-xs">
+      <button ng-click="logger.clear()" ng-if="global.options.logShow" class="btn btn-default btn-xs">
         Clear
       </button>
       <button ng-click="global.toggleOption('logBottom')" ng-if="global.options.logShow" class="btn btn-default btn-xs">
