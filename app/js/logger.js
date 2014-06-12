@@ -45,12 +45,17 @@ angular.module('warmonic.lib.logger', [])
 
     output: function() {
       return output;
+    },
+
+    clear: function() {
+      output = [];
     }
   };
 }])
 
 .controller('loggerCtrl', ['logger', function(logger) {
   this.output = logger.output;
+  this.clear = logger.clear;
 }])
 
 .controller('consoleCtrl', ['xmpp', 'logger', function(xmpp, logger) {
