@@ -114,6 +114,14 @@ body {
   display: inline;
 }
 
+.tree form legend {
+  cursor: pointer;
+}
+
+.tree form legend span.glyphicon {
+  font-size: 75%;
+}
+
 .tree ul {
   list-style-type: none;
   margin-left: 20px;

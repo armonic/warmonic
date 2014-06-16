@@ -22,9 +22,17 @@
     <nodespecialize data="data" />
   </span>
 
-  <form ng-switch-when="form" role="form">
-    <legend>{{ data.label }} <span ng-if="host">on {{ host }}</span></legend>
-    <node data="field" ng-repeat="field in data.fields" />
+  <form ng-switch-when="form" role="form" ng-class="{'collapsed': !show}">
+    <legend ng-click="show = !show">
+      <span class="glyphicon"
+        ng-class="{'glyphicon-chevron-down': show, 'glyphicon-chevron-right': !show}"
+        ng-if="data.hasVisibleFields"></span>
+      {{ data.label }}
+      <span ng-if="host">on {{ host }}</span>
+    </legend>
+    <div ng-show="show">
+      <node data="field" ng-repeat="field in data.fields" />
+    </div>
   </form>
 
 </span>

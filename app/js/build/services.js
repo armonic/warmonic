@@ -119,6 +119,16 @@ angular.module('warmonic.build.services', [])
       return this.params.fields;
     },
 
+    get hasVisibleFields() {
+      var result = false;
+      this.params.fields.forEach(function(field) {
+        if (field.show)
+          result = true;
+      });
+
+      return result;
+    },
+
     addField: function(value) {
       this.params.fields.push({
           value: value || ""
@@ -254,6 +264,7 @@ angular.module('warmonic.build.services', [])
     fillNodeData: function(treeIndex, data) {
       var node = this.getTreeNode(treeIndex);
       node.data = data;
+      node.show = true;
 
       return node;
     },
