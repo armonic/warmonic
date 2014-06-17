@@ -1,5 +1,4 @@
 body {
-  padding-bottom: 250px;
 }
 
 .log {
@@ -26,7 +25,7 @@ body {
   transition: height ease 0.2s;
 }
 
-.log.log-bottom.log-hidden {
+.log.log-bottom.ng-hide {
   height: 0;
 }
 
@@ -41,7 +40,7 @@ body {
   transition: width ease 0.2s;
 }
 
-.log.log-right.log-hidden {
+.log.log-right.ng-hide {
   width: 0;
 }
 

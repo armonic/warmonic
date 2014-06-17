@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('warmonic', [
+  'ngAnimate',
   'ui.router',
   'ui.bootstrap.tooltip',
   'warmonic.lib.utils',

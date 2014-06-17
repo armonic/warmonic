@@ -34,8 +34,8 @@
   <div class="container-fluid">
     <div class="row" ui-view />
   </div>
-  <div class="log" ng-controller="loggerCtrl as logger"
-    ng-class="{'log-hidden': !global.options.logShow, 'log-bottom': global.options.logBottom, 'log-right': !global.options.logBottom}">
+  <div class="log" ng-controller="loggerCtrl as logger" ng-show="global.options.logShow"
+    ng-class="{'log-bottom': global.options.logBottom, 'log-right': !global.options.logBottom}">
     <div class="log-control pull-right">
       <button ng-click="logger.clear()" ng-if="global.options.logShow" class="btn btn-default btn-xs">
         Clear
@@ -84,6 +84,7 @@
   <script src="../bower_components/strophejs-plugins/muc/strophe.muc.js"></script>
   <script src="../bower_components/angular/angular.js"></script>
   <script src="../bower_components/angular-cookies/angular-cookies.js"></script>
+  <script src="../bower_components/angular-animate/angular-animate.js"></script>
   <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
   <script src="../bower_components/angular-ui-bootstrap/src/bindHtml/bindHtml.js"></script>
   <script src="../bower_components/angular-ui-bootstrap/src/position/position.js"></script>
