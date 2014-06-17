@@ -154,6 +154,19 @@ angular.module('warmonic.build.services', [])
       this.params.value = data;
     },
 
+    get hasValue() {
+      if (this.type == "input-multi") {
+        var result = false;
+        this.value.forEach(function(value) {
+          if (value)
+            result = true;
+        });
+        return result;
+      }
+
+      return this.value ? true : false;
+    },
+
     /** Get the label text to show */
     get label() {
       var labelText = this.params.label || this.name;
@@ -180,7 +193,7 @@ angular.module('warmonic.build.services', [])
     get show() {
       if (this.params.resolved_by || this.params.set_by)
         return false;
-      if (this.params.expert && !global.options.expertMode)
+      if (this.params.expert && !global.options.expertMode && this.hasValue)
         return false;
       return true;
     },
