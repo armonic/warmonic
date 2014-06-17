@@ -125,6 +125,7 @@ body.log-bottom {
 
 .tree form legend {
   cursor: pointer;
+  font-size: 16px;
 }
 
 .tree form legend span.glyphicon {
@@ -154,7 +155,7 @@ body.log-bottom {
 
 .tree h4 {
   border-bottom: 1px solid #E5E5E5;
-  font-size: 21px;
+  font-size: 16px;
   margin: 0px;
   margin-bottom: 10px;
   line-height: inherit;
