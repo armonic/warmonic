@@ -1,6 +1,6 @@
 <div class="form-group" ng-show="inputField.show" ng-class="{'has-warning': inputField.params.expert}">
   <label class="control-label" for="{{ inputField.name }}">{{ inputField.label }}</label>
-  <div class="input-group">
+  <div ng-class="{'input-group': inputField.canSubmit}">
     <input
       type="text"
       id="{{ inputField.name }}"
