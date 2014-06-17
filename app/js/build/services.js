@@ -85,9 +85,6 @@ angular.module('warmonic.build.services', [])
           value = false;
         else if (value == "None")
           value = "";
-        if (key == "value" && value) {
-          value = JSON.parse(value);
-        }
         params[key] = value;
       }));
 
@@ -362,7 +359,7 @@ angular.module('warmonic.build.services', [])
     },
 
     _getTreeIndex: function(cmd) {
-      return JSON.parse(commands.getFormFieldValue(cmd, "tree_id"));
+      return commands.getFormFieldValue(cmd, "tree_id", true);
     },
 
     run: function(xpath) {
@@ -496,12 +493,12 @@ angular.module('warmonic.build.services', [])
     hostChoice: function(cmd, treeIndex) {
       var provideName = commands.getFormFieldValue(cmd, 'provide'),
           label = commands.getFormFieldAttr(cmd, 'host', 'label'),
-          host = commands.getFormFieldValue(cmd, 'host'),
+          host = commands.getFormFieldValue(cmd, 'host', true),
           deferredSelection = $q.defer();
 
       var fieldParams = {
         label: label,
-        value: host,
+        value: host || "localhost",
         promise: deferredSelection,
       };
       var field = buildVariables.createField(fieldParams);
@@ -590,7 +587,11 @@ angular.module('warmonic.build.services', [])
             params = {};
 
         field.options.forEach(function(option) {
-          params[option.label] = option.value;
+          // value is JSON serialized
+          if (option.label == "value")
+            params[option.label] = JSON.parse(option.value);
+          else
+            params[option.label] = option.value;
         });
 
         formField = buildVariables.addField(params, fieldName);

@@ -91,15 +91,6 @@ angular.module('warmonic.lib.xmpp.commands', [
         return deferResult.promise;
       },
 
-      log: function(cmd) {
-        console.log("jid : "+ cmd.jid);
-        console.log("node : "+ cmd.node);
-        console.log("sesionid : "+ cmd.sessionid);
-        console.log("executeAction : "+ cmd.executeAction);
-        console.log("status : "+ cmd.status);
-        console.log("error : "+ cmd.error);
-      },
-
       get providerOnline() {
         var provider = Strophe.getBareJidFromJid(this.provider);
         return roster.isJidOnline(provider);
@@ -115,13 +106,22 @@ angular.module('warmonic.lib.xmpp.commands', [
         return f;
       },
 
-      getFormFieldValue: function(cmd, fieldName) {
-        var field = this._getFormField(cmd, fieldName);
-        if (field && field.values.length == 1)
-          return field.values[0];
+      getFormFieldValue: function(cmd, fieldName, parseJSON) {
+        var value,
+            field = this._getFormField(cmd, fieldName);
+
         if (!field)
           return null;
-        return field.values || null;
+
+        if (field && field.values.length == 1)
+          value = field.values[0];
+        else
+          value = field.values || null;
+
+        if (value && parseJSON)
+          return JSON.parse(value);
+
+        return value;
       },
 
       getFormFieldAttr: function(cmd, fieldName, attrName) {
