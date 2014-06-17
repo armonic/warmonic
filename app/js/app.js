@@ -58,6 +58,12 @@ angular.module('warmonic', [
 
 }])
 
+.config(['mucProvider', function(mucProvider) {
+
+  mucProvider.setMucDomain('logs.im.aeolus.org');
+
+}])
+
 .config(['$tooltipProvider', function($tooltipProvider) {
 
   $tooltipProvider.options({
