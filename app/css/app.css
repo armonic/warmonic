@@ -1,23 +1,25 @@
-body {
+body.log-bottom {
+  padding-bottom: 20%;
 }
 
 .log {
-  border-left: 1px solid #CCCCCC;
+  border: 1px solid #ccc;
+  border-right: 0px;
   font-family: monospace;
   font-size: 11px;
   overflow: auto;
   position: fixed;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.065) 0%, rgba(0,0,0,0.015) 10px);
   background-color: white;
   z-index: 2000;
+  padding: 3px;
 
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .log.log-bottom {
   bottom: 0px;
-  left: 0px;
-  width: 100%;
+  left: 5%;
+  width: 90%;
   height: 35%;
 
   -webkit-transition: height ease 0.2s;
@@ -30,10 +32,10 @@ body {
 }
 
 .log.log-right {
-  top: 0px;
+  top: 10%;
   right: 0px;
   width: 50%;
-  height: 100%;
+  height: 85%;
 
   -webkit-transition: width ease 0.2s;
   -moz-transition: width ease 0.2s;
@@ -46,9 +48,17 @@ body {
 
 .log-control {
   position: fixed;
-  right: 8px;
-  margin-top: 8px;
-  margin-right: 8px;
+  z-index: 3000;
+  margin-top: -14px;
+
+}
+
+.log-bottom .log-control {
+  right: 7%;
+}
+
+.log-right .log-control {
+  right: 15px;
 }
 
 .log > div {

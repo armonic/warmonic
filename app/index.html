@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"/>
   <link rel="stylesheet" href="css/app.css"/>
 </head>
-<body>
+<body ng-class="{'log-bottom': global.options.logBottom}">
   <nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="navCtrl as nav" ng-show="nav.xmppSession.data.jid">
     <div class="container-fluid">
       <div class="navbar-header">
