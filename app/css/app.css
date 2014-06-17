@@ -132,6 +132,19 @@ body.log-bottom {
   font-size: 75%;
 }
 
+.tree form .form-fields {
+  max-height: 1000px;
+  opacity: 1;
+  -webkit-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  transition: all ease 0.3s;
+  overflow: hidden;
+}
+
+.tree form .form-fields.ng-hide {
+  max-height: 0;
+}
+
 .tree ul {
   list-style-type: none;
   margin-left: 20px;

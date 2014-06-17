@@ -30,7 +30,7 @@
       {{ data.label }}
       <span ng-if="host">on {{ host }}</span>
     </legend>
-    <div ng-show="show">
+    <div class="form-fields" ng-show="show">
       <node data="field" ng-repeat="field in data.fields" />
     </div>
   </form>
