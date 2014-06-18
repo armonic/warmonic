@@ -179,16 +179,29 @@ angular.module('warmonic.lib.xmpp', [
   return xmpp;
 }])
 
-.controller('loginCtrl', ['$state', 'xmpp', function($state, xmpp) {
+.controller('loginCtrl', ['$scope', '$state', 'xmpp', function($scope, $state, xmpp) {
   if (xmpp.connected) {
     $state.go('provides');
   }
 
+  this.connection = null;
   this.user = {
     'jid': 'test1@im.aeolus.org',
     'password': 'test1'
   };
-  this.connection = 'http://im.aeolus.org/http-bind';
+
+  $scope.$watch(
+    angular.bind(this, function() { return this.user.jid; }),
+    angular.bind(this, function(newVal, oldVal) {
+      var host;
+      try {
+        host = Strophe.getDomainFromJid(this.user.jid);
+      }
+      catch (error) {
+        host = "";
+      }
+      this.connection = 'http://' + host + ':5280/http-bind';
+  }));
 
   this.status = xmpp.status;
 
