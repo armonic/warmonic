@@ -310,7 +310,7 @@ angular.module('warmonic.build.services', [])
 
 }])
 
-.factory('build', ['$q', 'commands', 'muc', 'buildTree', 'buildVariables', 'global', function($q, commands, muc, buildTree, buildVariables, global) {
+.factory('build', ['$q', 'logger', 'commands', 'muc', 'buildTree', 'buildVariables', 'global', function($q, logger, commands, muc, buildTree, buildVariables, global) {
 
   var _cmd,
       tree,
@@ -329,6 +329,7 @@ angular.module('warmonic.build.services', [])
       tree = buildTree.create('build');
       this.data.sessionId = null;
       buildVariables.init();
+      logger.clear();
     },
 
     tree: function() {
