@@ -1,5 +1,32 @@
+body,
+body > .content,
+  -webkit-transition: all ease 0.2s;
+  -moz-transition: all ease 0.2s;
+  transition: all ease 0.2s;
+}
 body.log-bottom {
   padding-bottom: 35%;
+}
+
+body.log-right > .content {
+  margin-left: 0px;
+  width: 50%;
+}
+
+body.log-right .col-md-1,
+body.log-right .col-md-2,
+body.log-right .col-md-3,
+body.log-right .col-md-4,
+body.log-right .col-md-5,
+body.log-right .col-md-6,
+body.log-right .col-md-7,
+body.log-right .col-md-8,
+body.log-right .col-md-9,
+body.log-right .col-md-10,
+body.log-right .col-md-11,
+body.log-right .col-md-12 {
+  float: none;
+  width: auto;
 }
 
 .log {
@@ -177,3 +204,4 @@ body.log-bottom {
 .container-fluid > .row {
   margin: 0px;
 }
+

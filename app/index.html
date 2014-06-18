@@ -6,7 +6,8 @@
   <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"/>
   <link rel="stylesheet" href="css/app.css"/>
 </head>
-<body ng-class="{'log-bottom': global.options.logBottom}">
+<body ng-class="{'log-bottom': global.options.logBottom && global.options.logShow,
+                 'log-right': !global.options.logBottom && global.options.logShow}">
   <nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="navCtrl as nav" ng-show="nav.xmppSession.data.jid">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -31,7 +32,7 @@
       </div>
     </div>
   </nav>
-  <div class="container-fluid">
+  <div class="container-fluid content">
     <div class="row" ui-view></div>
   </div>
   <div class="log" ng-controller="loggerCtrl as logger" ng-show="global.options.logShow"
