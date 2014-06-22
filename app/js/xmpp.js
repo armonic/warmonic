@@ -185,6 +185,7 @@ angular.module('warmonic.lib.xmpp', [
   }
 
   this.connection = null;
+  this.connections = [];
   this.user = {
     'jid': 'test1@im.aeolus.org',
     'password': 'test1'
@@ -200,7 +201,12 @@ angular.module('warmonic.lib.xmpp', [
       catch (error) {
         host = "";
       }
-      this.connection = 'http://' + host + ':5280/http-bind';
+      this.connections = [
+        'http://' + host + ':5280/http-bind',
+        'ws://' + host + ':5280/xmpp-websocket',
+        'ws://' + host + ':5288/xmpp-websocket'
+      ];
+      this.connection = this.connections[0];
   }));
 
   this.status = xmpp.status;

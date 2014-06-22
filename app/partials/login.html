@@ -13,7 +13,10 @@
       </div>
       <div class="form-group">
         <label for="connection">Connection</label>
-        <input type="text" class="form-control" id="connection" placeholder="" ng-model="login.connection"/>
+        <select id="connection" class="form-control"
+          ng-options="conn for conn in login.connections"
+          ng-required
+          ng-model="login.connection" />
       </div>
       <button type="submit" class="btn btn-default">Connect</button>
     </form>
