@@ -1,6 +1,15 @@
 <div class="col-md-4 col-md-offset-4" ng-controller="loginCtrl as login">
   <h1>Login</h1>
 
+  <a class="label label-primary pull-right" ng-click="global.options.expertMode = !global.options.expertMode" href="#">
+    <span ng-show="global.options.expertMode">
+      <span class="glyphicon glyphicon-minus"></span> Less options
+    </span>
+    <span ng-show="!global.options.expertMode">
+      <span class="glyphicon glyphicon-plus"></span> More options
+    </span>
+  </a>
+
   <div class="well">
     <form role="form" ng-submit="login.connect()">
       <div class="form-group">
@@ -11,12 +20,20 @@
         <label for="password">Password</label>
         <input type="password" class="form-control" id="password" placeholder="password" ng-model="login.user.password"/>
       </div>
-      <div class="form-group">
+      <div class="form-group" ng-show="global.options.expertMode">
         <label for="connection">Connection</label>
         <select id="connection" class="form-control"
           ng-options="conn for conn in login.connections"
           ng-required
           ng-model="login.connection" />
+      </div>
+      <div class="form-group" ng-show="global.options.expertMode">
+        <label for="masterJID">Master JID</label>
+        <input id="masterJID" class="form-control" ng-model="login.masterJID" />
+      </div>
+      <div class="form-group" ng-show="global.options.expertMode">
+        <label for="mucDomain">MUC domain</label>
+        <input id="mucDomain" class="form-control" ng-model="login.mucDomain" />
       </div>
       <button type="submit" class="btn btn-default">Connect</button>
     </form>

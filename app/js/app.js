@@ -10,6 +10,7 @@ angular.module('warmonic', [
   'warmonic.lib.xmpp.muc',
   'warmonic.lib.xmpp.commands',
   'warmonic.lib.logger',
+  'warmonic.login',
   'warmonic.nav',
   'warmonic.provides',
   'warmonic.build.directives',
@@ -49,18 +50,6 @@ angular.module('warmonic', [
     url: '/build?provide',
     templateUrl: 'partials/build.html'
   });
-
-}])
-
-.config(['commandsProvider', function(commandsProvider) {
-
-  commandsProvider.setProvider('mss-master@im.aeolus.org/master');
-
-}])
-
-.config(['mucProvider', function(mucProvider) {
-
-  mucProvider.setMucDomain('logs.im.aeolus.org');
 
 }])
 

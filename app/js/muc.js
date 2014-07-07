@@ -5,66 +5,60 @@ angular.module('warmonic.lib.xmpp.muc', [
   'warmonic.lib.logger'
 ])
 
-.provider('muc', {
+.factory('muc', ['$q', '$timeout', 'xmpp', 'xmppSession', 'xmppService', 'logger', function($q, $timeout, xmpp, xmppSession, xmppService, logger) {
 
-  mucDomain: null,
+  var mucDomain = null;
 
-  setMucDomain: function(domain) {
-    this.mucDomain = domain;
-  },
+  var Room = function(name, nick) {
+    this.name = name;
+    this.nick = nick;
+    this.messages = [];
+    console.debug("joining room " + this.name);
+    xmpp.connection.muc.join(this.name,
+                             this.nick,
+                             angular.bind(this, this.onMessage));
+  };
 
-  $get: ['$q', '$timeout', 'xmpp', 'xmppSession', 'xmppService', 'logger', function($q, $timeout, xmpp, xmppSession, xmppService, logger) {
+  Room.prototype = {
 
-    var mucDomain = this.mucDomain;
-
-    var Room = function(name, nick) {
-      this.name = name;
-      this.nick = nick;
-      this.messages = [];
-      console.debug("joining room " + this.name);
-      xmpp.connection.muc.join(this.name,
-                               this.nick,
-                               angular.bind(this, this.onMessage));
-    };
-
-    Room.prototype = {
-
-      onMessage: function(msg, xmppRoom) {
-        msg = $(msg);
-        if (msg.children('body').length > 0) {
-          var message = msg.children('body').text();
-          logger.info(message);
-          this.messages.push(message);
-        }
-        return true;
-      },
-
-      leave: function() {
-        console.debug("leaving room " + this.name);
-        xmpp.connection.muc.leave(this.name, this.nick);
+    onMessage: function(msg, xmppRoom) {
+      msg = $(msg);
+      if (msg.children('body').length > 0) {
+        var message = msg.children('body').text();
+        logger.info(message);
+        this.messages.push(message);
       }
+      return true;
+    },
 
-    };
+    leave: function() {
+      console.debug("leaving room " + this.name);
+      xmpp.connection.muc.leave(this.name, this.nick);
+    }
 
-    var muc = xmppService.create();
-    angular.extend(muc, {
+  };
 
-      get mucDomain() {
-        return mucDomain;
-      },
+  var muc = xmppService.create();
+  angular.extend(muc, {
 
-      join: function(roomName) {
-        if (!xmpp.connected)
-          return;
+    get mucDomain() {
+      return mucDomain;
+    },
 
-        var room = new Room(roomName, Strophe.getNodeFromJid(xmpp.connection.jid));
-        return room;
-      }
+    set mucDomain(value) {
+      mucDomain = value;
+    },
 
-    });
+    join: function(roomName) {
+      if (!xmpp.connected)
+        return;
 
-    return muc;
+      var room = new Room(roomName, Strophe.getNodeFromJid(xmpp.connection.jid));
+      return room;
+    }
 
-  }]
+  });
 
-});
+  return muc;
+
+}]);

@@ -171,61 +171,12 @@ angular.module('warmonic.lib.xmpp', [
     onOutput: function(body) {
       if (this._connection && this._connection._proto.rid) {
         xmppSession.data.rid = this._connection._proto.rid;
-        xmppSession.save();
       }
+      xmppSession.save();
     }
   };
 
   return xmpp;
-}])
-
-.controller('loginCtrl', ['$scope', '$state', 'xmpp', function($scope, $state, xmpp) {
-  if (xmpp.connected) {
-    $state.go('provides');
-  }
-
-  this.connection = null;
-  this.connections = [];
-  this.user = {
-    'jid': 'test1@im.aeolus.org',
-    'password': 'test1'
-  };
-
-  $scope.$watch(
-    angular.bind(this, function() { return this.user.jid; }),
-    angular.bind(this, function(newVal, oldVal) {
-      var host;
-      try {
-        host = Strophe.getDomainFromJid(this.user.jid);
-      }
-      catch (error) {
-        host = "";
-      }
-      this.connections = [
-        'http://' + host + ':5280/http-bind',
-        'ws://' + host + ':5280/xmpp-websocket',
-        'ws://' + host + ':5288/xmpp-websocket'
-      ];
-      this.connection = this.connections[0];
-  }));
-
-  this.status = xmpp.status;
-
-  this.connect = function() {
-    xmpp.connect(this.user.jid, this.user.password,
-                 this.connection)
-    .then(angular.bind(this, function() {
-      $state.go('provides');
-    }));
-  };
-
-  this.disconnect = function() {
-    xmpp.disconnect()
-    .then(function() {
-      $state.go('login');
-    });
-  };
-
 }])
 
 // template to create xmpp services
