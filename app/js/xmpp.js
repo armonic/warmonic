@@ -204,7 +204,7 @@ angular.module('warmonic.lib.xmpp', [
       }));
     },
 
-    onConnection: function() {
+    onConnection: function(conn) {
       // can be overriden by service
       // run when the xmpp connection is connected
       return true;
