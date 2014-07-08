@@ -15,6 +15,7 @@ angular.module('warmonic.lib.xmpp.commands', [
 
     set provider(value) {
       provider = value;
+      console.debug("master is " + provider);
       roster.excludeJid(provider);
     },
 

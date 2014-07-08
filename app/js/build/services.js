@@ -377,7 +377,7 @@ angular.module('warmonic.build.services', [])
         // leave previous room
         if (this.data.logs)
           this.data.logs.leave();
-        this.data.logs = muc.join(cmd.sessionid + '@' + muc.mucDomain);
+        this.data.logs = muc.join(cmd.sessionid);
 
         // specify the first provide
         var form = $form({
