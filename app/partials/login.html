@@ -21,9 +21,9 @@
         <input type="password" class="form-control" id="password" placeholder="password" ng-model="login.user.password"/>
       </div>
       <div class="form-group" ng-show="global.options.expertMode">
-        <label for="connection">Connection</label>
+        <label for="connection">Connection type</label>
         <select id="connection" class="form-control"
-          ng-options="conn for conn in login.connections"
+          ng-options="conn.value as conn.label for conn in login.connections"
           ng-required
           ng-model="login.connection" />
       </div>

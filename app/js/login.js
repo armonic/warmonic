@@ -24,10 +24,10 @@ angular.module('warmonic.login', [])
         this.domain = "";
       }
       this.connections = [
-        'ws://' + this.domain + ':5280/xmpp-websocket',
-        'http://' + this.domain + ':5280/http-bind'
+        {label: "Websocket connection", value: 'ws://' + this.domain + ':5280/xmpp-websocket'},
+        {label: "BOSH connection", value: 'http://' + this.domain + ':5280/http-bind'}
       ];
-      this.connection = this.connections[0];
+      this.connection = this.connections[0].value;
       this.masterJID = "master@" + this.domain + '/master';
       this.mucDomain = "logs." + this.domain;
   }));
