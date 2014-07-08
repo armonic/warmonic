@@ -15,7 +15,7 @@ angular.module('warmonic.lib.xmpp.roster', [
     onConnection: function(conn) {
       conn.roster.registerCallback(angular.bind(this, this.updateItems));
       console.debug("registered roster callback");
-      if (xmppSession.data.rosterItems) {
+      if (xmppSession.data.connectionMode == xmpp.mode.ATTACH) {
         console.debug("loading previous roster");
         conn.roster.items = xmppSession.data.rosterItems;
       }
@@ -51,6 +51,7 @@ angular.module('warmonic.lib.xmpp.roster', [
       }));
       console.debug("roster items updated : " + JSON.stringify(items));
       xmppSession.data.rosterItems = items;
+      xmppSession.save();
 
       // force the run of a digest cycle
       $rootScope.$apply();
@@ -67,7 +68,7 @@ angular.module('warmonic.lib.xmpp.roster', [
       if (xmpp.connected) {
         var roster = xmpp.connection.roster;
         try {
-          return this.isItemOnline(roster.findItem(jid));
+          return this.isItemOnline(roster.findItem(Strophe.getBareJidFromJid(jid)));
         }
         catch (err) {
           return false;

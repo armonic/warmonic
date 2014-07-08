@@ -6,22 +6,22 @@ angular.module('warmonic.lib.xmpp.commands', [
 
 .factory('commands', ['$q', 'xmpp', 'roster', function($q, xmpp, roster) {
 
-  var commandProvider = null;
+  var provider = null;
 
   return {
     get provider() {
-      return commandProvider;
+      return provider;
     },
 
     set provider(value) {
-      commandProvider = value;
-      roster.excludeJid(commandProvider);
+      provider = value;
+      roster.excludeJid(provider);
     },
 
     create: function(cmd) {
-      if (!commandProvider)
+      if (!this.provider)
         throw "Command provider should be filled first!";
-      return new Strophe.Commands.RemoteCommand(xmpp._connection, commandProvider, cmd);
+      return new Strophe.Commands.RemoteCommand(xmpp._connection, this.provider, cmd);
     },
 
     execute: function(cmd) {
@@ -91,10 +91,9 @@ angular.module('warmonic.lib.xmpp.commands', [
     },
 
     get providerOnline() {
-      if (!commandProvider)
+      if (!this.provider)
         return false;
-      var provider = Strophe.getBareJidFromJid(commandProvider);
-      return roster.isJidOnline(provider);
+      return roster.isJidOnline(this.provider);
     },
 
     _getFormField: function(cmd, fieldName) {

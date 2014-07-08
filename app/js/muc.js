@@ -5,9 +5,9 @@ angular.module('warmonic.lib.xmpp.muc', [
   'warmonic.lib.logger'
 ])
 
-.factory('muc', ['$q', '$timeout', 'xmpp', 'xmppSession', 'xmppService', 'logger', function($q, $timeout, xmpp, xmppSession, xmppService, logger) {
+.factory('muc', ['$q', '$timeout', 'xmpp', 'xmppService', 'logger', function($q, $timeout, xmpp, xmppService, logger) {
 
-  var mucDomain = null;
+  var domain = null;
 
   var Room = function(name, nick) {
     this.name = name;
@@ -41,12 +41,12 @@ angular.module('warmonic.lib.xmpp.muc', [
   var muc = xmppService.create();
   angular.extend(muc, {
 
-    get mucDomain() {
-      return mucDomain;
+    get domain() {
+      return domain;
     },
 
-    set mucDomain(value) {
-      mucDomain = value;
+    set domain(value) {
+      domain = value;
     },
 
     join: function(roomName) {

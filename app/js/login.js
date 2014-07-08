@@ -2,10 +2,7 @@
 
 angular.module('warmonic.login', [])
 
-.controller('loginCtrl', ['$scope', '$state', 'xmpp', 'muc', 'commands',  function($scope, $state, xmpp, muc, commands) {
-  if (xmpp.connected) {
-    $state.go('provides');
-  }
+.controller('loginCtrl', ['$scope', '$state', 'xmppSession', 'xmpp', function($scope, $state, xmppSession, xmpp) {
 
   this.masterJID = null;
   this.mucDomain = null;
@@ -38,21 +35,13 @@ angular.module('warmonic.login', [])
   this.status = xmpp.status;
 
   this.connect = function() {
-    xmpp.connect(this.user.jid, this.user.password,
-                 this.connection)
-    .then(angular.bind(this, function() {
-      commands.provider = this.masterJID;
-      muc.mucDomain = this.mucDomain;
-
-      $state.go('provides');
-    }));
+    xmppSession.data.commandsProvider = this.masterJID;
+    xmppSession.data.mucDomain = this.mucDomain;
+    xmpp.connect(this.user.jid, this.user.password, this.connection);
   };
 
   this.disconnect = function() {
-    xmpp.disconnect()
-    .then(function() {
-      $state.go('login');
-    });
+    xmpp.disconnect();
   };
 
 }]);

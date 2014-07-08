@@ -8,15 +8,18 @@ angular.module('warmonic.lib.xmpp', [
 
   var session = {
     data: {},
+
     load: function() {
       var sessionData = $cookieStore.get('xmppSession') || {};
       if (sessionData.timestamp && Date.now() / 1000 - sessionData.timestamp < 3600)
         this.data = sessionData;
     },
+
     save: function() {
       this.data.timestamp = Date.now() / 1000;
       $cookieStore.put('xmppSession', this.data);
     },
+
     clear: function() {
       this.data = {};
       this.save();
@@ -77,9 +80,18 @@ angular.module('warmonic.lib.xmpp', [
         this._connection = new Strophe.Connection(this._connectionUrl);
         this._connection.xmlInput = angular.bind(this, this.onInput);
         this._connection.xmlOutput = angular.bind(this, this.onOutput);
-        this._connection.rawInput = function(data) { console.log('RECV: ' + data); };
-        this._connection.rawOutput = function(data) { console.log('SENT: ' + data); };
+        this._connection.rawInput = function(data) {
+          console.log('RECV: ' + data);
+        };
+        this._connection.rawOutput = function(data) {
+          console.log('SENT: ' + data);
+        };
       }
+    },
+
+    mode: {
+      CONNECT: 0,
+      ATTACH: 1
     },
 
     status: {
@@ -88,11 +100,21 @@ angular.module('warmonic.lib.xmpp', [
     },
 
     attach: function() {
+      // No attach() with websockets
+      if (xmppSession.data.connectionUrl &&
+          xmppSession.data.connectionUrl.indexOf('ws://') !== -1) {
+        return this.connect(xmppSession.data.jid,
+                            xmppSession.data.password,
+                            xmppSession.data.connectionUrl);
+      }
+
       if (!xmppSession.data.sid ||
           !xmppSession.data.connectionUrl)
         return;
+
       this._init(xmppSession.data.connectionUrl);
       console.debug("attach session " + xmppSession.data.sid);
+      xmppSession.data.connectionMode = this.mode.ATTACH;
       this._connection.attach(xmppSession.data.jid,
                               xmppSession.data.sid,
                               xmppSession.data.rid,
@@ -103,6 +125,8 @@ angular.module('warmonic.lib.xmpp', [
     connect: function(jid, password, connectionUrl) {
       this._init(connectionUrl);
       console.debug("login with " + jid + "/" + password);
+      xmppSession.data.password = password;
+      xmppSession.data.connectionMode = this.mode.CONNECT;
       this._connection.connect(jid,
                                password,
                                angular.bind(this, this.onConnect));
@@ -127,8 +151,11 @@ angular.module('warmonic.lib.xmpp', [
         deferredConnection.resolve(this._connection);
         //this._connection.addHandler(angular.bind(this, this.onMessage), null, "message");
         xmppSession.data.jid = this._connection.jid;
-        xmppSession.data.sid = this._connection._proto.sid;
+        // no sid with websockets
+        if (this._connection._proto.sid)
+          xmppSession.data.sid = this._connection._proto.sid;
         xmppSession.data.connectionUrl = this._connectionUrl;
+        xmppSession.save();
       }
       else if (this.status.code == Strophe.Status.CONNFAIL ||
                this.status.code == Strophe.Status.AUTHFAIL) {
@@ -160,18 +187,13 @@ angular.module('warmonic.lib.xmpp', [
       this.send($pres());
     },
 
-    //onMessage: function(message) {
-      //console.log("[" + $(message).attr("from") + "] " + $(message).find('body').text());
-      //return true;
-    //},
-
     onInput: function(body) {
     },
 
     onOutput: function(body) {
-      if (this._connection && this._connection._proto.rid) {
-        xmppSession.data.rid = this._connection._proto.rid;
-      }
+      // no rid with websockets
+      if (this.connection && this.connection._proto.rid)
+        xmppSession.data.rid = this.connection._proto.rid;
       xmppSession.save();
     }
   };

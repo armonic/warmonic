@@ -18,12 +18,15 @@ angular.module('warmonic', [
   'warmonic.build.controllers',
 ])
 
-.run(['$rootScope', '$state', '$stateParams', 'xmpp', 'global', function($rootScope, $state, $stateParams, xmpp, global) {
+.run(['$rootScope', '$state', '$stateParams', 'xmppSession', 'xmpp', 'global', 'commands', 'muc', function($rootScope, $state, $stateParams, xmppSession, xmpp, global, commands, muc) {
   $rootScope.$state = $state;
   $rootScope.$stateParams = $stateParams;
   $rootScope.global = global;
+  // default page
   $state.go('login');
+  // try to connect
   xmpp.attach();
+  // listen connections/disconnections globally
   var listenDisconnect = function() {
     xmpp.getDisconnection().then(function () {
       $state.go('login');
@@ -31,6 +34,16 @@ angular.module('warmonic', [
     });
   };
   listenDisconnect();
+  var listenConnect = function() {
+    xmpp.getConnection().then(function(conn) {
+      $state.go('provides');
+      // configure services
+      commands.provider = xmppSession.data.commandsProvider;
+      muc.domain = xmppSession.data.mucDomain;
+      listenConnect();
+    });
+  };
+  listenConnect();
 }])
 
 .config(['$stateProvider', function($stateProvider) {
