@@ -347,10 +347,10 @@ angular.module('warmonic.build.services', [])
       if (host)
         tree.fillNodeHost(treeIndex, host);
 
+      if (cmd.form.instructions == "lfm")
+        this.lfm(cmd, treeIndex);
       if (cmd.form.instructions == "specialize")
         this.specialize(cmd, treeIndex);
-      if (cmd.form.instructions == "post_specialize")
-        this.hostChoice(cmd, treeIndex);
       if (cmd.form.instructions == "multiplicity")
         this.multiplicity(cmd, treeIndex);
       if (cmd.form.instructions == "validation")
@@ -491,7 +491,7 @@ angular.module('warmonic.build.services', [])
 
     },
 
-    hostChoice: function(cmd, treeIndex) {
+    lfm: function(cmd, treeIndex) {
       var provideName = commands.getFormFieldValue(cmd, 'provide'),
           label = commands.getFormFieldAttr(cmd, 'host', 'label'),
           host = commands.getFormFieldValue(cmd, 'host', true),
@@ -506,11 +506,11 @@ angular.module('warmonic.build.services', [])
       var node = tree.fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(host) {
-        this.sendHostChoice(cmd, treeIndex, field);
+        this.sendLfm(cmd, treeIndex, field);
       }));
     },
 
-    sendHostChoice: function(cmd, treeIndex, field) {
+    sendLfm: function(cmd, treeIndex, field) {
       var form = $form({
         type: "submit",
         fields: [
