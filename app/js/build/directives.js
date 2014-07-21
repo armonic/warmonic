@@ -172,4 +172,32 @@ angular.module('warmonic.build.directives', [])
 
   };
 
+})
+
+.directive('nodeform', function() {
+
+  return {
+
+    restrict: 'E',
+
+    scope: true,
+
+    replace: true,
+
+    templateUrl: 'partials/build/form.html',
+
+    link: function(scope, element, attrs) {
+
+      scope.$watch(attrs.data, function(newVal, oldVal) {
+        scope.formData = newVal;
+      });
+
+      scope.$watch(attrs.show, function(newVal, oldVal) {
+        scope.formShow = newVal;
+      });
+
+    }
+
+  };
+
 });

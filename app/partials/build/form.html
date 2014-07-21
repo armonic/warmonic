@@ -1,0 +1,18 @@
+<form role="form" ng-class="{'collapsed': !formShow}">
+  <legend ng-click="formShow = !formShow">
+    <span class="glyphicon"
+      ng-class="{'glyphicon-chevron-down': formShow, 'glyphicon-chevron-right': !formShow}"
+      ng-if="formData.hasVisibleFields"></span>
+    {{ formData.label }}
+    <span ng-if="host">on {{ host }}</span>
+  </legend>
+  <div class="form-fields" ng-show="formShow">
+    <node data="field" ng-repeat="field in formData.fields" />
+  </div>
+  <div class="form-fields" ng-if="formData.canSubmit">
+    <button type="submit" class="btn btn-primary" ng-disabled="formData.disabled || formData.processing" ng-click="formData.submit()" ng-if="formData.hasVisibleFields">
+      <span ng-if="formData.processing" wa-spinner />
+      <span ng-if="!formData.processing">Use these values</span>
+    </button>
+  </div>
+</form>

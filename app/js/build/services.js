@@ -58,6 +58,7 @@ angular.module('warmonic.build.services', [])
     this.name = name || null;
     this.params = {
       value: "",
+      error: "",
       label: "",
       help: "",
       suggested_by: "",
@@ -143,6 +144,12 @@ angular.module('warmonic.build.services', [])
           return field.value;
         });
       }
+      // returns list of variables
+      if (this.type == "form") {
+        return this.fields.map(function(field) {
+          return {name: field.name, value: field.value};
+        });
+      }
 
       return this.params.value;
     },
@@ -162,6 +169,10 @@ angular.module('warmonic.build.services', [])
       }
 
       return this.value ? true : false;
+    },
+
+    get error() {
+      return this.params.error;
     },
 
     /** Get the label text to show */
@@ -190,7 +201,7 @@ angular.module('warmonic.build.services', [])
     get show() {
       if (this.params.resolved_by || this.params.set_by)
         return false;
-      if (this.params.expert && !global.options.expertMode && this.hasValue)
+      if (this.params.expert && !global.options.expertMode && this.hasValue && !this.error)
         return false;
       return true;
     },
@@ -561,7 +572,7 @@ angular.module('warmonic.build.services', [])
           $field({
             var: "multiplicity",
             value: field.value,
-            type: "input-multi"
+            type: "input-single"
           })
         ]
       });
@@ -577,10 +588,14 @@ angular.module('warmonic.build.services', [])
 
     validation: function(cmd, treeIndex) {
       var provideName = commands.getFormFieldValue(cmd, "provide"),
-          provideLabel = commands.getFormFieldAttr(cmd, "provide", "label");
+          provideLabel = commands.getFormFieldAttr(cmd, "provide", "label"),
+          deferredValidation = $q.defer();
 
       // Configuration form to display
-      var form = buildVariables.createForm({label: provideLabel});
+      var form = buildVariables.createForm({
+        label: provideLabel,
+        promise: deferredValidation
+      });
       // add configuration fields to the form
       cmd.form.fields.slice(3).forEach(angular.bind(this, function(field) {
         var fieldName = field.var,
@@ -602,9 +617,60 @@ angular.module('warmonic.build.services', [])
       }));
       tree.fillNodeData(treeIndex, form);
 
-      commands.next(cmd)
+      deferredValidation.promise.then(angular.bind(this, function(values) {
+        this.sendValidation(cmd, treeIndex, form);
+      }));
 
-      .then(angular.bind(this, this._onRecv));
+      if (!form.hasVisibleFields)
+        form.submit();
+
+    },
+
+    sendValidation: function(cmd, treeIndex, validationForm) {
+      // Format variables
+      var values = validationForm.value.map(function(variable) {
+        var value = {};
+        if (variable.value instanceof Array) {
+          for (var i=0; i<variable.value.length; i++)
+            value[i] = variable.value[i];
+        }
+        else {
+          value[0] = variable.value;
+        }
+
+        return [
+          variable.name,
+          value
+        ];
+      });
+
+      var form = $form({
+        type: "submit",
+        fields: [
+          $field({
+            var: "validation",
+            value: JSON.stringify(values),
+            type: "input-single"
+          })
+        ]
+      });
+
+      commands.next(cmd, form)
+
+      .then(angular.bind(this, function(cmd) {
+        validationForm.submitDone();
+        /* If the form has been validated,
+         * the next step is not validation */
+        if (cmd.form.instructions !== "validation") {
+          validationForm.fields.forEach(function(field) {
+            field.disabled = true;
+            field.params.error = "";
+          });
+        }
+        /* Handle the next step */
+        this._onRecv(cmd);
+      }));
+
     },
 
     done: function(cmd) {
