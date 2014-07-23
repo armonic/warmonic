@@ -366,6 +366,8 @@ angular.module('warmonic.build.services', [])
         this.multiplicity(cmd, treeIndex);
       if (cmd.form.instructions == "validation")
         this.validation(cmd, treeIndex);
+      if (cmd.form.instructions == "call")
+        this.call(cmd, treeIndex);
       if (cmd.form.instructions == "done")
         this.done(cmd, treeIndex);
     },
@@ -668,6 +670,45 @@ angular.module('warmonic.build.services', [])
           });
         }
         /* Handle the next step */
+        this._onRecv(cmd);
+      }));
+
+    },
+
+    call: function(cmd, treeIndex) {
+      var deferredSelection = $q.defer();
+
+      var fieldParams = {
+        fields: [
+          {label: "Call", value: true},
+          {label: "Don't call", value: false},
+        ],
+        promise: deferredSelection
+      };
+      var field = buildVariables.createField(fieldParams, null, "specialize");
+      var node = tree.fillNodeData(treeIndex, field);
+
+      deferredSelection.promise.then(angular.bind(this, function(call) {
+        this.sendCall(cmd, treeIndex, field);
+      }));
+    },
+
+    sendCall: function(cmd, treeIndex, field) {
+      var form = $form({
+        type: "submit",
+        fields: [
+          $field({
+            var: "call",
+            value: field.value,
+            type: "input-single"
+          })
+        ]
+      });
+
+      commands.next(cmd, form)
+
+      .then(angular.bind(this, function(cmd) {
+        field.submitDone();
         this._onRecv(cmd);
       }));
 
