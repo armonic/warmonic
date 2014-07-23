@@ -103,8 +103,7 @@ angular.module('warmonic.build.directives', [])
   };
 })
 
-/** In th specilize step use buttons instead of a select box */
-.directive('nodespecialize', function() {
+.directive('nodechoose', function() {
 
   return {
 
@@ -114,12 +113,12 @@ angular.module('warmonic.build.directives', [])
 
     replace: true,
 
-    templateUrl: 'partials/build/specialize.html',
+    templateUrl: 'partials/build/choose.html',
 
     link: function(scope, element, attrs) {
 
       scope.$watch(attrs.data, function(newVal, oldVal) {
-        scope.specializeField = newVal;
+        scope.chooseField = newVal;
       });
 
     }

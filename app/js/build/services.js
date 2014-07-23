@@ -462,10 +462,11 @@ angular.module('warmonic.build.services', [])
 
       // field to display on the tree
       var fieldParams = {
+        label: "What do you want to do ?",
         fields: options,
         promise: deferredSelection,
       };
-      var field = buildVariables.createField(fieldParams, null, "specialize");
+      var field = buildVariables.createField(fieldParams, null, "choose");
       tree.fillNodeData(treeIndex, field);
 
       // when choice is done
@@ -512,7 +513,7 @@ angular.module('warmonic.build.services', [])
 
       var fieldParams = {
         label: label,
-        value: host || "localhost",
+        value: host,
         promise: deferredSelection,
       };
       var field = buildVariables.createField(fieldParams);
@@ -676,17 +677,19 @@ angular.module('warmonic.build.services', [])
     },
 
     call: function(cmd, treeIndex) {
-      var deferredSelection = $q.defer();
+      var deferredSelection = $q.defer(),
+          provideLabel = commands.getFormFieldAttr(cmd, "provide", "label");
 
       var fieldParams = {
+        label: provideLabel,
         fields: [
-          {label: "Call", value: true},
-          {label: "Don't call", value: false},
+          {label: "Do it!", value: true},
+          {label: "Do nothing.", value: false},
         ],
         promise: deferredSelection
       };
-      var field = buildVariables.createField(fieldParams, null, "specialize");
-      var node = tree.fillNodeData(treeIndex, field);
+      var field = buildVariables.createField(fieldParams, null, "choose");
+      var node = tree.addNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(call) {
         this.sendCall(cmd, treeIndex, field);
