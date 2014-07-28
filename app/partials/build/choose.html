@@ -1,9 +1,9 @@
 <div class="choose">
-  <h4 ng-if="chooseField.label">{{ chooseField.label }}</h4>
+  <h4 ng-if="chooseField.label">{{ chooseField.label }}<span ng-if="host"> on {{ host}}</span></h4>
   <button
     class="btn btn-primary"
     ng-disabled="chooseField.processing"
     ng-repeat="option in chooseField.fields"
-    ng-click="chooseField.submit(option.value)">{{ option.label }}<span ng-if="host"> on {{ host }}</span></button>
+    ng-click="chooseField.submit(option.value)">{{ option.label }}</button>
   <span ng-show="chooseField.processing" wa-spinner />
 </div>

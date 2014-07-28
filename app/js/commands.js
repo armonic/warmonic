@@ -114,7 +114,9 @@ angular.module('warmonic.lib.xmpp.commands', [
       if (!field)
         return null;
 
-      if (field && field.values.length == 1)
+      if (field && field.options.length > 0)
+        value = field.options;
+      else if (field && field.values.length == 1)
         value = field.values[0];
       else
         value = field.values || null;

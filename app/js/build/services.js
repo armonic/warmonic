@@ -358,17 +358,19 @@ angular.module('warmonic.build.services', [])
       if (host)
         tree.fillNodeHost(treeIndex, host);
 
-      if (cmd.form.instructions == "lfm")
+      if (cmd.form.instructions == "manage")
+        this.manage(cmd, treeIndex);
+      else if (cmd.form.instructions == "lfm")
         this.lfm(cmd, treeIndex);
-      if (cmd.form.instructions == "specialize")
+      else if (cmd.form.instructions == "specialize")
         this.specialize(cmd, treeIndex);
-      if (cmd.form.instructions == "multiplicity")
+      else if (cmd.form.instructions == "multiplicity")
         this.multiplicity(cmd, treeIndex);
-      if (cmd.form.instructions == "validation")
+      else if (cmd.form.instructions == "validation")
         this.validation(cmd, treeIndex);
-      if (cmd.form.instructions == "call")
+      else if (cmd.form.instructions == "call")
         this.call(cmd, treeIndex);
-      if (cmd.form.instructions == "done")
+      else if (cmd.form.instructions == "done")
         this.done(cmd, treeIndex);
     },
 
@@ -403,66 +405,82 @@ angular.module('warmonic.build.services', [])
       }))
 
       .then(angular.bind(this, function(cmd) {
-        // On the first provide, choose automatically
-        // if there is only one provide
-        var choices = this.getSpecializeChoices(cmd),
-            treeIndex = this._getTreeIndex(cmd);
-        if (choices.length == 2) {
-          // skip the None choice
-          this.sendSpecialize(cmd, treeIndex, choices[1].xpath, choices[1].label);
-        }
-        // else, let the user decide
-        else {
-          this._onRecv(cmd);
-        }
+        // Always manage the first provide
+        this.sendManage(cmd, [0], true);
       }));
 
     },
 
-    getSpecializeChoices: function(cmd) {
-      var choices = [];
-      // get possible xpaths
-      cmd.form.fields.forEach(function(field) {
-        if (field.var == "specialize") {
-          field.options.forEach(function(option) {
-            choices.push({
-              label: option.label,
-              xpath: option.value
-            });
-          });
-        }
+    manage: function(cmd, treeIndex) {
+      // On expert mode always to manage or not
+      if (global.options.expertMode) {
+        var deferredSelection = $q.defer(),
+            label = commands.getFormFieldAttr(cmd, 'manage', 'label');
+
+        var fieldParams = {
+          label: label,
+          fields: [
+            {label: "Yes", value: true},
+            {label: "No", value: false},
+          ],
+          promise: deferredSelection,
+        };
+        var field = buildVariables.createField(fieldParams, null, "choose");
+        tree.fillNodeData(treeIndex, field);
+
+        deferredSelection.promise.then(angular.bind(this, function(manage) {
+          this.sendManage(cmd, treeIndex, manage);
+        }));
+      }
+      // Don't ask to manage on normal mode.
+      else {
+        this.sendManage(cmd, treeIndex, true);
+      }
+
+    },
+
+    sendManage: function(cmd, treeIndex, manage) {
+      var form = $form({
+        type: "submit",
+        fields: [
+          $field({
+            var: "manage",
+            value: manage,
+            type: "input-single"
+          })
+        ]
       });
-      return choices;
+      tree.fillNodeData(treeIndex, {type: "loading"});
+
+      commands.next(cmd, form)
+
+      .then(angular.bind(this, function(cmd) {
+        // don't show anything if the
+        // requirement is manually managed
+        if (manage)
+          tree.deleteNode(treeIndex);
+        else
+          tree.fillNodeData(treeIndex, {type: "text", value: "manage"});
+
+        this._onRecv(cmd);
+
+      }));
+
     },
 
     specialize: function(cmd, treeIndex) {
-      var choices = this.getSpecializeChoices(cmd),
+      var choices = commands.getFormFieldValue(cmd, "specialize"),
+          label = commands.getFormFieldAttr(cmd, "specialize", "label"),
           deferredSelection = $q.defer(),
-          label,
           options = [];
 
-      if (choices.length == 2) {
-        // on normal mode call by default
-        if (! global.options.expertMode) {
-          this.sendSpecialize(cmd, treeIndex, choices[1].xpath, choices[1].label);
-          return;
-        }
-
-        options = [
-          {label: choices[1].label, value: choices[1].xpath},
-          {label: choices[0].label, value: choices[0].xpath}
-        ];
-      }
-      else {
-        choices.forEach(function(choice) {
-          if (choice.xpath != "None")
-            options.push({label: choice.label, value: choice.xpath});
-        });
-      }
+      // only one choice
+      if (choices.length == 1)
+        this.sendSpecialize(cmd, treeIndex, choices[0].value, choices[0].label);
 
       // field to display on the tree
       var fieldParams = {
-        label: "What do you want to do ?",
+        label: label,
         fields: options,
         promise: deferredSelection,
       };
@@ -491,16 +509,8 @@ angular.module('warmonic.build.services', [])
       commands.next(cmd, form)
 
       .then(angular.bind(this, function(cmd) {
-
-        // don't show anything if the
-        // requirement is manually managed
-        if (xpath == "None")
-          tree.deleteNode(treeIndex);
-        else
-          tree.fillNodeData(treeIndex, {type: "text", value: label || xpath});
-
+        tree.fillNodeData(treeIndex, {type: "text", value: label || xpath});
         this._onRecv(cmd);
-
       }));
 
     },
@@ -689,7 +699,7 @@ angular.module('warmonic.build.services', [])
         promise: deferredSelection
       };
       var field = buildVariables.createField(fieldParams, null, "choose");
-      var node = tree.addNodeData(treeIndex, field);
+      var node = tree.fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(call) {
         this.sendCall(cmd, treeIndex, field);
