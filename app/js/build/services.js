@@ -458,10 +458,9 @@ angular.module('warmonic.build.services', [])
       .then(angular.bind(this, function(cmd) {
         // don't show anything if the
         // requirement is manually managed
-        if (manage)
+        if (!manage) {
           tree.deleteNode(treeIndex);
-        else
-          tree.fillNodeData(treeIndex, {type: "text", value: "manage"});
+        }
 
         this._onRecv(cmd);
 
