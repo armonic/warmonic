@@ -354,7 +354,7 @@ angular.module('warmonic.build.services', [])
 
     _onRecv: function(cmd) {
       var treeIndex = this._getTreeIndex(cmd),
-          host = commands.getFormFieldValue(cmd, 'host');
+          host = commands.getFormFieldValue(cmd, 'host', true);
 
       if (host)
         tree.fillNodeHost(treeIndex, host);
