@@ -214,7 +214,7 @@ angular.module('warmonic.build.services', [])
       if (this.canSubmit) {
         this.processing = true;
         this.disabled = true;
-        if (value)
+        if (value !== undefined)
           this.value = value;
         this.params.promise.resolve(this.value);
       }
@@ -249,6 +249,7 @@ angular.module('warmonic.build.services', [])
     },
 
     getTreeNode: function(treeIndex, node) {
+
       var _treeIndex = treeIndex.slice();
       if (!node)
         node = this._tree;
