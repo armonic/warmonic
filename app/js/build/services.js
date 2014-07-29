@@ -260,7 +260,7 @@ angular.module('warmonic.build.services', [])
         node.children = {};
 
       if (!node.children[id])
-        node.children[id] = {children: {}, data: null};
+        node.children[id] = {children: {}, data: null, host: null, title: null};
 
       if (_treeIndex.length > 0) {
         return this.getTreeNode(_treeIndex, node.children[id]);
@@ -279,6 +279,13 @@ angular.module('warmonic.build.services', [])
     emptyNode: function(treeIndex) {
       var node = this.getTreeNode(treeIndex);
       node.data = null;
+
+      return node;
+    },
+
+    fillNodeTitle: function(treeIndex, title) {
+      var node = this.getTreeNode(treeIndex);
+      node.title = title;
 
       return node;
     },
@@ -383,7 +390,7 @@ angular.module('warmonic.build.services', [])
 
       this.init();
 
-      tree.fillNodeData([0], {type: "loading"});
+      tree.fillNodeData([0], {type: "loading", value: "Loading"});
 
       commands.execute(_cmd)
 
@@ -419,7 +426,6 @@ angular.module('warmonic.build.services', [])
             label = commands.getFormFieldAttr(cmd, 'manage', 'label');
 
         var fieldParams = {
-          label: label,
           fields: [
             {label: "Yes", value: true},
             {label: "No", value: false},
@@ -427,6 +433,7 @@ angular.module('warmonic.build.services', [])
           promise: deferredSelection,
         };
         var field = buildVariables.createField(fieldParams, null, "choose");
+        tree.fillNodeTitle(treeIndex, label);
         tree.fillNodeData(treeIndex, field);
 
         deferredSelection.promise.then(angular.bind(this, function(manage) {
@@ -451,7 +458,7 @@ angular.module('warmonic.build.services', [])
           })
         ]
       });
-      tree.fillNodeData(treeIndex, {type: "loading"});
+      tree.fillNodeData(treeIndex, {type: "loading", value: "Loading"});
 
       commands.next(cmd, form)
 
@@ -475,22 +482,24 @@ angular.module('warmonic.build.services', [])
           options = [];
 
       // only one choice
-      if (choices.length == 1)
+      if (choices.length == 1) {
         this.sendSpecialize(cmd, treeIndex, choices[0].value, choices[0].label);
+      }
+      else {
+        // field to display on the tree
+        var fieldParams = {
+          fields: options,
+          promise: deferredSelection,
+        };
+        var field = buildVariables.createField(fieldParams, null, "choose");
+        tree.fillNodeTitle(treeIndex, label);
+        tree.fillNodeData(treeIndex, field);
 
-      // field to display on the tree
-      var fieldParams = {
-        label: label,
-        fields: options,
-        promise: deferredSelection,
-      };
-      var field = buildVariables.createField(fieldParams, null, "choose");
-      tree.fillNodeData(treeIndex, field);
-
-      // when choice is done
-      deferredSelection.promise.then(angular.bind(this, function(xpath) {
-        this.sendSpecialize(cmd, treeIndex, xpath);
-      }));
+        // when choice is done
+        deferredSelection.promise.then(angular.bind(this, function(xpath) {
+          this.sendSpecialize(cmd, treeIndex, xpath);
+        }));
+      }
     },
 
     sendSpecialize: function(cmd, treeIndex, xpath, label) {
@@ -504,7 +513,7 @@ angular.module('warmonic.build.services', [])
           })
         ]
       });
-      tree.fillNodeData(treeIndex, {type: "loading"});
+      tree.fillNodeData(treeIndex, {type: "loading", value: "Loading"});
 
       commands.next(cmd, form)
 
@@ -522,12 +531,14 @@ angular.module('warmonic.build.services', [])
           deferredSelection = $q.defer();
 
       var fieldParams = {
-        label: label,
+        label: "Hostname or IP Address",
         value: host,
         promise: deferredSelection,
       };
       var field = buildVariables.createField(fieldParams);
-      var node = tree.fillNodeData(treeIndex, field);
+
+      tree.fillNodeTitle(treeIndex, label);
+      tree.fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(host) {
         this.sendLfm(cmd, treeIndex, field);
@@ -558,11 +569,10 @@ angular.module('warmonic.build.services', [])
 
     multiplicity: function(cmd, treeIndex) {
       var nbInstances = commands.getFormFieldValue(cmd, 'multiplicity'),
-          multiplicityLabel = commands.getFormFieldAttr(cmd, 'multiplicity', 'label'),
+          label = commands.getFormFieldAttr(cmd, 'multiplicity', 'label'),
           deferredSelection = $q.defer();
 
       var fieldParams = {
-        label: multiplicityLabel,
         fields: [
           {value: '192.168.1.1'},
           {value: '192.168.1.2'},
@@ -571,7 +581,8 @@ angular.module('warmonic.build.services', [])
         promise: deferredSelection,
       };
       var field = buildVariables.createField(fieldParams, null, "input-multi");
-      var node = tree.fillNodeData(treeIndex, field);
+      tree.fillNodeTitle(treeIndex, label);
+      tree.fillNodeData(treeIndex, field);
 
       deferredSelection.promise.then(angular.bind(this, function(hosts) {
         this.sendMultiplicity(cmd, treeIndex, field);
@@ -601,12 +612,11 @@ angular.module('warmonic.build.services', [])
 
     validation: function(cmd, treeIndex) {
       var provideName = commands.getFormFieldValue(cmd, "provide"),
-          provideLabel = commands.getFormFieldAttr(cmd, "provide", "label"),
+          label = commands.getFormFieldAttr(cmd, "provide", "label"),
           deferredValidation = $q.defer();
 
       // Configuration form to display
       var form = buildVariables.createForm({
-        label: provideLabel,
         promise: deferredValidation
       });
       // add configuration fields to the form
@@ -628,6 +638,7 @@ angular.module('warmonic.build.services', [])
           form.fields.push(formField);
 
       }));
+      tree.fillNodeTitle(treeIndex, label);
       tree.fillNodeData(treeIndex, form);
 
       deferredValidation.promise.then(angular.bind(this, function(values) {
@@ -687,32 +698,39 @@ angular.module('warmonic.build.services', [])
     },
 
     call: function(cmd, treeIndex) {
-      var deferredSelection = $q.defer(),
-          provideLabel = commands.getFormFieldAttr(cmd, "provide", "label");
+      if (global.options.expertMode) {
+        var deferredSelection = $q.defer(),
+            provideLabel = commands.getFormFieldAttr(cmd, "provide", "label");
 
-      var fieldParams = {
-        label: provideLabel,
-        fields: [
-          {label: "Do it!", value: true},
-          {label: "Do nothing.", value: false},
-        ],
-        promise: deferredSelection
-      };
-      var field = buildVariables.createField(fieldParams, null, "choose");
-      var node = tree.fillNodeData(treeIndex, field);
+        var fieldParams = {
+          label: provideLabel,
+          fields: [
+            {label: "Call", value: true},
+            {label: "Don't call", value: false},
+          ],
+          promise: deferredSelection
+        };
+        var field = buildVariables.createField(fieldParams, null, "choose");
+        var node = tree.fillNodeData(treeIndex, field);
 
-      deferredSelection.promise.then(angular.bind(this, function(call) {
-        this.sendCall(cmd, treeIndex, field);
-      }));
+        deferredSelection.promise.then(angular.bind(this, function(callValue) {
+          this.sendCall(cmd, treeIndex, callValue);
+        }));
+      }
+      // Call by default on normal mode
+      else {
+        tree.fillNodeData(treeIndex, {type: "loading", value: "In progress..."});
+        this.sendCall(cmd, treeIndex, true);
+      }
     },
 
-    sendCall: function(cmd, treeIndex, field) {
+    sendCall: function(cmd, treeIndex, callValue) {
       var form = $form({
         type: "submit",
         fields: [
           $field({
             var: "call",
-            value: field.value,
+            value: callValue,
             type: "input-single"
           })
         ]
@@ -721,13 +739,14 @@ angular.module('warmonic.build.services', [])
       commands.next(cmd, form)
 
       .then(angular.bind(this, function(cmd) {
-        field.submitDone();
+        tree.fillNodeData(treeIndex, {type: "text", value: "Call done"});
         this._onRecv(cmd);
       }));
 
     },
 
-    done: function(cmd) {
+    done: function(cmd, treeIndex) {
+      tree.fillNodeData(treeIndex, {type: "text", value: "Finished"});
       if (cmd.status != "completed") {
         commands.next(cmd)
         .then(angular.bind(this, this._onRecv));

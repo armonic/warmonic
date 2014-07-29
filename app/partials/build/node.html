@@ -1,9 +1,13 @@
+<h4 ng-if="title" ng-click="show = !show" ng-class="{'collapsed': !show}">
+  <span class="glyphicon" ng-class="{'glyphicon-chevron-down': show, 'glyphicon-chevron-right': !show}"></span>
+  {{ title }}
+  <span ng-if="host"> on {{ host }}</span>
+</h4>
+
 <span ng-switch="data.type">
 
-  <h4 ng-switch-when="text">{{ data.value }}</h4>
-
-  <span ng-switch-when="loading">
-    Loading <span wa-spinner />
+  <span ng-switch-when="text">
+    <p>{{ data.value }}</p>
   </span>
 
   <span ng-switch-when="input">
@@ -23,7 +27,11 @@
   </span>
 
   <span ng-switch-when="form">
-    <nodeform data="data" show="show" />
+    <nodeform data="data" />
+  </span>
+
+  <span ng-switch-when="loading">
+    <p>{{ data.value}} <span wa-spinner /></p>
   </span>
 
 </span>
