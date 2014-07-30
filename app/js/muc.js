@@ -5,7 +5,7 @@ angular.module('warmonic.lib.xmpp.muc', [
   'warmonic.lib.logger'
 ])
 
-.factory('muc', ['$q', '$timeout', 'xmpp', 'xmppService', 'logger', function($q, $timeout, xmpp, xmppService, logger) {
+.factory('muc', ['$rootScope', '$q', '$timeout', 'xmpp', 'xmppService', 'logger', function($rootScope, $q, $timeout, xmpp, xmppService, logger) {
 
   var Room = function(name, nick) {
     this.name = name;
@@ -25,6 +25,8 @@ angular.module('warmonic.lib.xmpp.muc', [
         var message = msg.children('body').text();
         logger.info(message);
         this.messages.push(message);
+        // run digest on new message
+        $rootScope.$apply();
       }
       return true;
     },
