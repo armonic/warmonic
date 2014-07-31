@@ -329,7 +329,7 @@ angular.module('warmonic.build.services', [])
 
 }])
 
-.factory('build', ['$q', 'logger', 'commands', 'muc', 'buildTree', 'buildVariables', 'global', function($q, logger, commands, muc, buildTree, buildVariables, global) {
+.factory('build', ['$q', 'logger', 'roster', 'commands', 'muc', 'buildTree', 'buildVariables', 'global', function($q, logger, roster, commands, muc, buildTree, buildVariables, global) {
 
   var _cmd,
       tree,
@@ -530,12 +530,23 @@ angular.module('warmonic.build.services', [])
           host = commands.getFormFieldValue(cmd, 'host', true),
           deferredSelection = $q.defer();
 
+      // get online servers
+      var fields = [];
+      roster.onlineItems().forEach(function(item) {
+        if (item.show) {
+          for (var resource in Object.getOwnPropertyNames(item.resources)) {
+            fields.push({label: item.name, value: item.jid + "/" + resource});
+            break;
+          }
+        }
+      });
+
       var fieldParams = {
-        label: "Hostname or IP Address",
-        value: host,
+        label: "Choose server",
+        fields: fields,
         promise: deferredSelection,
       };
-      var field = buildVariables.createField(fieldParams);
+      var field = buildVariables.createField(fieldParams, null, "select");
 
       tree.fillNodeTitle(treeIndex, label);
       tree.fillNodeData(treeIndex, field);
