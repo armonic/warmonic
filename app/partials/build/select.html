@@ -1,14 +1,16 @@
 <div class="form-group" ng-show="selectField.show" ng-class="{'has-warning': selectField.expert}">
   <label for="selectField.name">{{ selectField.label }}</label>
-  <select
-    id="selectField.name"
-    name="selectField.name"
-    class="form-control"
-    ng-model="selectField.value"
-    ng-disabled="selectField.disabled || selectField.processing"
-    ng-options="field.value as field.label for field in selectField.fields"
-    ng-required="selectField.required">
-  </select>
+  <div ng-class="{'input-group': selectField.processing}">
+    <select
+      id="selectField.name"
+      name="selectField.name"
+      class="form-control"
+      ng-model="selectField.value"
+      ng-disabled="selectField.disabled || selectField.processing"
+      ng-options="field.value as field.label for field in selectField.fields"
+      ng-required="selectField.required">
+    </select>
+    <span ng-show="selectField.processing" class="input-group-addon" wa-spinner />
+  </div>
   <p class="help-block" ng-if="global.options.debugMode"><small>{{ selectField.name }}</small></p>
-  <span ng-show="selectField.processing" wa-spinner />
 </div>
