@@ -89,8 +89,8 @@ angular.module('warmonic.build.directives', [])
 
     controller: function($scope) {
 
-      $scope.$watch('selectData.value', function(newVal, oldVal, scope) {
-        if (newVal !== oldVal) {
+      $scope.$watch('selectField.value', function(newVal, oldVal, scope) {
+        if (newVal && newVal !== oldVal) {
           scope.selectField.submit(newVal);
         }
       });
