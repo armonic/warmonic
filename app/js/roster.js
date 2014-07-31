@@ -32,6 +32,15 @@ angular.module('warmonic.lib.xmpp.roster', [
       return [];
     },
 
+    onlineItems: function() {
+      var items = [];
+      this.items().forEach(function(item) {
+        if (roster.isItemOnline(item))
+          items.push(item);
+      });
+      return items;
+    },
+
     onRoster: function() {
       console.debug("roster received");
       // send presence after getting our roster
