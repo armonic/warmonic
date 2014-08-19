@@ -478,8 +478,7 @@ angular.module('warmonic.build.services', [])
     specialize: function(cmd, treeIndex) {
       var choices = commands.getFormFieldValue(cmd, "specialize"),
           label = commands.getFormFieldAttr(cmd, "specialize", "label"),
-          deferredSelection = $q.defer(),
-          options = [];
+          deferredSelection = $q.defer();
 
       // only one choice
       if (choices.length == 1) {
@@ -488,7 +487,9 @@ angular.module('warmonic.build.services', [])
       else {
         // field to display on the tree
         var fieldParams = {
-          fields: options,
+          fields: choices.map(function(choice) {
+            return {value: choice.value, label: choice.label};
+          }),
           promise: deferredSelection,
         };
         var field = buildVariables.createField(fieldParams, null, "choose");
