@@ -30,6 +30,7 @@
       <p class="alert alert-warning" ng-show="provides.list.length == 0 && !provides.searching && provides.providerOnline()">No results found.</p>
     </div>
     <div class="col-md-3">
+      <roster />
       <h2>Tag cloud</h2>
       <span ng-repeat="tag in provides.tags" class="provides-tag">
         <button class="btn"
@@ -38,7 +39,6 @@
           <span class="glyphicon" ng-class="{'glyphicon-minus': tag.active, 'glyphicon-plus': !tag.active}" />
         </button>
       </span>
-      <roster />
     </div>
   </div>
 </div>

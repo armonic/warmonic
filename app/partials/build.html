@@ -23,18 +23,21 @@
         <tree node="build.tree()" />
       </div>
     </div>
-    <div class="col-md-4" ng-if="global.options.debugMode">
-      <h4>Deployment tree</h4>
-      <pre>{{ build.tree() | stringify }}</pre>
-    </div>
-    <div class="col-md-4" ng-if="global.options.debugMode">
-      <h4>Deployment metadata</h4>
-      <pre>{{ build.data | stringify }}</pre>
-      <h4>Deployment variables</h4>
-      <div ng-repeat="variables in build.variables()">
-        <pre ng-repeat="variable in variables">{{ variable.name }} :
+    <div class="col-md-5">
+      <div ng-if="global.options.debugMode">
+        <h4>Deployment tree</h4>
+        <pre>{{ build.tree() | stringify }}</pre>
+        <h4>Deployment metadata</h4>
+        <pre>{{ build.data | stringify }}</pre>
+        <h4>Deployment variables</h4>
+        <div ng-repeat="variables in build.variables()">
+          <pre ng-repeat="variable in variables">{{ variable.name }} :
 {{ variable.value | stringify }}</pre>
+        </div>
       </div>
+    </div>
+    <div class="col-md-3">
+      <roster />
     </div>
   </div>
 </div>
