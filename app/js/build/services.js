@@ -534,10 +534,9 @@ angular.module('warmonic.build.services', [])
       var fields = [];
       roster.onlineItems().forEach(function(item) {
         if (item.show) {
-          for (var resource in Object.getOwnPropertyNames(item.resources)) {
+          Object.keys(item.resources).forEach(function(resource) {
             fields.push({label: item.name, value: item.jid + "/" + resource});
-            break;
-          }
+          });
         }
       });
 
