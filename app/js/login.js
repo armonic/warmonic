@@ -10,8 +10,8 @@ angular.module('warmonic.login', [])
   this.connection = null;
   this.connections = [];
   this.user = {
-    'jid': 'test1@im.aeolus.org',
-    'password': 'test1'
+    'jid': 'master@im.aeolus.org',
+    'password': 'master'
   };
 
   $scope.$watch(
@@ -28,7 +28,7 @@ angular.module('warmonic.login', [])
         {label: "BOSH connection", value: 'http://' + this.domain + ':5280/http-bind'}
       ];
       this.connection = this.connections[0].value;
-      this.masterJID = "master@" + this.domain + '/master';
+      this.masterJID = this.user.jid + '/master';
       this.mucDomain = "logs." + this.domain;
   }));
 

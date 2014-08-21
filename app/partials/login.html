@@ -23,13 +23,7 @@
       <div class="form-group" ng-show="global.options.expertMode">
         <label for="connection">Connection type</label>
         <select id="connection" class="form-control"
-          ng-options="conn.value as conn.label for conn in login.connections"
-          ng-required
-          ng-model="login.connection" />
-      </div>
-      <div class="form-group" ng-show="global.options.expertMode">
-        <label for="masterJID">Master JID</label>
-        <input id="masterJID" class="form-control" ng-model="login.masterJID" />
+          ng-options="conn.value as conn.label for conn in login.connections" ng-required ng-model="login.connection"></select>
       </div>
       <div class="form-group" ng-show="global.options.expertMode">
         <label for="mucDomain">MUC domain</label>

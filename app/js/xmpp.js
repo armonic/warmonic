@@ -150,6 +150,7 @@ angular.module('warmonic.lib.xmpp', [
           this.status.code == Strophe.Status.ATTACHED) {
         deferredConnection.resolve(this._connection);
         //this._connection.addHandler(angular.bind(this, this.onMessage), null, "message");
+        this._connection.addHandler(angular.bind(this, this.onPresence), null, "presence");
         xmppSession.data.jid = this._connection.jid;
         // no sid with websockets
         if (this._connection._proto.sid)
@@ -195,6 +196,26 @@ angular.module('warmonic.lib.xmpp', [
       if (this.connection && this.connection._proto.rid)
         xmppSession.data.rid = this.connection._proto.rid;
       xmppSession.save();
+    },
+
+    onPresence: function(presence) {
+      // store current JID resources in session
+      var jid = presence.getAttribute('from'),
+          jidBare = Strophe.getBareJidFromJid(jid),
+          resource = Strophe.getResourceFromJid(jid),
+          type = presence.getAttribute('type');
+
+      if (jidBare === Strophe.getBareJidFromJid(xmppSession.data.jid)) {
+        if (!xmppSession.data.resources)
+          xmppSession.data.resources = [];
+        if (!type && xmppSession.data.resources.indexOf(resource) == -1)
+          xmppSession.data.resources.push(resource);
+        else if (type == 'unavailable')
+          xmppSession.data.resources.splice(xmppSession.data.resources.indexOf(resource), 1);
+        xmppSession.save();
+      }
+
+      return true;
     }
   };
 
@@ -237,7 +258,6 @@ angular.module('warmonic.lib.xmpp', [
       // run when the xmpp connection is disconnected
       return true;
     }
-
   };
 
   return {

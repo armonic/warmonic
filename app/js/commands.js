@@ -4,7 +4,7 @@ angular.module('warmonic.lib.xmpp.commands', [
   'warmonic.lib.xmpp'
 ])
 
-.factory('commands', ['$q', 'xmpp', 'roster', function($q, xmpp, roster) {
+.factory('commands', ['$q', 'xmpp', 'xmppSession', function($q, xmpp, xmppSession) {
 
   var provider = null;
 
@@ -16,7 +16,6 @@ angular.module('warmonic.lib.xmpp.commands', [
     set provider(value) {
       provider = value;
       console.debug("master is " + provider);
-      roster.excludeJid(provider);
     },
 
     create: function(cmd) {
@@ -92,9 +91,9 @@ angular.module('warmonic.lib.xmpp.commands', [
     },
 
     get providerOnline() {
-      if (!this.provider)
+      if (!this.provider || !xmppSession.data.resources)
         return false;
-      return roster.isJidOnline(this.provider);
+      return xmppSession.data.resources.indexOf('master') > -1;
     },
 
     _getFormField: function(cmd, fieldName) {
