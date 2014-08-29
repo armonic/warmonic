@@ -37,7 +37,6 @@ body.log-right .col-md-12 {
   overflow: auto;
   position: fixed;
   background-color: white;
-  z-index: 2000;
   padding: 3px;
 
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
@@ -75,7 +74,6 @@ body.log-right .col-md-12 {
 
 .log-control {
   position: fixed;
-  z-index: 3000;
   margin-top: -14px;
 
 }
