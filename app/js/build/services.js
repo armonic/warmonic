@@ -550,6 +550,7 @@ angular.module('warmonic.build.services', [])
 
       tree.fillNodeTitle(treeIndex, label);
       tree.fillNodeData(treeIndex, field);
+      tree.fillNodeHost(treeIndex, null);
 
       deferredSelection.promise.then(angular.bind(this, function(host) {
         this.sendLfm(cmd, treeIndex, field);

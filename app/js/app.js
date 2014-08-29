@@ -4,11 +4,14 @@ angular.module('warmonic', [
   'ngAnimate',
   'ui.router',
   'ui.bootstrap.tooltip',
+  'ui.bootstrap.transition',
+  'ui.bootstrap.modal',
   'warmonic.lib.utils',
   'warmonic.lib.xmpp',
   'warmonic.lib.xmpp.roster',
   'warmonic.lib.xmpp.muc',
   'warmonic.lib.xmpp.commands',
+  'warmonic.lib.xmpp.errors',
   'warmonic.lib.logger',
   'warmonic.login',
   'warmonic.nav',
@@ -18,7 +21,7 @@ angular.module('warmonic', [
   'warmonic.build.controllers',
 ])
 
-.run(['$rootScope', '$state', '$stateParams', 'xmppSession', 'xmpp', 'global', 'commands', 'muc', function($rootScope, $state, $stateParams, xmppSession, xmpp, global, commands, muc) {
+.run(['$rootScope', '$state', '$stateParams', 'xmppSession', 'xmpp', 'global', 'commands', 'muc', 'errors', function($rootScope, $state, $stateParams, xmppSession, xmpp, global, commands, muc, errors) {
   $rootScope.$state = $state;
   $rootScope.$stateParams = $stateParams;
   $rootScope.global = global;

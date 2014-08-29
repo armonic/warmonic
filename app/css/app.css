@@ -205,3 +205,6 @@ body.log-right .col-md-12 {
   margin: 0px;
 }
 
+.modal-footer {
+  margin-top: 0px;
+}
