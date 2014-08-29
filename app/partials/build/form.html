@@ -1,7 +1,7 @@
 <form role="form">
   <legend ng-if="formData.label">{{ formData.label }}</legend>
   <div class="form-fields">
-    <node data="field" ng-repeat="field in formData.fields" />
+    <node node-data="field" ng-repeat="field in formData.fields" />
   </div>
   <div class="form-fields" ng-if="formData.canSubmit">
     <button type="submit" class="btn btn-primary" ng-disabled="formData.disabled || formData.processing" ng-click="formData.submit()" ng-if="formData.hasVisibleFields">
