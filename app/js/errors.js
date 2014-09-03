@@ -9,19 +9,18 @@ angular.module('warmonic.lib.xmpp.errors', [
   var errors = xmppService.create();
   angular.extend(errors, {
     onConnection: function(conn) {
-      conn.addHandler(angular.bind(this, this.onError), 'armonic', 'message', 'error');
+      conn.addHandler(angular.bind(this, this.onError), 'armonic', 'iq', 'error');
     },
 
     onError: function(msg) {
       msg = $(msg);
-      var subject = msg.children('subject').text(),
-          code = msg.children('exception').children('code').text(),
+      var code = msg.children('exception').children('code').text(),
           error = msg.children('exception').children('message').text();
 
       var modal = $modal.open({
         templateUrl: 'partials/error-modal.html',
         controller: function($scope, $modalInstance) {
-          $scope.title = subject + " (" + code + ")";
+          $scope.title = code;
           $scope.error = error;
           $scope.close = $modalInstance.close;
         }
