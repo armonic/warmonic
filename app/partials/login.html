@@ -14,11 +14,11 @@
     <form role="form" ng-submit="login.connect()">
       <div class="form-group">
         <label for="jid">User</label>
-        <input type="email" class="form-control" id="jid" placeholder="uid@im.aeolus.org" ng-model="login.user.jid" wa-focus/>
+        <input type="email" class="form-control" id="jid" placeholder="uid@example.com" ng-model="login.info.jid" wa-focus required/>
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="password" ng-model="login.user.password"/>
+        <input type="password" class="form-control" id="password" placeholder="password" ng-model="login.password" required/>
       </div>
       <div class="form-group" ng-show="global.options.expertMode">
         <label for="connection">Connection type</label>
@@ -27,7 +27,7 @@
       </div>
       <div class="form-group" ng-show="global.options.expertMode">
         <label for="mucDomain">MUC domain</label>
-        <input id="mucDomain" class="form-control" ng-model="login.mucDomain" />
+        <input id="mucDomain" class="form-control" ng-model="login.mucDomain" required />
       </div>
       <button type="submit" class="btn btn-default">Connect</button>
     </form>
