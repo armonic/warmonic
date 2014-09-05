@@ -36,6 +36,8 @@ angular.module('warmonic.login', [])
         this.mucDomain = this.info.mucDomain;
       else
         this.mucDomain = "logs." + this.domain;
+
+      this.masterJID = "master@" + this.domain + "/master";
   }));
 
   this.status = xmpp.status;
