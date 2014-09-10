@@ -32,7 +32,7 @@ angular.module('warmonic.lib.xmpp', [
 
 }])
 
-.factory('xmpp', ['$q', 'xmppSession', function($q, xmppSession) {
+.factory('xmpp', ['$q', '$rootScope', 'xmppSession', function($q, $rootScope, xmppSession) {
 
   var statuses = {},
       deferredConnection = $q.defer(),
@@ -67,12 +67,14 @@ angular.module('warmonic.lib.xmpp', [
       console.debug("using connection url : " + connectionUrl);
       this._connectionUrl = connectionUrl;
       if (this._connection) {
-        console.info("reset current connexion");
+        console.debug("reset current connexion");
         this._connection.reset();
         // cleanup requests queue
-        this._connection._proto._requests.forEach(angular.bind(this, function(req) {
-          this._connection._proto._removeRequest(req);
-        }));
+        if (this._connection._proto && this._connection._proto._requests) {
+          this._connection._proto._requests.forEach(angular.bind(this, function(req) {
+            this._connection._proto._removeRequest(req);
+          }));
+        }
         // update connection url
         this._connection.service = this._connectionUrl;
       }
@@ -213,6 +215,8 @@ angular.module('warmonic.lib.xmpp', [
         else if (type == 'unavailable')
           xmppSession.data.resources.splice(xmppSession.data.resources.indexOf(resource), 1);
         xmppSession.save();
+
+        $rootScope.$apply();
       }
 
       return true;

@@ -140,14 +140,13 @@ angular.module('warmonic.lib.xmpp.commands', [
 
     restrict: 'A',
 
-    template: '<span class="btn disabled" ng-class="{\'btn-success\': isOnline(), \'btn-danger\': !isOnline()}">Master {{ isOnline() ? "online" : "offline" }}</span>',
+    template: '<span class="btn disabled" ng-class="{\'btn-success\': isOnline, \'btn-danger\': !isOnline}">Master {{ isOnline ? "online" : "offline" }}</span>',
 
     controller: ['$scope', 'commands', function($scope, commands) {
-
-      $scope.isOnline = function() {
-        return commands.providerOnline;
-      };
-
+      $scope.isOnline = false;
+      $scope.$watch(function() { return commands.providerOnline; }, function(newVal) {
+        $scope.isOnline = newVal;
+      });
     }]
   };
 
