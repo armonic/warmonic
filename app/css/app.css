@@ -206,3 +206,7 @@ body.log-right .col-md-12 {
 .modal-footer {
   margin-top: 0px;
 }
+
+h4 .label {
+  padding: .2em;
+}

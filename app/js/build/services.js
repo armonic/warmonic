@@ -361,6 +361,16 @@ angular.module('warmonic.build.services', [])
       logs: null
     },
 
+    steps: [
+      "manage",
+      "lfm",
+      "specialize",
+      "multiplicity",
+      "validation",
+      "call",
+      "done"
+    ],
+
     init: function() {
       // init build command
       _cmd = commands.create('build');
@@ -382,8 +392,11 @@ angular.module('warmonic.build.services', [])
       var treeIndex = this._getTreeIndex(cmd),
           host = commands.getFormFieldValue(cmd, 'host', true);
 
-      if (host)
+      // Show the host info only after the lfm step
+      if (host && this.steps.indexOf(cmd.form.instructions) > this.steps.indexOf('lfm'))
         tree.fillNodeHost(treeIndex, host);
+      else
+        tree.fillNodeHost(treeIndex, null);
 
       if (cmd.form.instructions == "manage")
         this.manage(cmd, treeIndex);
@@ -561,7 +574,6 @@ angular.module('warmonic.build.services', [])
     lfm: function(cmd, treeIndex) {
       var provideName = commands.getFormFieldValue(cmd, 'provide'),
           label = commands.getFormFieldAttr(cmd, 'host', 'label'),
-          host = commands.getFormFieldValue(cmd, 'host', true),
           deferredSelection = $q.defer(),
           servers = this.onlineServers();
 
@@ -574,7 +586,6 @@ angular.module('warmonic.build.services', [])
 
       tree.fillNodeTitle(treeIndex, label);
       tree.fillNodeData(treeIndex, field);
-      tree.fillNodeHost(treeIndex, null);
 
       deferredSelection.promise.then(angular.bind(this, function(host) {
         this.sendLfm(cmd, treeIndex, field);
@@ -592,7 +603,6 @@ angular.module('warmonic.build.services', [])
           })
         ]
       });
-      tree.fillNodeHost(treeIndex, field.value);
 
       commands.next(cmd, form)
 
