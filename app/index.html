@@ -8,7 +8,7 @@
 </head>
 <body ng-class="{'log-bottom': global.options.logBottom && global.options.logShow,
                  'log-right': !global.options.logBottom && global.options.logShow}">
-  <nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="navCtrl as nav" ng-show="nav.xmppSession.data.jid">
+  <nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="navCtrl as nav" ng-show="nav.userConnected">
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand" ui-sref="login">Warmonic</a>
@@ -18,24 +18,31 @@
         <li ui-sref-active="active"><a ui-sref="build">Build</a></li>
       </ul>
       <div class="pull-right" ng-controller="loginCtrl as login">
-        <button type="button" class="btn navbar-btn" ng-click="nav.toggleExpertMode()" ng-class="{'btn-info': ! nav.inExpertMode(), 'btn-warning': nav.inExpertMode()}">
-          {{ nav.inExpertMode() ? "Expert mode" : "Normal mode" }}
+        <button type="button" class="btn navbar-btn"
+          ng-click="global.toggleOption('expertMode')"
+          ng-class="{'btn-info': ! global.options.expertMode, 'btn-warning': global.options.expertMode}">
+          {{ global.options.expertMode ? "Expert mode" : "Normal mode" }}
         </button>
-        <button type="button" class="btn navbar-btn" ng-click="nav.toggleDebugMode()" ng-class="{'btn-danger': nav.inDebugMode()}">
-          {{ nav.inDebugMode() ? "Debug on" : "Debug off" }}
+        <button type="button" class="btn navbar-btn"
+          ng-click="global.toggleOption('debugMode')"
+          ng-class="{'btn-danger': global.options.debugMode}">
+          {{ global.options.debugMode ? "Debug on" : "Debug off" }}
         </button>
-        <button type="button" class="btn navbar-btn" ng-click="global.toggleOption('logShow')" ng-class="{'btn-danger': global.options.logShow}">
+        <button type="button" class="btn navbar-btn"
+          ng-click="global.toggleOption('logShow')"
+          ng-class="{'btn-danger': global.options.logShow}">
           {{ global.options.logShow ? "Hide logs" : "Show logs" }}
         </button>
         <span master-status></span>
-        <button type="button" class="btn btn-default navbar-btn" ng-click="login.disconnect()">Disconnect {{ nav.xmppSession.data.jid | bareJid }}</button>
+        <button type="button" class="btn btn-default navbar-btn" ng-click="login.disconnect()">Disconnect {{ nav.userJID | bareJid }}</button>
       </div>
     </div>
   </nav>
   <div class="container-fluid content">
     <div class="row" ui-view></div>
   </div>
-  <div class="log" ng-controller="loggerCtrl as logger" ng-show="global.options.logShow"
+  <div class="log" ng-controller="loggerCtrl as logger"
+    ng-show="global.options.logShow"
     ng-class="{'log-bottom': global.options.logBottom, 'log-right': !global.options.logBottom}">
     <div class="log-control pull-right">
       <button ng-click="logger.clear()" ng-if="global.options.logShow" class="btn btn-default btn-xs">

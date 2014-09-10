@@ -2,24 +2,18 @@
 
 angular.module('warmonic.nav', [])
 
-.controller('navCtrl', ['xmppSession', 'global', function(xmppSession, global) {
+.controller('navCtrl', ['$scope', 'xmpp', function($scope, xmpp) {
 
-  this.xmppSession = xmppSession;
+  this.userJID = null;
+  this.userConnected = false;
 
-  this.toggleExpertMode = function() {
-    global.toggleOption("expertMode");
-  };
-
-  this.inExpertMode = function() {
-    return global.options.expertMode;
-  };
-
-  this.toggleDebugMode = function() {
-    global.toggleOption("debugMode");
-  };
-
-  this.inDebugMode = function() {
-    return global.options.debugMode;
-  };
+  $scope.$watch(function() { return xmpp.connected; },
+                angular.bind(this, function(newVal) {
+    this.userConnected = newVal;
+    if (this.userConnected)
+      this.userJID = xmpp.connection.jid;
+    else
+      this.userJID = null;
+  }));
 
 }]);
