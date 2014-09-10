@@ -61,6 +61,7 @@ angular.module('warmonic.build.services', [])
       error: "",
       label: "",
       help: "",
+      choices: [],
       suggested_by: "",
       resolved_by: "",
       set_by: "",
@@ -113,6 +114,10 @@ angular.module('warmonic.build.services', [])
       return params;
     },
 
+    get choices() {
+      return this.params.choices;
+    },
+
     get fields() {
       return this.params.fields;
     },
@@ -139,7 +144,7 @@ angular.module('warmonic.build.services', [])
 
     get value() {
       // returns a list
-      if (this.type == "input-multi") {
+      if (this.type == "input-multi" || this.type == "choose-multi") {
         return this.params.fields.map(function(field) {
           return field.value;
         });
@@ -159,7 +164,7 @@ angular.module('warmonic.build.services', [])
     },
 
     get hasValue() {
-      if (this.type == "input-multi") {
+      if (this.type == "input-multi" || this.type == "choose-multi") {
         var result = false;
         this.value.forEach(function(value) {
           if (value)
@@ -169,6 +174,17 @@ angular.module('warmonic.build.services', [])
       }
 
       return this.value ? true : false;
+    },
+
+    checkValue: function() {
+      if (this.hasValue) {
+        this.params.error = null;
+        return true;
+      }
+
+      this.params.error = "Please set a value.";
+      this.disabled = false;
+      return false;
     },
 
     get error() {
@@ -216,7 +232,10 @@ angular.module('warmonic.build.services', [])
         this.disabled = true;
         if (value !== undefined)
           this.value = value;
-        this.params.promise.resolve(this.value);
+        if (this.checkValue())
+          this.params.promise.resolve(this.value);
+        else
+          this.submitDone();
       }
     },
 
@@ -525,25 +544,30 @@ angular.module('warmonic.build.services', [])
 
     },
 
-    lfm: function(cmd, treeIndex) {
-      var provideName = commands.getFormFieldValue(cmd, 'provide'),
-          label = commands.getFormFieldAttr(cmd, 'host', 'label'),
-          host = commands.getFormFieldValue(cmd, 'host', true),
-          deferredSelection = $q.defer();
-
-      // get online servers
-      var fields = [];
+    onlineServers: function() {
+      // return online servers
+      var servers = [];
       roster.onlineItems().forEach(function(item) {
         if (item.show) {
           Object.keys(item.resources).forEach(function(resource) {
-            fields.push({label: item.name, value: item.jid + "/" + resource});
+            servers.push({label: item.name, value: item.jid + "/" + resource});
           });
         }
       });
 
+      return servers;
+    },
+
+    lfm: function(cmd, treeIndex) {
+      var provideName = commands.getFormFieldValue(cmd, 'provide'),
+          label = commands.getFormFieldAttr(cmd, 'host', 'label'),
+          host = commands.getFormFieldValue(cmd, 'host', true),
+          deferredSelection = $q.defer(),
+          servers = this.onlineServers();
+
       var fieldParams = {
         label: "Choose server",
-        fields: fields,
+        fields: servers,
         promise: deferredSelection,
       };
       var field = buildVariables.createField(fieldParams, null, "select");
@@ -582,17 +606,15 @@ angular.module('warmonic.build.services', [])
     multiplicity: function(cmd, treeIndex) {
       var nbInstances = commands.getFormFieldValue(cmd, 'multiplicity'),
           label = commands.getFormFieldAttr(cmd, 'multiplicity', 'label'),
-          deferredSelection = $q.defer();
+          deferredSelection = $q.defer(),
+          servers = this.onlineServers();
 
       var fieldParams = {
-        fields: [
-          {value: '192.168.1.1'},
-          {value: '192.168.1.2'},
-          {value: '192.168.1.3'}
-        ],
+        label: "Choose servers",
+        choices: servers,
         promise: deferredSelection,
       };
-      var field = buildVariables.createField(fieldParams, null, "input-multi");
+      var field = buildVariables.createField(fieldParams, null, "choose-multi");
       tree.fillNodeTitle(treeIndex, label);
       tree.fillNodeData(treeIndex, field);
 

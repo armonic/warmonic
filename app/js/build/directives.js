@@ -177,6 +177,66 @@ angular.module('warmonic.build.directives', [])
 
 })
 
+.directive('nodechoosemulti', function() {
+
+  return {
+
+    restrict: 'E',
+
+    scope: true,
+
+    replace: true,
+
+    templateUrl: 'partials/build/choose_multi.html',
+
+    controller: function($scope) {
+
+      $scope.addField = function() {
+        var choice,
+            f = $scope.chooseField;
+        // find the selected choice based on chosenValue
+        // and add it to the fields. Also removes the choice.
+        for (var i=0; i<f.choices.length; i++) {
+          if (f.choices[i].value == f.chosenValue) {
+            f.fields.push(f.choices[i]);
+            f.choices.splice(i, 1);
+            if (f.choices.length > 0)
+              f.chosenValue = f.choices[0].value;
+            break;
+          }
+        }
+        f.checkValue();
+      };
+
+      $scope.removeField = function(field) {
+        var f = $scope.chooseField;
+        // Put the choice back and remove it from
+        // the fields.
+        f.choices.push(field);
+        f.fields.splice(f.fields.indexOf(field), 1);
+        if (f.choices.length > 0)
+          f.chosenValue = f.choices[0].value;
+        f.checkValue();
+      };
+
+    },
+
+    link: function(scope, element, attrs) {
+
+      scope.$watch(attrs.data, function(newVal, oldVal) {
+        scope.chooseField = newVal;
+        // set a default value
+        if (scope.chooseField.choices && scope.chooseField.choices.length > 0 &&
+            !scope.chooseField.chosenValue)
+          scope.chooseField.chosenValue = scope.chooseField.choices[0].value;
+      });
+
+    }
+
+  };
+
+})
+
 .directive('nodeform', function() {
 
   return {
