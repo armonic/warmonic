@@ -21,9 +21,10 @@ angular.module('warmonic.lib.xmpp.muc', [
 
     onMessage: function(msg, xmppRoom) {
       msg = $(msg);
-      if (msg.children('body').length > 0) {
-        var message = msg.children('body').text();
-        logger.info(message);
+      if (msg.children('body').text().length > 0) {
+        var message = msg.children('body').text(),
+            from = Strophe.getResourceFromJid(msg.attr('from'));
+        logger.info(message, from);
         this.messages.push(message);
         // run digest on new message
         $rootScope.$apply();

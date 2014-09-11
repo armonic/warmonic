@@ -57,7 +57,8 @@
       </button>
     </div>
     <div ng-repeat="line in logger.output()">
-      <span class="text-muted">{{ line.date | date:'short' }} : </span>
+      <span class="text-muted">{{ line.date | date:'short' }}</span>
+      <span ng-show="line.author">[{{ line.author }}]</span>
       <span ng-switch="line.level">
         <span ng-switch-when="0" class="text-muted">{{ line.text }}</span>
         <span ng-switch-when="1" class="text-primary">{{ line.text }}</span>

@@ -18,29 +18,32 @@ angular.module('warmonic.lib.logger', [])
       FATAL: 5,
     },
 
-    log: function(text, level) {
-      var log = {'date': new Date(), 'level': level, 'text': text};
+    log: function(text, level, author) {
+      var log = {date: new Date(),
+                 level: level,
+                 text: text,
+                 author: author};
       output.splice(0, 0, log);
     },
 
-    trace: function(text) {
-      this.log(text, this.level.TRACE);
+    trace: function(text, author) {
+      this.log(text, this.level.TRACE, author);
     },
 
-    debug: function(text) {
-      this.log(text, this.level.DEBUG);
+    debug: function(text, author) {
+      this.log(text, this.level.DEBUG, author);
     },
 
-    info: function(text) {
-      this.log(text, this.level.INFO);
+    info: function(text, author) {
+      this.log(text, this.level.INFO, author);
     },
 
-    warning: function(text) {
-      this.log(text, this.level.WARNING);
+    warning: function(text, author) {
+      this.log(text, this.level.WARNING, author);
     },
 
-    error: function(text) {
-      this.log(text, this.level.ERROR);
+    error: function(text, author) {
+      this.log(text, this.level.ERROR, author);
     },
 
     output: function() {
