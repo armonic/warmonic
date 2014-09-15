@@ -20,18 +20,18 @@
       <div class="pull-right" ng-controller="loginCtrl as login">
         <button type="button" class="btn navbar-btn"
           ng-click="global.toggleOption('expertMode')"
-          ng-class="{'btn-info': ! global.options.expertMode, 'btn-warning': global.options.expertMode}">
-          {{ global.options.expertMode ? "Expert mode" : "Normal mode" }}
+          ng-class="{'btn-info': ! global.options.expertMode, 'btn-warning': global.options.expertMode}"
+          ng-bind="global.options.expertMode ? 'Expert mode' : 'Normal mode'">
         </button>
         <button type="button" class="btn navbar-btn"
           ng-click="global.toggleOption('debugMode')"
-          ng-class="{'btn-danger': global.options.debugMode}">
-          {{ global.options.debugMode ? "Debug on" : "Debug off" }}
+          ng-class="{'btn-danger': global.options.debugMode}"
+          ng-bind="global.options.debugMode ? 'Debug on' : 'Debug off'">
         </button>
         <button type="button" class="btn navbar-btn"
           ng-click="global.toggleOption('logShow')"
-          ng-class="{'btn-danger': global.options.logShow}">
-          {{ global.options.logShow ? "Hide logs" : "Show logs" }}
+          ng-class="{'btn-danger': global.options.logShow}"
+          ng-bind="global.options.logShow ? 'Hide logs' : 'Show logs'">
         </button>
         <span master-status></span>
         <button type="button" class="btn btn-default navbar-btn" ng-click="login.disconnect()">Disconnect {{ nav.userJID | bareJid }}</button>
@@ -60,14 +60,14 @@
       <span class="text-muted">{{ line.date | date:'short' }}</span>
       <span ng-show="line.author">[{{ line.author }}]</span>
       <span ng-switch="line.level">
-        <span ng-switch-when="0" class="text-muted">{{ line.text }}</span>
-        <span ng-switch-when="10" class="text-muted">{{ line.text }}</span>
-        <span ng-switch-when="15" class="text-info">{{ line.text }}</span>
-        <span ng-switch-when="15" class="text-info">{{ line.text }}</span>
-        <span ng-switch-when="20" class="text-info">{{ line.text }}</span>
-        <span ng-switch-when="30" class="text-warning">{{ line.text }}</span>
-        <span ng-switch-when="40" class="text-danger">{{ line.text }}</span>
-        <span ng-switch-when="50" class="text-danger">{{ line.text }}</span>
+        <span ng-switch-when="0" class="text-muted" ng-bind="line.text"></span>
+        <span ng-switch-when="10" class="text-muted" ng-bind="line.text"></span>
+        <span ng-switch-when="15" class="text-info" ng-bind="line.text"></span>
+        <span ng-switch-when="15" class="text-info" ng-bind="line.text"></span>
+        <span ng-switch-when="20" class="text-info" ng-bind="line.text"></span>
+        <span ng-switch-when="30" class="text-warning" ng-bind="line.text"></span>
+        <span ng-switch-when="40" class="text-danger" ng-bind="line.text"></span>
+        <span ng-switch-when="50" class="text-danger" ng-bind="line.text"></span>
       </span>
     </div>
   </div>

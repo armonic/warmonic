@@ -35,7 +35,7 @@
 
   <div class="alert alert-info">
     <span class="pull-right" ng-show="login.status.code == 1" wa-spinner></span>
-    {{ login.status.text }}
+    <span ng-bind="login.status.text"></span>
   </div>
 
 </div>
