@@ -56,16 +56,18 @@
         <span class="glyphicon glyphicon-remove"></span>
       </button>
     </div>
-    <div ng-repeat="line in logger.output()">
+    <div ng-repeat="line in logger.output()" ng-show="line.level > 10 || global.options.debugMode">
       <span class="text-muted">{{ line.date | date:'short' }}</span>
       <span ng-show="line.author">[{{ line.author }}]</span>
       <span ng-switch="line.level">
         <span ng-switch-when="0" class="text-muted">{{ line.text }}</span>
-        <span ng-switch-when="1" class="text-primary">{{ line.text }}</span>
-        <span ng-switch-when="2" class="text-info">{{ line.text }}</span>
-        <span ng-switch-when="3" class="text-warning">{{ line.text }}</span>
-        <span ng-switch-when="4" class="text-danger">{{ line.text }}</span>
-        <span ng-switch-when="5" class="text-danger">{{ line.text }}</span>
+        <span ng-switch-when="10" class="text-muted">{{ line.text }}</span>
+        <span ng-switch-when="15" class="text-info">{{ line.text }}</span>
+        <span ng-switch-when="15" class="text-info">{{ line.text }}</span>
+        <span ng-switch-when="20" class="text-info">{{ line.text }}</span>
+        <span ng-switch-when="30" class="text-warning">{{ line.text }}</span>
+        <span ng-switch-when="40" class="text-danger">{{ line.text }}</span>
+        <span ng-switch-when="50" class="text-danger">{{ line.text }}</span>
       </span>
     </div>
   </div>

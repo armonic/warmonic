@@ -10,12 +10,15 @@ angular.module('warmonic.lib.logger', [])
 
     level: {
       TRACE: 0,
-      DEBUG: 1,
-      INFO: 2,
-      WARNING: 3,
-      WARN: 3,
-      ERROR: 4,
-      FATAL: 5,
+      DEBUG: 10,
+      EVENT: 15,
+      PROCESS: 16,
+      INFO: 20,
+      WARNING: 30,
+      WARN: 30,
+      ERROR: 40,
+      CRITICAL: 50,
+      FATAL: 50,
     },
 
     log: function(text, level, author) {

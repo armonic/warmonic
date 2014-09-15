@@ -23,8 +23,9 @@ angular.module('warmonic.lib.xmpp.muc', [
       msg = $(msg);
       if (msg.children('body').text().length > 0) {
         var message = msg.children('body').text(),
-            from = Strophe.getResourceFromJid(msg.attr('from'));
-        logger.info(message, from);
+            from = Strophe.getResourceFromJid(msg.attr('from')),
+            level = msg.children('log').children('level_name').text().toUpperCase();
+        logger.log(message, logger.level[level], from);
         this.messages.push(message);
         // run digest on new message
         $rootScope.$apply();
