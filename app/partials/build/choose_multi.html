@@ -1,0 +1,45 @@
+<div class="form-group" ng-show="chooseField.show" ng-class="{'has-warning': chooseField.params.expert, 'has-error': chooseField.error}">
+  <label class="control-label" for="{{ chooseField.name }}">{{ chooseField.label }}</label>
+  <div class="form-group input-group">
+    <select
+      id="chooseField.name"
+      name="chooseField.name"
+      class="form-control"
+      ng-model="chooseField.chosenValue"
+      ng-disabled="chooseField.disabled || chooseField.processing"
+      ng-options="choice.value as choice.label for choice in chooseField.choices"
+      ng-required="chooseField.required">
+    </select>
+    <span class="input-group-btn">
+      <button type="submit" class="btn btn-default"
+          ng-disabled="chooseField.disabled || chooseField.processing"
+          ng-click="addField()">
+        <span class="glyphicon glyphicon-plus" />
+      </button>
+    </span>
+  </div>
+  <p class="help-block" ng-if="chooseField.error"><small>{{ chooseField.error }}</small></p>
+  <div class="form-group">
+    <div class="alert alert-success" ng-repeat="field in chooseField.fields" style="padding: 10px;">
+      <button class="pull-right close"
+          ng-disabled="chooseField.disabled || chooseField.processing"
+          ng-click="removeField(field)">
+        <span class="glyphicon glyphicon-trash"></span>
+      </button>
+      {{ field.label }}
+    </div>
+  </div>
+  <div class="form-group clearfix">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      ng-disabled="chooseField.disabled || chooseField.processing"
+      ng-click="chooseField.submit()"
+      ng-if="chooseField.canSubmit">
+      <span ng-if="chooseField.processing" wa-spinner />
+      <span ng-if="!chooseField.processing">Ok</span>
+    </button>
+  </div>
+  <p class="help-block" ng-if="global.options.debugMode"><small>{{ chooseField.help }}</small></p>
+  <p class="help-block" ng-if="global.options.debugMode"><small>{{ chooseField.name }}</small></p>
+</div>
