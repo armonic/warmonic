@@ -4,7 +4,7 @@ angular.module('warmonic.lib.xmpp.errors', [
   'warmonic.lib.xmpp'
 ])
 
-.factory('errors', ['$q', '$modal', 'xmpp', 'xmppService', function($q, $modal, xmpp, xmppService) {
+.factory('errors', ['$q', '$modal', 'xmppService', function($q, $modal, xmppService) {
 
   var errors = xmppService.create();
   angular.extend(errors, {

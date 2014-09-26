@@ -14,13 +14,10 @@ angular.module('warmonic.lib.xmpp.roster', [
 
     onConnection: function(conn) {
       conn.roster.registerCallback(angular.bind(this, this.updateItems));
-      console.debug("registered roster callback");
       if (xmppSession.data.connectionMode == xmpp.mode.ATTACH) {
-        console.debug("loading previous roster");
         conn.roster.items = xmppSession.data.rosterItems;
       }
       else {
-        console.debug("get roster");
         conn.roster.get(angular.bind(this, this.onRoster));
       }
     },

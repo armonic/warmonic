@@ -233,31 +233,38 @@ angular.module('warmonic.lib.xmpp', [
 
   var XMPPService = Object.create(Object.prototype);
   XMPPService.prototype = {
+
+    connection: false,
+
     init: function() {
-      this._conn_init();
-      this._conn_deinit();
+      // listen for connexion/deconnexion
+      this._connInit();
+      this._connDeinit();
+      // already connected, fire onConnection
+      if (xmpp.connected) {
+        this.connection = xmpp.connection;
+        this.onConnection(this.connection);
+      }
     },
 
-    _conn_init: function() {
-      if (xmpp.connected) {
-        this.onConnection(xmpp.connection);
-      }
+    _connInit: function() {
       xmpp.getConnection()
       .then(angular.bind(this, function(conn) {
-        this.onConnection(conn);
+        this.connection = conn;
+        this.onConnection(this.connection);
       }))
       .finally(angular.bind(this, function() {
-        this._conn_init();
+        this._connInit();
       }));
     },
 
-    _conn_deinit: function() {
+    _connDeinit: function() {
       xmpp.getDisconnection()
       .then(angular.bind(this, function() {
         this.onDisconnection();
       }))
       .finally(angular.bind(this, function() {
-        this._conn_deinit();
+        this._connDeinit();
       }));
     },
 
