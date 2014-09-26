@@ -145,6 +145,8 @@ angular.module('warmonic.lib.xmpp', [
     },
 
     onConnect: function(status, error) {
+      if (error)
+        console.error(error);
       console.debug('connection status is ' + statuses[status]);
       this.status.code = status;
       this.status.text = statuses[status];
@@ -273,4 +275,21 @@ angular.module('warmonic.lib.xmpp', [
     }
   };
 
-});
+})
+
+.factory('ping', ['$q', 'xmpp', 'xmppService', function($q, xmpp, xmppService) {
+
+  var errors = xmppService.create();
+  angular.extend(errors, {
+    onConnection: function(conn) {
+      conn.ping.addPingHandler(angular.bind(this, this.onPing));
+    },
+
+    onPing: function(ping) {
+      xmpp.connection.ping.pong(ping);
+      return true;
+    }
+
+  });
+
+}]);

@@ -21,7 +21,8 @@ angular.module('warmonic', [
   'warmonic.build.controllers',
 ])
 
-.run(['$rootScope', '$state', '$stateParams', 'xmppSession', 'xmpp', 'global', 'commands', 'muc', 'errors', function($rootScope, $state, $stateParams, xmppSession, xmpp, global, commands, muc, errors) {
+.run(['$rootScope', '$state', '$stateParams', 'xmppSession', 'xmpp', 'global', 'commands', 'muc', 'errors', 'ping',
+     function($rootScope, $state, $stateParams, xmppSession, xmpp, global, commands, muc, errors, ping) {
   $rootScope.$state = $state;
   $rootScope.$stateParams = $stateParams;
   $rootScope.global = global;
