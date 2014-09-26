@@ -233,7 +233,15 @@ angular.module('warmonic.lib.xmpp', [
 
   var XMPPService = Object.create(Object.prototype);
   XMPPService.prototype = {
+    init: function() {
+      this._conn_init();
+      this._conn_deinit();
+    },
+
     _conn_init: function() {
+      if (xmpp.connected) {
+        this.onConnection(xmpp.connection);
+      }
       xmpp.getConnection()
       .then(angular.bind(this, function(conn) {
         this.onConnection(conn);
@@ -269,8 +277,6 @@ angular.module('warmonic.lib.xmpp', [
   return {
     create: function() {
       var service = Object.create(XMPPService.prototype);
-      service._conn_init();
-      service._conn_deinit();
       return service;
     }
   };
@@ -279,8 +285,8 @@ angular.module('warmonic.lib.xmpp', [
 
 .factory('ping', ['$q', 'xmpp', 'xmppService', function($q, xmpp, xmppService) {
 
-  var errors = xmppService.create();
-  angular.extend(errors, {
+  var ping = xmppService.create();
+  angular.extend(ping, {
     onConnection: function(conn) {
       conn.ping.addPingHandler(angular.bind(this, this.onPing));
     },
@@ -289,7 +295,9 @@ angular.module('warmonic.lib.xmpp', [
       xmpp.connection.ping.pong(ping);
       return true;
     }
-
   });
+  ping.init();
+
+  return ping;
 
 }]);

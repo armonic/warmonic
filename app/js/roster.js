@@ -100,6 +100,7 @@ angular.module('warmonic.lib.xmpp.roster', [
       exclusionList.push(Strophe.getBareJidFromJid(jid));
     }
   });
+  roster.init();
 
   return roster;
 

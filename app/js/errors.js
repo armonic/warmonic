@@ -30,5 +30,8 @@ angular.module('warmonic.lib.xmpp.errors', [
     }
 
   });
+  errors.init();
+
+  return errors;
 
 }]);

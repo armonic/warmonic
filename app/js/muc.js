@@ -55,6 +55,7 @@ angular.module('warmonic.lib.xmpp.muc', [
     }
 
   });
+  muc.init();
 
   return muc;
 
