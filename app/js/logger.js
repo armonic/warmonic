@@ -22,6 +22,9 @@ angular.module('warmonic.lib.logger', [])
     },
 
     log: function(text, level, author) {
+      // ignore EVENT level for now
+      if (level == this.level.EVENT)
+        return;
       var log = {date: new Date(),
                  level: level,
                  text: text,
