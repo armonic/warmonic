@@ -65,6 +65,7 @@ angular.module('warmonic.build.services', [])
       suggested_by: "",
       resolved_by: "",
       set_by: "",
+      belongs_provide_ret: false,
       promise: null,
       expert: false,
       fields: []
@@ -216,6 +217,8 @@ angular.module('warmonic.build.services', [])
     /** Should the field be visible ? */
     get show() {
       if (this.params.resolved_by || this.params.set_by)
+        return false;
+      if (this.params.belongs_provide_ret && this.hasValue && !global.options.expertMode)
         return false;
       if (this.params.expert && !global.options.expertMode && this.hasValue && !this.error)
         return false;
