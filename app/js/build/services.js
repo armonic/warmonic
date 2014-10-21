@@ -752,6 +752,12 @@ angular.module('warmonic.build.services', [])
     },
 
     call: function(cmd, treeIndex) {
+      var result = commands.getFormFieldValue(cmd, "call_result");
+      if (result) {
+        this.showCallResult(cmd, treeIndex, JSON.parse(result));
+        return;
+      }
+
       if (global.options.expertMode) {
         var deferredSelection = $q.defer(),
             provideLabel = commands.getFormFieldAttr(cmd, "provide", "label");
@@ -799,8 +805,24 @@ angular.module('warmonic.build.services', [])
 
     },
 
+    showCallResult: function(cmd, treeIndex, callResult) {
+      console.log("showCallResult");
+      var fields = [];
+      for (var key in callResult) {
+        fields.push({label: key, value: callResult[key]});
+      }
+      var fieldParams = {
+        fields: fields
+      };
+      var field = buildVariables.createField(fieldParams, null, "result");
+      tree.fillNodeData(treeIndex, field);
+
+      commands.next(cmd)
+      .then(angular.bind(this, this._onRecv));
+    },
+
     done: function(cmd, treeIndex) {
-      tree.fillNodeData(treeIndex, {type: "text", value: "Finished"});
+      //tree.fillNodeData(treeIndex, {type: "text", value: "Finished"});
       if (cmd.status != "completed") {
         commands.next(cmd)
         .then(angular.bind(this, this._onRecv));

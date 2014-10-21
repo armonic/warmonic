@@ -35,6 +35,10 @@
     <nodeform data="data" />
   </span>
 
+  <span ng-switch-when="result">
+    <noderesult data="data" />
+  </span>
+
   <span ng-switch-when="loading">
     <p>{{ data.value}} <span wa-spinner /></p>
   </span>

@@ -99,10 +99,11 @@ angular.module('warmonic.lib.xmpp.commands', [
     _getFormField: function(cmd, fieldName) {
       var f = null;
       var fields = cmd.form && cmd.form.fields || cmd.fields;
-      fields.forEach(function(field) {
-        if (field.var == fieldName)
-          f = field;
-      });
+      if (fields)
+        fields.forEach(function(field) {
+          if (field.var == fieldName)
+            f = field;
+        });
       return f;
     },
 

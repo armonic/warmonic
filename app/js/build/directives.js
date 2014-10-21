@@ -13,7 +13,7 @@ angular.module('warmonic.build.directives', [])
 
     replace: true,
 
-    template: '<ul><li ng-show="node.data"><node node-data="node.data" node-title="node.title" node-host="node.host" node-show="node.show" /></li><tree ng-repeat="child in node.children" node="child" /></ul>',
+    template: '<ul class="tree"><li class="tree" ng-show="node.data"><node node-data="node.data" node-title="node.title" node-host="node.host" node-show="node.show" /></li><tree ng-repeat="child in node.children" node="child" /></ul>',
 
     compile: function(element) {
         // Use the compile function from the RecursionHelper,
@@ -253,6 +253,30 @@ angular.module('warmonic.build.directives', [])
 
       scope.$watch(attrs.data, function(newVal, oldVal) {
         scope.formData = newVal;
+      });
+
+    }
+
+  };
+
+})
+
+.directive('noderesult', function() {
+
+  return {
+
+    restrict: 'E',
+
+    scope: true,
+
+    replace: true,
+
+    templateUrl: 'partials/build/result.html',
+
+    link: function(scope, element, attrs) {
+
+      scope.$watch(attrs.data, function(newVal, oldVal) {
+        scope.resultData = newVal;
       });
 
     }

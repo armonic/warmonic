@@ -140,24 +140,24 @@ body.log-right .col-md-12 {
   margin: 3px;
 }
 
-.tree {
+#tree {
   margin-top: 1px;
 }
 
-.tree form {
+#tree form {
   display: inline;
 }
 
-.tree form legend {
+#tree form legend {
   cursor: pointer;
   font-size: 16px;
 }
 
-.tree form legend span.glyphicon {
+#tree form legend span.glyphicon {
   font-size: 75%;
 }
 
-.tree form .form-fields {
+#tree form .form-fields {
   max-height: 1000px;
   opacity: 1;
   -webkit-transition: all ease 0.3s;
@@ -166,32 +166,32 @@ body.log-right .col-md-12 {
   overflow: hidden;
 }
 
-.tree form .form-fields.ng-hide {
+#tree form .form-fields.ng-hide {
   max-height: 0;
 }
 
-.tree ul {
+#tree ul.tree {
   list-style-type: none;
   margin-left: 20px;
   padding: 0;
 }
 
-.tree > ul {
+#tree > ul.tree {
   margin-left: 0px;
 }
 
-.tree li {
+#tree li.tree {
   padding: 5px 10px;
   background: #f8f8f8;
   border-left: 3px solid #CCC;
 }
 
-.tree .choose button {
+#tree .choose button {
   margin-right: .5em;
   margin-bottom: .5em;
 }
 
-.tree h4 {
+#tree h4 {
   border-bottom: 1px solid #E5E5E5;
   font-size: 16px;
   margin: 0px;
