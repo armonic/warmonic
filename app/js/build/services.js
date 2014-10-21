@@ -305,26 +305,31 @@ angular.module('warmonic.build.services', [])
       return node;
     },
 
-    fillNodeTitle: function(treeIndex, title) {
+    fillNode: function(treeIndex, attr, data) {
       var node = this.getTreeNode(treeIndex);
-      node.title = title;
-
+      node[attr] = data;
       return node;
+    },
+
+    fillNodeTitle: function(treeIndex, title) {
+      return this.fillNode(treeIndex, 'title', title);
     },
 
     fillNodeData: function(treeIndex, data) {
-      var node = this.getTreeNode(treeIndex);
-      node.data = data;
-      node.show = true;
-
-      return node;
+      this.fillNode(treeIndex, 'data', data);
+      return this.fillNode(treeIndex, 'show', true);
     },
 
     fillNodeHost: function(treeIndex, host) {
-      var node = this.getTreeNode(treeIndex);
-      node.host = host;
+      return this.fillNode(treeIndex, 'host', host);
+    },
 
-      return node;
+    fillNodeLogger: function(treeIndex, logger) {
+      return this.fillNode(treeIndex, 'logger',logger);
+    },
+
+    fillNodeName: function(treeIndex, name) {
+      return this.fillNode(treeIndex, 'name',name);
     }
 
   };
@@ -351,7 +356,7 @@ angular.module('warmonic.build.services', [])
 
 }])
 
-.factory('build', ['$q', 'logger', 'roster', 'commands', 'muc', 'buildTree', 'buildVariables', 'global', function($q, logger, roster, commands, muc, buildTree, buildVariables, global) {
+.factory('build', ['$q', '$rootScope', 'logger', 'roster', 'commands', 'muc', 'buildTree', 'buildVariables', 'global', function($q, $rootScope, logger, roster, commands, muc, buildTree, buildVariables, global) {
 
   var _cmd,
       tree,
@@ -361,7 +366,8 @@ angular.module('warmonic.build.services', [])
 
     data: {
       sessionId: false,
-      logs: null
+      currentNode: null,
+      room: null
     },
 
     steps: [
@@ -380,7 +386,6 @@ angular.module('warmonic.build.services', [])
       tree = buildTree.create('build');
       this.data.sessionId = null;
       buildVariables.init();
-      logger.clear();
     },
 
     tree: function() {
@@ -391,9 +396,39 @@ angular.module('warmonic.build.services', [])
       return buildVariables.variables();
     },
 
+    _onLog: function(msg, xmppRoom) {
+      msg = $(msg);
+      if (msg.children('body').text().length > 0) {
+        var message = msg.children('body').text(),
+            from = Strophe.getResourceFromJid(msg.attr('from')),
+            level = msg.children('log').children('level_name').text().toUpperCase(),
+            logger = this.data.currentLogger;
+        logger.log(message, logger.level[level], from);
+        // run digest on new message
+        $rootScope.$apply();
+      }
+      return true;
+    },
+
     _onRecv: function(cmd) {
       var treeIndex = this._getTreeIndex(cmd),
-          host = commands.getFormFieldValue(cmd, 'host', true);
+          host = commands.getFormFieldValue(cmd, 'host', true),
+          provideName = tree.getTreeNode(treeIndex).name || function() {
+            var provideName = commands.getFormFieldValue(cmd, "provide");
+            tree.fillNodeName(treeIndex, provideName);
+            return provideName;
+          }();
+
+      // fill node logger
+      var provideLogger = tree.getTreeNode(treeIndex).logger || function(logger) {
+        var provideLogger = logger.get(provideName);
+        provideLogger.clear();
+        tree.fillNodeLogger(treeIndex, provideLogger);
+        return provideLogger;
+      }(logger);
+
+      this.data.currentNode = provideName;
+      this.data.currentLogger = provideLogger;
 
       // Show the host info only after the lfm step
       if (host && this.steps.indexOf(cmd.form.instructions) > this.steps.indexOf('lfm'))
@@ -438,9 +473,9 @@ angular.module('warmonic.build.services', [])
 
         this.data.sessionId = cmd.sessionid;
         // leave previous room
-        if (this.data.logs)
-          this.data.logs.leave();
-        this.data.logs = muc.join(cmd.sessionid);
+        if (this.data.room)
+          this.data.room.leave();
+        this.data.room = muc.join(cmd.sessionid, angular.bind(this, this._onLog));
 
         // specify the first provide
         var form = $form({
@@ -799,7 +834,7 @@ angular.module('warmonic.build.services', [])
       commands.next(cmd, form)
 
       .then(angular.bind(this, function(cmd) {
-        tree.fillNodeData(treeIndex, {type: "text", value: "Call done"});
+        tree.fillNodeData(treeIndex, {type: "text", value: ""});
         this._onRecv(cmd);
       }));
 

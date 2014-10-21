@@ -6,6 +6,7 @@ angular.module('warmonic', [
   'ui.bootstrap.tooltip',
   'ui.bootstrap.transition',
   'ui.bootstrap.modal',
+  'luegg.directives',
   'warmonic.lib.utils',
   'warmonic.lib.xmpp',
   'warmonic.lib.xmpp.roster',
@@ -21,8 +22,8 @@ angular.module('warmonic', [
   'warmonic.build.controllers',
 ])
 
-.run(['$rootScope', '$state', '$stateParams', 'xmppSession', 'xmpp', 'global', 'commands', 'muc', 'errors', 'ping',
-     function($rootScope, $state, $stateParams, xmppSession, xmpp, global, commands, muc, errors, ping) {
+.run(['$rootScope', '$anchorScroll', '$state', '$stateParams', 'xmppSession', 'xmpp', 'global', 'commands', 'muc', 'errors', 'ping',
+     function($rootScope, $anchorScroll, $state, $stateParams, xmppSession, xmpp, global, commands, muc, errors, ping) {
   $rootScope.$state = $state;
   $rootScope.$stateParams = $stateParams;
   $rootScope.global = global;
@@ -48,6 +49,8 @@ angular.module('warmonic', [
     });
   };
   listenConnect();
+
+  $anchorScroll.yOffset = -20;
 }])
 
 .config(['$stateProvider', function($stateProvider) {

@@ -13,7 +13,7 @@ angular.module('warmonic.build.directives', [])
 
     replace: true,
 
-    template: '<ul class="tree"><li class="tree" ng-show="node.data"><node node-data="node.data" node-title="node.title" node-host="node.host" node-show="node.show" /></li><tree ng-repeat="child in node.children" node="child" /></ul>',
+    template: '<ul class="tree"><li class="tree" ng-show="node.data"><node node-data="node.data" node-title="node.title" node-name="node.name" node-host="node.host" node-show="node.show" node-logger="node.logger" /></li><tree ng-repeat="child in node.children" node="child" /></ul>',
 
     compile: function(element) {
         // Use the compile function from the RecursionHelper,
@@ -67,6 +67,14 @@ angular.module('warmonic.build.directives', [])
 
       scope.$watch(attrs.nodeShow, function(newVal, oldVal) {
         scope.show = newVal;
+      });
+
+      scope.$watch(attrs.nodeLogger, function(newVal, oldVal) {
+        scope.logger = newVal;
+      });
+
+      scope.$watch(attrs.nodeName, function(newVal, oldVal) {
+        scope.name = newVal;
       });
 
     }

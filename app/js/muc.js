@@ -2,19 +2,20 @@
 
 angular.module('warmonic.lib.xmpp.muc', [
   'warmonic.lib.xmpp',
-  'warmonic.lib.logger'
 ])
 
-.factory('muc', ['$rootScope', '$q', '$timeout', 'xmpp', 'xmppService', 'logger', function($rootScope, $q, $timeout, xmpp, xmppService, logger) {
+.factory('muc', ['$rootScope', '$q', '$timeout', 'xmpp', 'xmppService', function($rootScope, $q, $timeout, xmpp, xmppService) {
 
-  var Room = function(name, nick) {
+  var Room = function(name, nick, callback) {
     this.name = name;
     this.nick = nick;
-    this.messages = [];
     console.debug("joining room " + this.name);
+    if (!callback)
+      callback = angular.bind(this, this.onMessage);
+
     xmpp.connection.muc.join(this.name,
                              this.nick,
-                             angular.bind(this, this.onMessage));
+                             callback);
   };
 
   Room.prototype = {
@@ -22,13 +23,7 @@ angular.module('warmonic.lib.xmpp.muc', [
     onMessage: function(msg, xmppRoom) {
       msg = $(msg);
       if (msg.children('body').text().length > 0) {
-        var message = msg.children('body').text(),
-            from = Strophe.getResourceFromJid(msg.attr('from')),
-            level = msg.children('log').children('level_name').text().toUpperCase();
-        logger.log(message, logger.level[level], from);
-        this.messages.push(message);
-        // run digest on new message
-        $rootScope.$apply();
+        console.log(msg.children('body').text());
       }
       return true;
     },
@@ -36,7 +31,7 @@ angular.module('warmonic.lib.xmpp.muc', [
     leave: function() {
       console.debug("leaving room " + this.name);
       xmpp.connection.muc.leave(this.name, this.nick);
-    }
+    },
 
   };
 
@@ -45,12 +40,12 @@ angular.module('warmonic.lib.xmpp.muc', [
 
     domain: null,
 
-    join: function(roomName) {
+    join: function(roomName, msgCallback) {
       if (!xmpp.connected)
         return;
 
       roomName = roomName + '@' + this.domain;
-      var room = new Room(roomName, Strophe.getNodeFromJid(xmpp.connection.jid));
+      var room = new Room(roomName, Strophe.getNodeFromJid(xmpp.connection.jid), msgCallback);
       return room;
     }
 

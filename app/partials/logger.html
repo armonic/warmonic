@@ -1,0 +1,28 @@
+<div class="log" ng-if="logger">
+  <div class="log-controls pull-right">
+    <button ng-click="show = ! show" class="btn btn-default btn-xs">
+      Toggle
+    </button>
+    <button ng-click="logger.clear()" class="btn btn-default btn-xs">
+      Clear
+    </button>
+  </div>
+  <strong class="title">Logs for {{ logger.name }}</strong>
+  <div class="logs" ng-if="show" scroll-glue>
+    <div class="text-muted" ng-if="!logger.output()">No logs</div>
+    <div ng-repeat="line in logger.output()" ng-show="line.level > 10 || global.options.debugMode">
+      <span class="text-muted">{{ line.date | date:'short' }}</span>
+      <span ng-show="line.author">[{{ line.author }}]</span>
+      <span ng-switch="line.level">
+        <span ng-switch-when="0" class="text-muted" ng-bind="line.text"></span>
+        <span ng-switch-when="10" class="text-muted" ng-bind="line.text"></span>
+        <span ng-switch-when="15" class="text-info" ng-bind="line.text"></span>
+        <span ng-switch-when="20" class="text-info" ng-bind="line.text"></span>
+        <span ng-switch-when="25" class="text-info" ng-bind="line.text"></span>
+        <span ng-switch-when="30" class="text-warning" ng-bind="line.text"></span>
+        <span ng-switch-when="40" class="text-danger" ng-bind="line.text"></span>
+        <span ng-switch-when="50" class="text-danger" ng-bind="line.text"></span>
+      </span>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@
 
 angular.module('warmonic.build.controllers', [])
 
-.controller('buildCtrl', ['$scope', '$state', '$stateParams', 'xmpp', 'commands', 'build', function($scope, $state, $stateParams, xmpp, commands, build) {
+.controller('buildCtrl', ['$scope', '$state', '$stateParams', '$location', '$anchorScroll', 'xmpp', 'commands', 'build', function($scope, $state, $stateParams, $location, $anchorScroll, xmpp, commands, build) {
   if (!xmpp.connected)
     $state.go('login');
 
@@ -21,5 +21,12 @@ angular.module('warmonic.build.controllers', [])
     else
       build.init();
   }));
+
+  $scope.$watch(function() { return build.data; }, function(newVal, oldVal) {
+    if (newVal.currentNode && newVal.currentNode !== oldVal.currentNode) {
+      console.debug("Now on " + newVal.currentNode);
+      $location.hash(newVal.currentNode);
+    }
+  }, true);
 
 }]);

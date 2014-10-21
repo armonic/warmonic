@@ -1,101 +1,34 @@
-body,
-body > .content,
-  -webkit-transition: all ease 0.2s;
-  -moz-transition: all ease 0.2s;
-  transition: all ease 0.2s;
-}
-body.log-bottom {
-  padding-bottom: 35%;
-}
-
-body.log-right > .content {
-  margin-left: 0px;
-  width: 50%;
-}
-
-body.log-right .col-md-1,
-body.log-right .col-md-2,
-body.log-right .col-md-3,
-body.log-right .col-md-4,
-body.log-right .col-md-5,
-body.log-right .col-md-6,
-body.log-right .col-md-7,
-body.log-right .col-md-8,
-body.log-right .col-md-9,
-body.log-right .col-md-10,
-body.log-right .col-md-11,
-body.log-right .col-md-12 {
-  float: none;
-  width: auto;
-}
-
 .log {
   border: 1px solid #ccc;
-  border-right: 0px;
   font-family: monospace;
   font-size: 11px;
-  overflow: auto;
-  position: fixed;
   background-color: white;
-  padding: 3px;
-
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+  margin: 5px 0;
 }
 
-.log.log-bottom {
-  bottom: 0px;
-  left: 5%;
-  width: 90%;
-  height: 35%;
-
-  -webkit-transition: height ease 0.2s;
-  -moz-transition: height ease 0.2s;
-  transition: height ease 0.2s;
+.log .log-controls {
+  margin: 3px;
 }
 
-.log.log-bottom.ng-hide {
-  height: 0;
+.logs {
+  overflow: auto;
+  max-height: 200px;
 }
 
-.log.log-right {
-  top: 10%;
-  right: 0px;
-  width: 50%;
-  height: 85%;
-
-  -webkit-transition: width ease 0.2s;
-  -moz-transition: width ease 0.2s;
-  transition: width ease 0.2s;
+.log .title {
+  background: #eee;
+  display: block;
+  line-height: 29px;
+  padding-left: 3px;
 }
 
-.log.log-right.ng-hide {
-  width: 0;
-}
-
-.log-control {
-  position: fixed;
-  margin-top: -14px;
-
-}
-
-.log-bottom .log-control {
-  right: 7%;
-}
-
-.log-right .log-control {
-  right: 15px;
-}
-
-.log > div {
+.log .logs > div {
   transition: background 100ms ease;
+  padding: 3px 0;
 }
 
-.log > div:hover {
+.log .logs > div:hover {
   background: #f1f1f1;
-}
-
-.log > div.new {
-  background-color: #DBFFDB;
 }
 
 .console {

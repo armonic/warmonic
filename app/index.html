@@ -6,8 +6,7 @@
   <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"/>
   <link rel="stylesheet" href="css/app.css"/>
 </head>
-<body ng-class="{'log-bottom': global.options.logBottom && global.options.logShow,
-                 'log-right': !global.options.logBottom && global.options.logShow}">
+<body>
   <nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="navCtrl as nav" ng-show="nav.userConnected">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -28,11 +27,6 @@
           ng-class="{'btn-danger': global.options.debugMode}"
           ng-bind="global.options.debugMode ? 'Debug on' : 'Debug off'">
         </button>
-        <button type="button" class="btn navbar-btn"
-          ng-click="global.toggleOption('logShow')"
-          ng-class="{'btn-danger': global.options.logShow}"
-          ng-bind="global.options.logShow ? 'Hide logs' : 'Show logs'">
-        </button>
         <span master-status></span>
         <button type="button" class="btn btn-default navbar-btn" ng-click="login.disconnect()">Disconnect {{ nav.userJID | bareJid }}</button>
       </div>
@@ -41,46 +35,6 @@
   <div class="container-fluid content">
     <div class="row" ui-view></div>
   </div>
-  <div class="log" ng-controller="loggerCtrl as logger"
-    ng-show="global.options.logShow"
-    ng-class="{'log-bottom': global.options.logBottom, 'log-right': !global.options.logBottom}">
-    <div class="log-control pull-right">
-      <button ng-click="logger.clear()" ng-if="global.options.logShow" class="btn btn-default btn-xs">
-        Clear
-      </button>
-      <button ng-click="global.toggleOption('logBottom')" ng-if="global.options.logShow" class="btn btn-default btn-xs">
-        <span class="glyphicon"
-          ng-class="{'glyphicon-chevron-right': global.options.logBottom, 'glyphicon-chevron-down': !global.options.logBottom}"></span>
-      </button>
-      <button ng-click="global.toggleOption('logShow')" ng-if="global.options.logShow" class="btn btn-danger btn-xs">
-        <span class="glyphicon glyphicon-remove"></span>
-      </button>
-    </div>
-    <div ng-repeat="line in logger.output()" ng-show="line.level > 10 || global.options.debugMode">
-      <span class="text-muted">{{ line.date | date:'short' }}</span>
-      <span ng-show="line.author">[{{ line.author }}]</span>
-      <span ng-switch="line.level">
-        <span ng-switch-when="0" class="text-muted" ng-bind="line.text"></span>
-        <span ng-switch-when="10" class="text-muted" ng-bind="line.text"></span>
-        <span ng-switch-when="15" class="text-info" ng-bind="line.text"></span>
-        <span ng-switch-when="20" class="text-info" ng-bind="line.text"></span>
-        <span ng-switch-when="25" class="text-info" ng-bind="line.text"></span>
-        <span ng-switch-when="30" class="text-warning" ng-bind="line.text"></span>
-        <span ng-switch-when="40" class="text-danger" ng-bind="line.text"></span>
-        <span ng-switch-when="50" class="text-danger" ng-bind="line.text"></span>
-      </span>
-    </div>
-  </div>
-  <!--<div ng-controller="consoleCtrl as console" class="console">-->
-    <!--<form ng-submit="console.send()">-->
-      <!--<div class="input-group">-->
-        <!--<textarea class="form-control input-sm" ng-model="console.input"></textarea>-->
-        <!--<span class="input-group-btn">-->
-          <!--<button type="submit" class="btn btn-default btn-sm">Send</button>-->
-        <!--</span>-->
-      <!--</div>-->
-    <!--</form>-->
-  <!--</div>-->
 
   <script src="../bower_components/angular/angular.js"></script>
   <script src="../bower_components/angular-cookies/angular-cookies.js"></script>
@@ -91,6 +45,7 @@
   <script src="../bower_components/angular-ui-bootstrap/src/tooltip/tooltip.js"></script>
   <script src="../bower_components/angular-ui-bootstrap/src/transition/transition.js"></script>
   <script src="../bower_components/angular-ui-bootstrap/src/modal/modal.js"></script>
+  <script src="../bower_components/angularjs-scroll-glue-Luegg/src/scrollglue.js"></script>
   <script src="../bower_components/jquery/dist/jquery.js"></script>
   <script src="../bower_components/strophejs/src/md5.js"></script>
   <script src="../bower_components/strophejs/src/sha1.js"></script>

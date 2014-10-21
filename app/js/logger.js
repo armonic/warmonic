@@ -2,11 +2,10 @@
 
 angular.module('warmonic.lib.logger', [])
 
-.factory('logger', ['$q', '$timeout', function($q, $timeout) {
+.factory('logger', ['$rootScope', function($rootScope) {
 
-  var output = [];
-
-  return {
+  var loggers = {},
+      Logger = Object.create({
 
     level: {
       TRACE: 0,
@@ -29,7 +28,10 @@ angular.module('warmonic.lib.logger', [])
                  level: level,
                  text: text,
                  author: author};
-      output.splice(0, 0, log);
+      if (!this._output)
+        this._output = [];
+      this._output.push(log);
+      $rootScope.$apply();
     },
 
     trace: function(text, author) {
@@ -52,31 +54,60 @@ angular.module('warmonic.lib.logger', [])
       this.log(text, this.level.ERROR, author);
     },
 
-    output: function() {
-      return output;
+    clear: function() {
+      this._output = [];
     },
 
-    clear: function() {
-      output = [];
+    output: function() {
+      return this._output;
+    }
+
+  });
+
+  return {
+    get: function(name) {
+      return loggers[name] || function() {
+        var logger = Object.create(Logger);
+        logger.name = name;
+        loggers[name] = logger;
+        return logger;
+      }();
+    },
+
+    list: function() {
+      return loggers;
     }
   };
+
 }])
 
-.controller('loggerCtrl', ['logger', function(logger) {
-  this.output = logger.output;
-  this.clear = logger.clear;
-}])
+.directive('logger', function() {
 
-.controller('consoleCtrl', ['xmpp', 'logger', function(xmpp, logger) {
-  this.send = function() {
-    var parser = new DOMParser();
-    var doc = parser.parseFromString(this.input, 'text/xml');
-    var elem = doc.documentElement;
-    if (xmpp._connection && elem) {
-      xmpp._connection.send(elem);
-      this.input = "";
-    }
-    else
-      logger.error("no connection available");
+  return {
+    restrict: 'E',
+
+    scope: true,
+
+    templateUrl: 'partials/logger.html',
+
+    link: function(scope, element, attrs) {
+      scope.instanceName = attrs.instanceName;
+      scope.$watch(attrs.instanceName, function(newVal, oldVal) {
+        if (newVal && newVal !== oldVal) {
+          scope.instanceName = newVal;
+        }
+      });
+    },
+
+    controller: ['$scope', 'logger', function($scope, logger) {
+      $scope.$watch('instanceName', function(newVal, oldVal) {
+        if (newVal) {
+          console.debug("get " + $scope.instanceName + " logger");
+          $scope.logger = logger.get($scope.instanceName);
+          $scope.show = true;
+        }
+      });
+    }]
   };
-}]);
+
+});
