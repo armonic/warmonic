@@ -401,8 +401,13 @@ angular.module('warmonic.build.services', [])
       else
         tree.fillNodeHost(treeIndex, null);
 
-      if (cmd.form.instructions == "manage")
-        this.manage(cmd, treeIndex);
+      if (cmd.form.instructions == "manage") {
+        // Always manage the first provide
+        if (treeIndex == [0])
+          this.sendManage(cmd, [0], true);
+        else
+          this.manage(cmd, treeIndex);
+      }
       else if (cmd.form.instructions == "lfm")
         this.lfm(cmd, treeIndex);
       else if (cmd.form.instructions == "specialize")
@@ -448,8 +453,7 @@ angular.module('warmonic.build.services', [])
       }))
 
       .then(angular.bind(this, function(cmd) {
-        // Always manage the first provide
-        this.sendManage(cmd, [0], true);
+        this._onRecv(cmd);
       }));
 
     },
