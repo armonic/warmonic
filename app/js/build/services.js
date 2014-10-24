@@ -554,10 +554,13 @@ angular.module('warmonic.build.services', [])
       commands.next(cmd, form)
 
       .then(angular.bind(this, function(cmd) {
-        tree.fillNodeData(treeIndex, {type: "text", value: label || xpath});
+        this.onSpecialize(cmd, treeIndex, xpath, label)
         this._onRecv(cmd);
       }));
+    },
 
+    onSpecialize: function(cmd, treeIndex, xpath, label) {
+      tree.fillNodeData(treeIndex, {type: "text", value: label || xpath});
     },
 
     onlineServers: function() {
