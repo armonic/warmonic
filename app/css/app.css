@@ -31,6 +31,10 @@
   background: #f1f1f1;
 }
 
+.log-line > span {
+  white-space: pre;
+}
+
 .console {
   position: fixed;
   bottom: 0px;

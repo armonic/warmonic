@@ -50,7 +50,7 @@ angular.module('warmonic', [
   };
   listenConnect();
 
-  $anchorScroll.yOffset = -20;
+  //$anchorScroll.yOffset = -20;
 }])
 
 .config(['$stateProvider', function($stateProvider) {

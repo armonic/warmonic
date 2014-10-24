@@ -4,12 +4,25 @@ angular.module('warmonic.lib.xmpp.errors', [
   'warmonic.lib.xmpp'
 ])
 
-.factory('errors', ['$q', '$modal', 'xmppService', function($q, $modal, xmppService) {
+.factory('errors', ['$q', '$modal', 'xmpp', 'xmppService', function($q, $modal, xmpp, xmppService) {
 
-  var errors = xmppService.create();
+  var errors = xmppService.create(),
+      error_handlers = [];
   angular.extend(errors, {
     onConnection: function(conn) {
       conn.addHandler(angular.bind(this, this.onError), 'armonic', 'iq', 'error');
+      error_handlers.forEach(function(handler) {
+        conn.addHandler(handler, 'armonic', 'iq', 'error');
+      });
+    },
+
+    addErrorHandler: function(callback) {
+      // connection available
+      // add the handler
+      if (this.connection)
+        this.connection.addHandler(callback, 'armonic', 'iq', 'error');
+      else
+        error_handlers.push(callback);
     },
 
     onError: function(msg) {

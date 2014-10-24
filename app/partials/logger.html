@@ -13,7 +13,7 @@
     <div ng-repeat="line in logger.output()" ng-show="line.level > 10 || global.options.debugMode">
       <span class="text-muted">{{ line.date | date:'short' }}</span>
       <span ng-show="line.author">[{{ line.author }}]</span>
-      <span ng-switch="line.level">
+      <span class="log-line" ng-switch="line.level">
         <span ng-switch-when="0" class="text-muted" ng-bind="line.text"></span>
         <span ng-switch-when="10" class="text-muted" ng-bind="line.text"></span>
         <span ng-switch-when="15" class="text-info" ng-bind="line.text"></span>

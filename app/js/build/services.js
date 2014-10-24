@@ -356,7 +356,7 @@ angular.module('warmonic.build.services', [])
 
 }])
 
-.factory('build', ['$q', '$rootScope', 'logger', 'roster', 'commands', 'muc', 'buildTree', 'buildVariables', 'global', function($q, $rootScope, logger, roster, commands, muc, buildTree, buildVariables, global) {
+.factory('build', ['$q', '$rootScope', 'logger', 'roster', 'commands', 'muc', 'buildTree', 'buildVariables', 'errors', 'global', function($q, $rootScope, logger, roster, commands, muc, buildTree, buildVariables, errors, global) {
 
   var _cmd,
       tree,
@@ -386,6 +386,7 @@ angular.module('warmonic.build.services', [])
       tree = buildTree.create('build');
       this.data.sessionId = null;
       buildVariables.init();
+      errors.addErrorHandler(angular.bind(this, this._onError));
     },
 
     tree: function() {
@@ -394,6 +395,15 @@ angular.module('warmonic.build.services', [])
 
     variables: function() {
       return buildVariables.variables();
+    },
+
+    _onError: function(msg) {
+      msg = $(msg);
+      var code = msg.children('exception').children('code').text(),
+          error = msg.children('exception').children('message').text(),
+          logger = this.data.currentLogger;
+      logger.error(code + ": " + error);
+      return true;
     },
 
     _onLog: function(msg, xmppRoom) {
