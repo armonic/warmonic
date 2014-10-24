@@ -362,7 +362,7 @@ angular.module('warmonic.build.services', [])
       tree,
       _variables;
 
-  return {
+  var build = {
 
     data: {
       sessionId: false,
@@ -386,7 +386,6 @@ angular.module('warmonic.build.services', [])
       tree = buildTree.create('build');
       this.data.sessionId = null;
       buildVariables.init();
-      errors.addErrorHandler(angular.bind(this, this._onError));
     },
 
     tree: function() {
@@ -874,5 +873,9 @@ angular.module('warmonic.build.services', [])
       }
     }
   };
+
+  errors.addErrorHandler(angular.bind(build, build._onError));
+
+  return build;
 
 }]);
