@@ -4,6 +4,9 @@ angular.module('warmonic.login', [])
 
 .controller('loginCtrl', ['$scope', '$cookieStore', '$state', 'xmppSession', 'xmpp', function($scope, $cookieStore, $state, xmppSession, xmpp) {
 
+  if (xmpp.connected)
+      $state.go('provides');
+
   this.info = $cookieStore.get('warmonicLogin') || {jid: null, mucDomain: null, connection: null};
   this.password = null;
   this.commandsProvider = null;
