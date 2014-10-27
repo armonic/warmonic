@@ -1,0 +1,16 @@
+<ul class="tree">
+  <li class="tree" ng-show="node.data">
+    <h4 id="{{ node.name }}" ng-if="node.title" ng-click="node.show = !node.show">
+      <span class="glyphicon"
+        ng-class="{'glyphicon-chevron-down': node.show, 'glyphicon-chevron-right': !node.show}"></span>
+      {{ node.title }}
+      <span ng-if="node.host" class="label label-info">{{ node.host | nodeJid }}</span>
+    </h4>
+    <div ng-show="node.show">
+      <node node-data="node.data" />
+      <logger instance-name="{{ node.name }}"></logger>
+    </div>
+  </li>
+  <tree ng-repeat="child in node.children" node="child" />
+</ul>
+

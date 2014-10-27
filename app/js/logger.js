@@ -81,33 +81,21 @@ angular.module('warmonic.lib.logger', [])
 
 }])
 
-.directive('logger', function() {
+.directive('logger', ['logger', function(logger) {
 
   return {
     restrict: 'E',
 
-    scope: true,
-
     templateUrl: 'partials/logger.html',
 
     link: function(scope, element, attrs) {
-      scope.instanceName = attrs.instanceName;
-      scope.$watch(attrs.instanceName, function(newVal, oldVal) {
-        if (newVal && newVal !== oldVal) {
-          scope.instanceName = newVal;
-        }
-      });
-    },
+      scope.show = true;
 
-    controller: ['$scope', 'logger', function($scope, logger) {
-      $scope.$watch('instanceName', function(newVal, oldVal) {
-        if (newVal) {
-          console.debug("get " + $scope.instanceName + " logger");
-          $scope.logger = logger.get($scope.instanceName);
-          $scope.show = true;
-        }
+      attrs.$observe('instanceName', function(value) {
+        scope.logger = logger.get(value);
       });
-    }]
+    }
+
   };
 
-});
+}]);

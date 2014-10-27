@@ -581,7 +581,14 @@ angular.module('warmonic.build.services', [])
 
         // when choice is done
         deferredSelection.promise.then(angular.bind(this, function(xpath) {
-          this.sendSpecialize(cmd, treeIndex, xpath);
+          var label;
+          field.fields.some(function(field) {
+            if (field.value == xpath) {
+              label = field.label;
+              return true;
+            }
+          });
+          this.sendSpecialize(cmd, treeIndex, xpath, label);
         }));
       }
     },
@@ -602,13 +609,14 @@ angular.module('warmonic.build.services', [])
       commands.next(cmd, form)
 
       .then(angular.bind(this, function(cmd) {
-        this.onSpecialize(cmd, treeIndex, xpath, label)
+        this.onSpecialize(cmd, treeIndex, xpath, label);
         this._onRecv(cmd);
       }));
     },
 
     onSpecialize: function(cmd, treeIndex, xpath, label) {
-      tree.fillNodeData(treeIndex, {type: "text", value: label || xpath});
+      tree.fillNodeData(treeIndex, {type: "text", value: ""});
+      tree.fillNodeTitle(treeIndex, label || xpath);
     },
 
     onlineServers: function() {

@@ -1,9 +1,3 @@
-<h4 id="{{ name }}" ng-if="title" ng-click="show = !show" ng-class="{'collapsed': !show}">
-  <span class="glyphicon" ng-class="{'glyphicon-chevron-down': show, 'glyphicon-chevron-right': !show}"></span>
-  {{ title }}
-  <span ng-if="host" class="label label-info">{{ host | nodeJid }}</span>
-</h4>
-
 <span ng-switch="data.type">
 
   <span ng-switch-when="text">
@@ -43,5 +37,3 @@
   </span>
 
 </span>
-
-<logger instance-name="{{ logger.name }}"></logger>
