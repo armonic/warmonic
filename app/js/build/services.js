@@ -33,11 +33,13 @@ angular.module('warmonic.build.services', [])
     },
 
     /** Create a field and save a reference on it */
-    addField: function(params, name, type) {
+    addField: function(params, name, type, index) {
       if (!variables[name])
-        variables[name] = [];
+        variables[name] = {};
+      if (!index)
+        index = 0;
       var field = this.createField(params, name, type);
-      variables[name].push(field);
+      variables[name][0] = field;
       return field;
     },
 
@@ -68,7 +70,8 @@ angular.module('warmonic.build.services', [])
       belongs_provide_ret: false,
       promise: null,
       expert: false,
-      fields: []
+      fields: [],
+      index: 0
     };
     this.disabled = false;
     this.processing = false;
@@ -153,7 +156,7 @@ angular.module('warmonic.build.services', [])
       // returns list of variables
       if (this.type == "form") {
         return this.fields.map(function(field) {
-          return {name: field.name, value: field.value};
+          return {name: field.name, value: field.value, index: field.params.index};
         });
       }
 
@@ -735,11 +738,13 @@ angular.module('warmonic.build.services', [])
           // value is JSON serialized
           if (option.label == "value")
             params[option.label] = JSON.parse(option.value);
+          else if (option.label == "index")
+            params[option.label] = parseInt(option.value);
           else
             params[option.label] = option.value;
         });
 
-        formField = buildVariables.addField(params, fieldName);
+        formField = buildVariables.addField(params, fieldName, params.index);
         if (formField)
           form.fields.push(formField);
 
@@ -758,20 +763,22 @@ angular.module('warmonic.build.services', [])
 
     sendValidation: function(cmd, treeIndex, validationForm) {
       // Format variables
-      var values = validationForm.value.map(function(variable) {
-        var value = {};
-        if (variable.value instanceof Array) {
-          for (var i=0; i<variable.value.length; i++)
-            value[i] = variable.value[i];
+      // [{name:..., index:..., value:...}, {...}] -> [(name, {index:value ...}), (...)]
+      var values = [];
+      validationForm.value.forEach(function(val) {
+        var value;
+        try {
+          value = values.filter(function(toVal) {
+            if (toVal[0] == val.name)
+              return true;
+          })[0];
+          value[1][val.index] = val.value;
         }
-        else {
-          value[0] = variable.value;
+        catch (err) {
+          value = [val.name, {}];
+          value[1][val.index] = val.value;
+          values.push(value);
         }
-
-        return [
-          variable.name,
-          value
-        ];
       });
 
       var form = $form({
