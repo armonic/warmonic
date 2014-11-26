@@ -4,8 +4,13 @@ angular.module('warmonic.lib.logger', [])
 
 .factory('logger', ['$rootScope', function($rootScope) {
 
-  var loggers = {},
-      Logger = Object.create({
+  var loggers = {};
+
+  function Logger(name) {
+    this.name = name;
+  }
+
+  Logger.prototype = {
 
     level: {
       TRACE: 0,
@@ -62,13 +67,12 @@ angular.module('warmonic.lib.logger', [])
       return this._output;
     }
 
-  });
+  };
 
   return {
     get: function(name) {
       return loggers[name] || function() {
-        var logger = Object.create(Logger);
-        logger.name = name;
+        var logger = new Logger(name);
         loggers[name] = logger;
         return logger;
       }();
@@ -86,13 +90,34 @@ angular.module('warmonic.lib.logger', [])
   return {
     restrict: 'E',
 
+    scope: false,
+
     templateUrl: 'partials/logger.html',
 
     link: function(scope, element, attrs) {
-      scope.show = true;
+      scope.loggerName = null;
 
       attrs.$observe('instanceName', function(value) {
-        scope.logger = logger.get(value);
+        if (value) {
+          scope.loggerName = value;
+        }
+      });
+
+      scope.$watch(attrs.instance, function(newVal) {
+        if (newVal) {
+          scope.loggerName = newVal.name;
+        }
+      });
+    },
+
+    controller: function($scope) {
+      $scope.show = true;
+      $scope.logger = null;
+
+      $scope.$watch('loggerName', function(newVal) {
+        if (newVal) {
+          $scope.logger = logger.get(newVal);
+        }
       });
     }
 

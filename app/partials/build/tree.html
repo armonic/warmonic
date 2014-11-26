@@ -8,9 +8,8 @@
     </h4>
     <div ng-show="node.show">
       <node node-data="node.data" />
-      <logger instance-name="{{ node.name }}"></logger>
+      <logger ng-if="node.logger" instance="node.logger"></logger>
     </div>
   </li>
   <tree ng-repeat="child in node.children" node="child" />
 </ul>
-

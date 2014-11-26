@@ -328,7 +328,7 @@ angular.module('warmonic.build.services', [])
     },
 
     fillNodeLogger: function(treeIndex, logger) {
-      return this.fillNode(treeIndex, 'logger',logger);
+      return this.fillNode(treeIndex, 'logger', logger);
     },
 
     fillNodeName: function(treeIndex, name) {
@@ -415,9 +415,11 @@ angular.module('warmonic.build.services', [])
             from = Strophe.getResourceFromJid(msg.attr('from')),
             level = msg.children('log').children('level_name').text().toUpperCase(),
             logger = this.data.currentLogger;
-        logger.log(message, logger.level[level], from);
-        // run digest on new message
-        $rootScope.$apply();
+        if (logger) {
+          logger.log(message, logger.level[level], from);
+          // run digest on new message
+          $rootScope.$apply();
+        }
       }
       return true;
     },
@@ -433,7 +435,10 @@ angular.module('warmonic.build.services', [])
 
       // fill node logger
       var provideLogger = tree.getTreeNode(treeIndex).logger || function(logger) {
-        var provideLogger = logger.get(provideName);
+        if (!host)
+          return null;
+        var loggerName = Strophe.getNodeFromJid(host) + ":" + provideName,
+            provideLogger = logger.get(loggerName);
         provideLogger.clear();
         tree.fillNodeLogger(treeIndex, provideLogger);
         return provideLogger;
