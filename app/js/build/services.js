@@ -421,7 +421,6 @@ angular.module('warmonic.build.services', [])
           $rootScope.$apply();
         }
       }
-      return true;
     },
 
     _onRecv: function(cmd) {

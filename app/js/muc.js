@@ -7,15 +7,29 @@ angular.module('warmonic.lib.xmpp.muc', [
 .factory('muc', ['$rootScope', '$q', '$timeout', 'xmpp', 'xmppService', function($rootScope, $q, $timeout, xmpp, xmppService) {
 
   var Room = function(name, nick, callback) {
+    var handler;
     this.name = name;
     this.nick = nick;
     console.debug("joining room " + this.name);
-    if (!callback)
-      callback = angular.bind(this, this.onMessage);
+    if (!callback) {
+      handler = angular.bind(this, this.onMessage);
+    }
+    else {
+      // Strophe handlers must return true
+      // to be used multiple times.
+      // Wrap the callback to return true by
+      // default.
+      handler = function(msg, xmppRoom) {
+        var result = callback(msg, xmppRoom);
+        if (result === false)
+          return result;
+        return true;
+      };
+    }
 
     xmpp.connection.muc.join(this.name,
                              this.nick,
-                             callback);
+                             handler);
   };
 
   Room.prototype = {
