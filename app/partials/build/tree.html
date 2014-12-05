@@ -5,6 +5,7 @@
         ng-class="{'glyphicon-chevron-down': node.show, 'glyphicon-chevron-right': !node.show}"></span>
       {{ node.title }}
       <span ng-if="node.host" class="label label-info">{{ node.host | nodeJid }}</span>
+      <small ng-if="global.options.debugMode">({{ node.name }})</small>
     </h4>
     <div ng-show="node.show" ng-if="node.data">
       <node node-data="node.data" />
