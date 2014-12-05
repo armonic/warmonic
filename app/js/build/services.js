@@ -452,25 +452,33 @@ angular.module('warmonic.build.services', [])
       else
         tree.fillNodeHost(treeIndex, null);
 
-      if (cmd.form.instructions == "manage") {
+      // Format method name to camelCase
+      var methodName = cmd.form.instructions.split('_').reduce(function(acc, elem, index) {
+        if (index === 0)
+          return elem;
+        else
+          return acc + elem.charAt(0).toUpperCase() + elem.substr(1);
+      }, "");
+
+      console.debug("Looking for method " + methodName);
+
+      if (methodName == "manage") {
         // Always manage the first provide
         if (treeIndex == [0])
           this.sendManage(cmd, [0], true);
         else
           this.manage(cmd, treeIndex);
       }
-      else if (cmd.form.instructions == "lfm")
-        this.lfm(cmd, treeIndex);
-      else if (cmd.form.instructions == "specialize")
-        this.specialize(cmd, treeIndex);
-      else if (cmd.form.instructions == "multiplicity")
-        this.multiplicity(cmd, treeIndex);
-      else if (cmd.form.instructions == "validation")
-        this.validation(cmd, treeIndex);
-      else if (cmd.form.instructions == "call")
-        this.call(cmd, treeIndex);
-      else if (cmd.form.instructions == "done")
-        this.done(cmd, treeIndex);
+      else if (this[methodName]) {
+        this[methodName](cmd, treeIndex);
+      }
+      else {
+        // unhandled step, just return the form as-is
+        commands.next(cmd, cmd.form)
+        .then(angular.bind(this, function(cmd) {
+          this._onRecv(cmd);
+        }));
+      }
     },
 
     _getTreeIndex: function(cmd) {
