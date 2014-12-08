@@ -83,10 +83,10 @@ angular.module('warmonic.lib.xmpp', [
         this._connection.xmlInput = angular.bind(this, this.onInput);
         this._connection.xmlOutput = angular.bind(this, this.onOutput);
         this._connection.rawInput = function(data) {
-          console.log('RECV: ' + data);
+          // console.log('RECV: ' + data);
         };
         this._connection.rawOutput = function(data) {
-          console.log('SENT: ' + data);
+          // console.log('SENT: ' + data);
         };
       }
     },
@@ -193,9 +193,12 @@ angular.module('warmonic.lib.xmpp', [
     },
 
     onInput: function(body) {
+      console.log("OnInput: ", body);
     },
 
     onOutput: function(body) {
+      console.log("OnOutput: ", body);
+
       // no rid with websockets
       if (this.connection && this.connection._proto.rid)
         xmppSession.data.rid = this.connection._proto.rid;
