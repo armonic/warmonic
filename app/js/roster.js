@@ -91,6 +91,7 @@ angular.module('warmonic.lib.xmpp.roster', [
     removeServer: function(jid) {
       if (jid)
         xmpp.send($pres({to: jid, type: "unsubscribe"}));
+        xmpp.send($pres({to: jid, type: "subscribe"}));
     },
 
     excludeJid: function(jid) {
