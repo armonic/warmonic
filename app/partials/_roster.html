@@ -1,6 +1,7 @@
 <h2>Servers</h2>
 <div class="alert" ng-class="{'alert-danger': !item.online, 'alert-success': item.online}" ng-repeat="item in items()" ng-show="item.show">
-  {{ item.name }} <button class="pull-right" ng-click="removeServer(item.jid)"><span class="glyphicon glyphicon-minus"></span></button>
+  {{ item.name }}
+    <button  ng-if="!item.online" class="pull-right" ng-click="removeServer(item.jid)"><span class="glyphicon glyphicon-minus"></span></button>
 </div>
 <form role="form" ng-submit="addServer()">
   <div class="input-group">
